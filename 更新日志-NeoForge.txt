@@ -1,0 +1,42 @@
+v1.1.0-NeoForge
+- 修复部分诅咒类型附魔不在正确标签中的问题
+- 将大多数附魔添加到村民交易中
+- 修复"绝命箭矢"不符合预期的问题
+- 添加其他模组联动
+- 优化描述，删除无关紧要的废话
+- 新附魔:流血之触 - 攻击时使目标流血[需要模组《Apothic Attributes》]
+- 新附魔:双重暴击 - 提升暴击率和暴击伤害[需要模组《Apothic Attributes》]
+- 新附魔:暗流涌动 - 攻击时造成冰霜伤害并附加霜冻、凋零和虚弱效果[需要模组《Apothic Attributes》、《暮色森林》]
+- 新附魔:延迟爆破 - 箭矢命中生物后让其延迟爆炸(爆炸威力随等级提升)[需要模组《新生魔艺》]
+- 新附魔:法术增幅 - 增强[铁魔法]的法术强度[需要模组《Iron的法术与魔法书》]
+- 新附魔:法术防护 - 增强[铁魔法]的法术抗性[需要模组《Iron的法术与魔法书》]
+
+- Fixed an issue where some curse-type enchantments were not in the correct tags.
+- Adds most enchantments to villager trades.
+- Fixed an issue where "Fatal Arrow" did not behave as expected.
+- Added cross-mod compatibility.
+- Optimize the description and remove irrelevant redundancy
+- New Enchantment: Bleeding Touch - Inflicts Bleeding on hit[Mod Required: Apothic Attributes]
+- New Enchantment: Dual Critical Boost - Inflicts Bleeding on hit[Mod Required: Apothic Attributes]
+- New Enchantment: Undercurrent - Deals Frost damage on attack and applies Freezing, Wither, and Weakness effects[Mod Required: Apothic Attributes、The Twilight Forest]
+- New Enchantment: Undercurrent - Arrows cause delayed explosions upon hitting mobs (explosion power scales with level).[Mod Required: Ars Nouveau]
+- New Enchantment: Spell Power - Enhanced the spell power of [Irons Spellbooks].[Mod Required: Irons Spellbooks]
+- New Enchantment: Magic Resist - Enhanced the spell resistance of [Irons Spellbooks].[Mod Required: Irons Spellbooks]
+
+
+v1.0.1 - 2026.1.20
+- 修复"延伸"不能增加实体交互距离的问题
+- 将"最后的希望"调整为只能在下界合金剑和下界合金斧中附魔，并更新生物黑名单。
+- 更改部分附魔的颜色
+- 修复部分附魔内属性的唯一ID不符合预期的问题
+
+- Fixed the issue where "Extend" could not increase the entity interaction range.
+- "Last Hope" has been adjusted to only be enchantable on Netherite Swords and Netherite Axes, and its entity blacklist has been updated.
+- Updated the color scheme for some enchantments.
+- Fixed an issue where the unique IDs of some enchantment properties did not match expectations.
+
+
+v1.0.0 - 2025.6.18
+- 为游戏添加150+种附魔效果。
+
+- Add over 150+ enchantment effects to the game.

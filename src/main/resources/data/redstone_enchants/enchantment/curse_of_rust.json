@@ -1,0 +1,36 @@
+{
+  "description": {
+    "color": "#FF5555",
+    "translate": "enchantment.redstone_enchants.curse_of_rust"
+  },
+  "supported_items": "#c:enchantables",
+  "primary_items": "#c:enchantables",
+  "weight": 5,
+  "max_level": 3,
+  "min_cost": {
+    "base": 8,
+    "per_level_above_first": 4
+  },
+  "max_cost": {
+    "base": 12,
+    "per_level_above_first": 8
+  },
+  "anvil_cost": 8,
+  "slots": [
+    "any"
+  ],
+  "effects": {
+    "minecraft:item_damage": [
+      {
+        "effect": {
+          "type": "minecraft:multiply",
+          "factor": {
+            "type": "minecraft:linear",
+            "base": 16,
+            "per_level_above_first": 36
+          }
+        }
+      }
+    ]
+  }
+}

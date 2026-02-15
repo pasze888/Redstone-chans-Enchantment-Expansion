@@ -1,0 +1,32 @@
+{
+  "description": {
+    "color": "#FF55FF",
+    "translate": "enchantment.redstone_enchants.haste"
+  },
+  "supported_items": "#redstone_enchants:tools",
+  "primary_items": "#redstone_enchants:tools",
+  "weight": 3,
+  "max_level": 3,
+  "min_cost": {
+    "base": 12,
+    "per_level_above_first": 8
+  },
+  "max_cost": {
+    "base": 48,
+    "per_level_above_first": 16
+  },
+  "anvil_cost": 16,
+  "slots": [
+    "mainhand"
+  ],
+  "effects": {
+    "minecraft:tick": [
+      {
+        "effect": {
+          "type": "minecraft:run_function",
+          "function": "redstone_enchants:enchantment/haste"
+        }
+      }
+    ]
+  }
+}

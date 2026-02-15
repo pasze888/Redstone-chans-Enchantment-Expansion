@@ -1,0 +1,39 @@
+{
+  "description": {
+    "color": "#FFAA00",
+    "translate": "enchantment.redstone_enchants.sacrifice"
+  },
+  "supported_items": "#c:enchantables",
+  "primary_items": "#c:enchantables",
+  "weight": 1,
+  "max_level": 5,
+  "min_cost": {
+    "base": 16,
+    "per_level_above_first": 8
+  },
+  "max_cost": {
+    "base": 64,
+    "per_level_above_first": 16
+  },
+  "anvil_cost": 32,
+  "slots": [
+    "any"
+  ],
+  "exclusive_set": "#redstone_enchants:exclusive_set/unbreaking",
+  "effects": {
+    "minecraft:post_attack": [
+      {
+        "enchanted": "victim",
+        "affected": "victim",
+        "effect": {
+          "type": "minecraft:damage_item",
+          "amount": {
+            "type": "minecraft:linear",
+            "base": -1.0,
+            "per_level_above_first": -0.5
+          }
+        }
+      }
+    ]
+  }
+}

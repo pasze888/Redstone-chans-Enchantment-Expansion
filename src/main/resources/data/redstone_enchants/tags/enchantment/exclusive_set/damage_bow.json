@@ -1,0 +1,11 @@
+{
+  "values": [
+    "#redstone_enchants:exclusive_set/splash",
+    "redstone_enchants:rain_forge",
+    "redstone_enchants:rain_dripstone",
+
+    "redstone_enchants:blast_arrors",
+    "redstone_enchants:bomb_arrors",
+    "redstone_enchants:fatal_arrow"
+  ]
+}

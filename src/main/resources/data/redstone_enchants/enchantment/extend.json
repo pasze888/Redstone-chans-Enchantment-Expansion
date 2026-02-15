@@ -1,0 +1,47 @@
+{
+  "description": {
+    "color": "#FFAA00",
+    "translate": "enchantment.redstone_enchants.extend"
+  },
+  "supported_items": "#c:tools",
+	"primary_items": "#c:tools",
+  "weight": 1,
+  "max_level": 3,
+  "min_cost": {
+    "base": 16,
+    "per_level_above_first": 8
+  },
+  "max_cost": {
+    "base": 64,
+    "per_level_above_first": 16
+  },
+  "anvil_cost": 32,
+  "slots": [
+    "mainhand",
+    "offhand"
+  ],
+  "effects": {
+    "minecraft:attributes": [
+      {
+        "id": "redstone_enchants:enchantment.extend_1",
+        "attribute": "minecraft:player.block_interaction_range",
+        "operation": "add_value",
+        "amount": {
+          "type": "minecraft:linear",
+          "base": 1,
+          "per_level_above_first": 1
+        }
+      },
+      {
+        "id": "redstone_enchants:enchantment.extend_2",
+        "attribute": "minecraft:player.entity_interaction_range",
+        "operation": "add_value",
+        "amount": {
+          "type": "minecraft:linear",
+          "base": 1,
+          "per_level_above_first": 1
+        }
+      }
+    ]
+  }
+}
