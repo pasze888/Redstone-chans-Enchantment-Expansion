@@ -1,21 +1,21 @@
 {
   "description": {
-		"color": "#FF5555",
+    "color": "#FF5555",
     "translate": "enchantment.redstone_enchants.curse_of_breaking"
   },
   "supported_items": "#c:enchantables",
   "primary_items": "#c:enchantables",
-  "weight": 5,
+  "weight": 4,
   "max_level": 4,
   "min_cost": {
-    "base": 8,
-    "per_level_above_first": 4
+    "base": 10,
+    "per_level_above_first": 6
   },
   "max_cost": {
-    "base": 12,
-    "per_level_above_first": 8
+    "base": 20,
+    "per_level_above_first": 10
   },
-  "anvil_cost": 8,
+  "anvil_cost": 6,
   "slots": [
     "any"
   ],

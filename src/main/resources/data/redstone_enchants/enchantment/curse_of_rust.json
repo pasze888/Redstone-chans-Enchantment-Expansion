@@ -5,32 +5,18 @@
   },
   "supported_items": "#c:enchantables",
   "primary_items": "#c:enchantables",
-  "weight": 5,
+  "weight": 4,
   "max_level": 3,
   "min_cost": {
-    "base": 8,
-    "per_level_above_first": 4
+    "base": 10,
+    "per_level_above_first": 6
   },
   "max_cost": {
-    "base": 12,
-    "per_level_above_first": 8
+    "base": 20,
+    "per_level_above_first": 10
   },
-  "anvil_cost": 8,
+  "anvil_cost": 6,
   "slots": [
     "any"
-  ],
-  "effects": {
-    "minecraft:item_damage": [
-      {
-        "effect": {
-          "type": "minecraft:multiply",
-          "factor": {
-            "type": "minecraft:linear",
-            "base": 16,
-            "per_level_above_first": 36
-          }
-        }
-      }
-    ]
-  }
+  ]
 }

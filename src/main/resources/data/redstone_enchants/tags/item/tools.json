@@ -3,8 +3,6 @@
     "#minecraft:pickaxes",
     "#minecraft:axes",
     "#minecraft:shovels",
-    "#minecraft:hoes",
-    "#c:tools/brush",
-    "#c:tools/shear"
+    "#minecraft:hoes"
   ]
 }

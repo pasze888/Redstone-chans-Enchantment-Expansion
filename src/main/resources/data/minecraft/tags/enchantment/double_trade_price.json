@@ -4,7 +4,6 @@
     "#minecraft:treasure",
     "redstone_enchants:devouring",
     "redstone_enchants:last_hope",
-
     "redstone_enchants:bane_boss",
     "redstone_enchants:bane_bady",
     "redstone_enchants:bane_illager",
@@ -14,7 +13,6 @@
     "redstone_enchants:touch_poison",
     "redstone_enchants:touch_wither",
     "redstone_enchants:touch_bleeding",
-
     "redstone_enchants:splash_speed",
     "redstone_enchants:splash_slowness",
     "redstone_enchants:splash_regeneration",
@@ -29,47 +27,77 @@
     "redstone_enchants:splash_oozing",
     "redstone_enchants:splash_weaving",
     "redstone_enchants:splash_delayed_explosion",
-    "redstone_enchants:ice_arrors",
+    "redstone_enchants:ice_arrows",
     "redstone_enchants:accuracy_shot",
-    "redstone_enchants:blast_arrors",
-    "redstone_enchants:bomb_arrors",
+    "redstone_enchants:blast_arrows",
+    "redstone_enchants:bomb_arrows",
     "redstone_enchants:bullet_time",
     "redstone_enchants:fatal_arrow",
     "redstone_enchants:shotgun",
     "redstone_enchants:scatter",
     "redstone_enchants:focus",
-
     "redstone_enchants:bane_water",
-
     "redstone_enchants:boltbringer",
     "redstone_enchants:dive_bomb",
     "redstone_enchants:lightness-heavy_dualism",
     "redstone_enchants:slugger",
     "redstone_enchants:wind_propulsion",
     "redstone_enchants:haste",
-    
     "redstone_enchants:air_toss",
     "redstone_enchants:lightning_bolt",
-    
     "redstone_enchants:eternal_frost",
-    
     "redstone_enchants:ender_heart",
     "redstone_enchants:moonwalk",
     "redstone_enchants:safe_landing",
-    
     "redstone_enchants:fortress_stance",
     "redstone_enchants:invisibility_cloak",
-    
     "redstone_enchants:crop_dance",
-    
     "redstone_enchants:enhanced_armor",
     "redstone_enchants:messenger",
-    
     "redstone_enchants:wolf_spirit_shield",
+    "redstone_enchants:life_steal",
+    "redstone_enchants:decapitation",
+    "redstone_enchants:backstab",
+    "redstone_enchants:execution",
+    "redstone_enchants:weighted",
+    "redstone_enchants:bedrock_breaker",
+    "redstone_enchants:rock_illusion",
+    "redstone_enchants:boons",
+    "redstone_enchants:calamity",
+    "redstone_enchants:nullify",
+    "redstone_enchants:ambush",
+    "redstone_enchants:equalizer",
+    "redstone_enchants:volt",
+    "redstone_enchants:snipe",
+    "redstone_enchants:potential_conversion",
+    "redstone_enchants:lightweight",
+    "redstone_enchants:angler",
+    "redstone_enchants:conductive_line",
+    "redstone_enchants:tide_sense",
 
-    
-    "redstone_enchants:dual_critical_boost",
-    "redstone_enchants:spell_power",
-    "redstone_enchants:magic_resist"
+    {
+      "id": "redstone_enchants:touch_bleeding",
+      "required": false
+    },
+    {
+      "id": "redstone_enchants:splash_delayed_explosion",
+      "required": false
+    },
+    {
+      "id": "redstone_enchants:dual_critical_boost",
+      "required": false
+    },
+    {
+      "id": "redstone_enchants:spell_power",
+      "required": false
+    },
+    {
+      "id": "redstone_enchants:magic_resist",
+      "required": false
+    },
+    {
+      "id": "redstone_enchants:rapid",
+      "required": false
+    }
   ]
 }

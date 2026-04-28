@@ -9,13 +9,13 @@
   "max_level": 3,
   "min_cost": {
     "base": 12,
-    "per_level_above_first": 8
+    "per_level_above_first": 6
   },
   "max_cost": {
-    "base": 48,
-    "per_level_above_first": 16
+    "base": 24,
+    "per_level_above_first": 12
   },
-  "anvil_cost": 16,
+  "anvil_cost": 8,
   "slots": [
     "armor"
   ],
@@ -25,22 +25,22 @@
       {
         "id": "redstone_enchants:enchantment.dangerous_edge_1",
         "attribute": "minecraft:generic.armor",
+        "operation": "add_value",
         "amount": {
           "type": "minecraft:linear",
           "base": -2.5,
           "per_level_above_first": -1.5
-        },
-        "operation": "add_value"
+        }
       },
       {
         "id": "redstone_enchants:enchantment.dangerous_edge_2",
         "attribute": "minecraft:generic.attack_damage",
+        "operation": "add_value",
         "amount": {
           "type": "minecraft:linear",
           "base": 2.5,
           "per_level_above_first": 1.5
-        },
-        "operation": "add_value"
+        }
       }
     ]
   }

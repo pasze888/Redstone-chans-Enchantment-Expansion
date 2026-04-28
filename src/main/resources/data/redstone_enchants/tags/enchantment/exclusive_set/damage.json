@@ -9,6 +9,10 @@
     "redstone_enchants:under_pressure",
     "redstone_enchants:unleash_potential",
     "redstone_enchants:last_hope",
-    "redstone_enchants:undercurrent"
+
+    {
+      "id": "redstone_enchants:undercurrent",
+      "required": false
+    }
   ]
 }

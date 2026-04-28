@@ -5,40 +5,40 @@
   },
   "supported_items": "#redstone_enchants:armors_head",
   "primary_items": "#redstone_enchants:armors_head",
-  "weight": 5,
+  "weight": 4,
   "max_level": 3,
   "min_cost": {
-    "base": 8,
-    "per_level_above_first": 4
+    "base": 10,
+    "per_level_above_first": 6
   },
   "max_cost": {
-    "base": 12,
-    "per_level_above_first": 8
+    "base": 20,
+    "per_level_above_first": 10
   },
-  "anvil_cost": 8,
+  "anvil_cost": 6,
   "slots": [
     "head"
   ],
   "effects": {
     "minecraft:tick": [
       {
-				"effect": {
-					"type": "minecraft:apply_mob_effect",
-					"to_apply": "minecraft:blindness",
-					"min_duration": 3,
-					"max_duration": 3,
-					"min_amplifier": {
-						"type": "minecraft:linear",
-						"base": 0,
-						"per_level_above_first": 1
-					},
-					"max_amplifier": {
-						"type": "minecraft:linear",
-						"base": 0,
-						"per_level_above_first": 1
-					}
-				}
-			}
+        "effect": {
+          "type": "minecraft:apply_mob_effect",
+          "to_apply": "minecraft:blindness",
+          "min_duration": 3,
+          "max_duration": 3,
+          "min_amplifier": {
+            "type": "minecraft:linear",
+            "base": 0,
+            "per_level_above_first": 1
+          },
+          "max_amplifier": {
+            "type": "minecraft:linear",
+            "base": 0,
+            "per_level_above_first": 1
+          }
+        }
+      }
     ]
   }
 }

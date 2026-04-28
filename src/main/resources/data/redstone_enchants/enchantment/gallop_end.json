@@ -9,13 +9,13 @@
   "max_level": 3,
   "min_cost": {
     "base": 12,
-    "per_level_above_first": 8
+    "per_level_above_first": 6
   },
   "max_cost": {
-    "base": 48,
-    "per_level_above_first": 16
+    "base": 24,
+    "per_level_above_first": 12
   },
-  "anvil_cost": 16,
+  "anvil_cost": 8,
   "slots": [
     "feet"
   ],
@@ -27,12 +27,12 @@
           "type": "minecraft:attribute",
           "id": "minecraft:enchantment.soul_speed",
           "attribute": "minecraft:generic.movement_speed",
+          "operation": "add_value",
           "amount": {
             "type": "minecraft:linear",
             "base": 0.0405,
             "per_level_above_first": 0.0105
-          },
-          "operation": "add_value"
+          }
         },
         "requirements": {
           "condition": "minecraft:all_of",

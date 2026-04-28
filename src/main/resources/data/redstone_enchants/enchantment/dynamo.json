@@ -5,15 +5,15 @@
   },
   "supported_items": "#redstone_enchants:swords_and_axes",
   "primary_items": "#redstone_enchants:swords",
-  "weight": 4,
+  "weight": 3,
   "max_level": 4,
   "min_cost": {
-    "base": 8,
-    "per_level_above_first": 4
+    "base": 12,
+    "per_level_above_first": 6
   },
   "max_cost": {
-    "base": 32,
-    "per_level_above_first": 8
+    "base": 24,
+    "per_level_above_first": 12
   },
   "anvil_cost": 8,
   "slots": [

@@ -9,22 +9,17 @@
     "redstone_enchants:curse_of_acrophobia",
     "redstone_enchants:curse_of_basiphobia",
     "redstone_enchants:curse_of_clumsiness",
-
     "redstone_enchants:first_impression",
     "redstone_enchants:exorcism",
     "redstone_enchants:xp_reaper_mobs",
     "redstone_enchants:chains",
     "redstone_enchants:dynamo",
     "redstone_enchants:water_bottle_projection",
-
     "redstone_enchants:glass_breaker",
-    
     "redstone_enchants:xp_spring_block",
-    
     "redstone_enchants:ender_heart",
     "redstone_enchants:moonwalk",
     "redstone_enchants:safe_landing",
-
     "redstone_enchants:protection_day",
     "redstone_enchants:protection_night",
     "redstone_enchants:protection_end",
@@ -36,7 +31,6 @@
     "redstone_enchants:snowball",
     "redstone_enchants:fortitude",
     "redstone_enchants:frost_thorn",
-
     "redstone_enchants:trail_trial_omen",
     "redstone_enchants:trail_cherry_leaves",
     "redstone_enchants:trail_dragon_breath",
@@ -46,13 +40,19 @@
     "redstone_enchants:trail_snowflake",
     "redstone_enchants:trail_wax_on",
     "redstone_enchants:trail_wax_off",
-
     "redstone_enchants:retrieval",
-
     "redstone_enchants:fast_swim",
     "redstone_enchants:safe_fall",
     "redstone_enchants:striding",
+    "redstone_enchants:jump_amplifier",
 
-    "redstone_enchants:jump_amplifier"
+    "redstone_enchants:geology",
+    "redstone_enchants:goldfinger",
+    "redstone_enchants:butcher",
+    "redstone_enchants:magnet",
+    "redstone_enchants:auto_smelt",
+    "redstone_enchants:excavator",
+    "redstone_enchants:moist",
+    "redstone_enchants:chain_haste"
   ]
 }

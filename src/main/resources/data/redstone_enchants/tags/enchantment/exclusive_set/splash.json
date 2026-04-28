@@ -14,12 +14,16 @@
     "redstone_enchants:splash_infested",
     "redstone_enchants:splash_oozing",
     "redstone_enchants:splash_weaving",
-    "redstone_enchants:splash_delayed_explosion",
 
     "redstone_enchants:evokers_wrath",
-    "redstone_enchants:ice_arrors",
-    "redstone_enchants:fire_arrors",
+    "redstone_enchants:ice_arrows",
+    "redstone_enchants:fire_arrows",
     
-    "redstone_enchants:eternal_frost"
+    "redstone_enchants:eternal_frost",
+
+    {
+      "id": "redstone_enchants:splash_delayed_explosion",
+      "required": false
+    }
   ]
 }

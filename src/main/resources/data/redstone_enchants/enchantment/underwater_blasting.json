@@ -1,21 +1,21 @@
 {
   "description": {
-		"color": "#FF55FF",
-		"translate": "enchantment.redstone_enchants.underwater_blasting"
+    "color": "#FF55FF",
+    "translate": "enchantment.redstone_enchants.underwater_blasting"
   },
   "supported_items": "#minecraft:enchantable/trident",
-	"primary_items": "#minecraft:enchantable/trident",
+  "primary_items": "#minecraft:enchantable/trident",
   "weight": 3,
   "max_level": 1,
   "min_cost": {
     "base": 12,
-    "per_level_above_first": 8
+    "per_level_above_first": 6
   },
   "max_cost": {
-    "base": 48,
-    "per_level_above_first": 16
+    "base": 24,
+    "per_level_above_first": 12
   },
-  "anvil_cost": 16,
+  "anvil_cost": 8,
   "slots": [
     "mainhand",
     "offhand"

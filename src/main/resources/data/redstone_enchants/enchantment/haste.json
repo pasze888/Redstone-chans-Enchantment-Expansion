@@ -1,21 +1,21 @@
 {
   "description": {
-    "color": "#FF55FF",
+    "color": "#FFAA00",
     "translate": "enchantment.redstone_enchants.haste"
   },
   "supported_items": "#redstone_enchants:tools",
   "primary_items": "#redstone_enchants:tools",
-  "weight": 3,
+  "weight": 2,
   "max_level": 3,
   "min_cost": {
-    "base": 12,
+    "base": 16,
     "per_level_above_first": 8
   },
   "max_cost": {
-    "base": 48,
+    "base": 32,
     "per_level_above_first": 16
   },
-  "anvil_cost": 16,
+  "anvil_cost": 12,
   "slots": [
     "mainhand"
   ],

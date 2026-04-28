@@ -1,7 +1,7 @@
 {
   "description": {
-		"color": "#FF55FF",
-		"translate": "enchantment.redstone_enchants.pegasus"
+    "color": "#FF55FF",
+    "translate": "enchantment.redstone_enchants.pegasus"
   },
   "supported_items": "#redstone_enchants:armors_foot",
   "primary_items": "#redstone_enchants:armors_foot",
@@ -9,13 +9,13 @@
   "max_level": 1,
   "min_cost": {
     "base": 12,
-    "per_level_above_first": 8
+    "per_level_above_first": 6
   },
   "max_cost": {
-    "base": 48,
-    "per_level_above_first": 16
+    "base": 24,
+    "per_level_above_first": 12
   },
-  "anvil_cost": 16,
+  "anvil_cost": 8,
   "slots": [
     "feet"
   ],
