@@ -45,7 +45,6 @@
     "redstone_enchants:safe_fall",
     "redstone_enchants:striding",
     "redstone_enchants:jump_amplifier",
-
     "redstone_enchants:geology",
     "redstone_enchants:goldfinger",
     "redstone_enchants:butcher",
@@ -53,6 +52,8 @@
     "redstone_enchants:auto_smelt",
     "redstone_enchants:excavator",
     "redstone_enchants:moist",
-    "redstone_enchants:chain_haste"
+    "redstone_enchants:chain_haste",
+    "redstone_enchants:daynight_cycle",
+    "redstone_enchants:master_gatherer"
   ]
 }

@@ -143,8 +143,7 @@ dependencies {
     localRuntime "curse.maven:apothic-attributes-898963:7445079" // 神化属性
     localRuntime "curse.maven:jade-324717:7545219" // Jade
     localRuntime "curse.maven:kubejs-238086:7278501" // KubeJS
-    localRuntime "curse.maven:harvest-with-ease-602171:5968872" // 右键收获
-    localRuntime "curse.maven:cobweb-968456:7186943" // 右键收获前置
+    localRuntime "curse.maven:appleskin-248787:7854442" // 苹果皮
 
 }
 

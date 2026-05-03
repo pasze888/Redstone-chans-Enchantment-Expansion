@@ -78,14 +78,12 @@
   "enchantment.redstone_enchants.bane_end.desc": "Deals bonus damage to End mobs (excludes bosses)",
   "enchantment.redstone_enchants.bane_phantom": "Phantom Bane",
   "enchantment.redstone_enchants.bane_phantom.desc": "Deals bonus damage to Phantoms",
-
   "enchantment.redstone_enchants.touch_poison": "Poison Touch",
   "enchantment.redstone_enchants.touch_poison.desc": "Poisons targets on hit",
   "enchantment.redstone_enchants.touch_wither": "Wither Touch",
   "enchantment.redstone_enchants.touch_wither.desc": "Inflicts Wither on hit",
   "enchantment.redstone_enchants.touch_bleeding": "Bleeding Touch",
   "enchantment.redstone_enchants.touch_bleeding.desc": "Inflicts Bleeding on hit",
-
   "enchantment.redstone_enchants.xp_reaper_mobs": "XP Reaper",
   "enchantment.redstone_enchants.xp_reaper_mobs.desc": "Grants bonus XP for killing mobs (direct kills only)",
   "enchantment.redstone_enchants.devouring": "Devour",
@@ -154,12 +152,10 @@
   "enchantment.redstone_enchants.splash_weaving.desc": "Applies Weaving and creates an area-effect cloud on hit",
   "enchantment.redstone_enchants.splash_delayed_explosion": "Delayed Explosion",
   "enchantment.redstone_enchants.splash_delayed_explosion.desc": "Arrows cause delayed explosions upon hitting mobs.",
-
   "enchantment.redstone_enchants.rain_forge": "Anvil Rain",
   "enchantment.redstone_enchants.rain_forge.desc": "Spawns anvils upon hitting a target area",
   "enchantment.redstone_enchants.rain_dripstone": "Dripstone Rain",
   "enchantment.redstone_enchants.rain_dripstone.desc": "Spawns dripstones upon hitting a target area",
-
   "enchantment.redstone_enchants.evokers_wrath": "Evoker’s Wrath",
   "enchantment.redstone_enchants.evokers_wrath.desc": "Summons Evoker fangs on hit",
   "enchantment.redstone_enchants.ice_arrows": "Frost Arrows",
@@ -248,10 +244,20 @@
   "enchantment.redstone_enchants.chain_haste.desc": "When mining a block, also breaks surrounding blocks of the same type.",
   "enchantment.redstone_enchants.timber": "Timber",
   "enchantment.redstone_enchants.timber.desc": "When chopping a tree, also breaks all same-type logs above it.",
+  "enchantment.redstone_enchants.master_gatherer": "Master Gatherer",
+  "enchantment.redstone_enchants.master_gatherer.desc": "When mining ores, has a chance to trigger double drops.",
 
   "_enchantment.all_special_tools": "[Special Tools] Type Enchantments",
 
   "_enchantment.all_shear": "[Shear] Type Enchantments",
+  "enchantment.redstone_enchants.shepherd": "Shepherd",
+  "enchantment.redstone_enchants.shepherd.desc": "When shearing wool or harvesting honeycomb, has a chance to gain multiple drops.",
+  "enchantment.redstone_enchants.endless_wool": "Endless Wool",
+  "enchantment.redstone_enchants.endless_wool.desc": "When shearing a sheep, has a chance to make the sheep immediately regrow its wool.",
+  "enchantment.redstone_enchants.experience_shear": "Experienced Shear",
+  "enchantment.redstone_enchants.experience_shear.desc": "Sheared wool is converted into random experience orbs instead.",
+  "enchantment.redstone_enchants.harvest_echo": "Harvest Echo",
+  "enchantment.redstone_enchants.harvest_echo.desc": "When right-clicking with shears, grants Regeneration.",
 
   "_enchantment.all_brush": "[Brush] Type Enchantments",
 
@@ -294,6 +300,8 @@
   "enchantment.redstone_enchants.air_toss.desc": "Launches hit mobs into the air",
   "enchantment.redstone_enchants.lightning_bolt": "Lightning Strike",
   "enchantment.redstone_enchants.lightning_bolt.desc": "Summons lightning when attacking or hitting redstone blocks with arrows",
+  "enchantment.redstone_enchants.gambler": "Gambler",
+  "enchantment.redstone_enchants.gambler.desc": "50% chance to deal +40% damage, 50% chance to deal -20% damage.",
 
   "_enchantment.trident_and_bow": "[Trident+Bow] Type Enchantments",
   "enchantment.redstone_enchants.eternal_frost": "Eternal Frost",
@@ -318,7 +326,6 @@
   "enchantment.redstone_enchants.protection_end.desc": "Doubles protection in the End",
   "enchantment.redstone_enchants.protection_nether": "Nether Protection",
   "enchantment.redstone_enchants.protection_nether.desc": "Doubles protection in the Nether",
-
   "enchantment.redstone_enchants.dangerous_edge": "Risky Edge",
   "enchantment.redstone_enchants.dangerous_edge.desc": "Increases attack but reduces defense",
   "enchantment.redstone_enchants.fury": "Fury",
@@ -335,6 +342,10 @@
   "enchantment.redstone_enchants.fortitude.desc": "Increases armor",
   "enchantment.redstone_enchants.frost_thorn": "Frost Thorns",
   "enchantment.redstone_enchants.frost_thorn.desc": "Inflicts Slowness/Weakness on attackers",
+  "enchantment.redstone_enchants.revive_ward": "Revive Ward",
+  "enchantment.redstone_enchants.revive_ward.desc": "Prevents death when taking fatal damage, granting Regeneration, Resistance, and Fire Resistance. Loses 1 level after triggering.",
+  "enchantment.redstone_enchants.daynight_cycle": "Daynight Cycle",
+  "enchantment.redstone_enchants.daynight_cycle.desc": "Increases damage during the day, increases movement speed during the night.",
 
   "_enchantment.head_armor": "[Helmet] Type Enchantments",
   "enchantment.redstone_enchants.trail_trial_omen": "[Trail] Trial Omen",
@@ -355,7 +366,6 @@
   "enchantment.redstone_enchants.trail_wax_on.desc": "Leaves orange star particles while moving",
   "enchantment.redstone_enchants.trail_wax_off": "[Trail] White Stars",
   "enchantment.redstone_enchants.trail_wax_off.desc": "Leaves white star particles while moving",
-
   "enchantment.redstone_enchants.minify": "Minify",
   "enchantment.redstone_enchants.minify.desc": "Shrinks player size",
   "enchantment.redstone_enchants.maximization": "Maximize",
@@ -364,6 +374,14 @@
   "enchantment.redstone_enchants.lucky_light.desc": "Grants Luck",
   "enchantment.redstone_enchants.lucky_boost": "Luck Boost",
   "enchantment.redstone_enchants.lucky_boost.desc": "Increases luck",
+  "enchantment.redstone_enchants.anti_camouflage": "Anti-Camouflage",
+  "enchantment.redstone_enchants.anti_camouflage.desc": "Reveals nearby hostile mobs while sneaking.",
+  "enchantment.redstone_enchants.desperate_counter": "Desperate Counter",
+  "enchantment.redstone_enchants.desperate_counter.desc": "Increases attack damage when suffering from Blindness or Darkness.",
+  "enchantment.redstone_enchants.against_all_odds": "Against All Odds",
+  "enchantment.redstone_enchants.against_all_odds.desc": "Increases damage/armor by 2% for each nearby enemy.",
+  "enchantment.redstone_enchants.adaptive": "Miner",
+  "enchantment.redstone_enchants.adaptive.desc": "Grants Night Vision while below Y=0.",
 
   "_enchantment.chest_armor": "[Chestplate] Type Enchantments",
   "enchantment.redstone_enchants.bulletproof": "Bulletproof",
@@ -380,6 +398,8 @@
   "enchantment.redstone_enchants.spell_power.desc": "Enhanced the spell power of [Irons Spellbooks].",
   "enchantment.redstone_enchants.magic_resist": "Magic Resist",
   "enchantment.redstone_enchants.magic_resist.desc": "Enhanced the spell resistance of [Irons Spellbooks].",
+  "enchantment.redstone_enchants.berserk": "Berserker",
+  "enchantment.redstone_enchants.berserk.desc": "Increases melee damage based on the percentage of missing health.",
 
   "_enchantment.leg_armor": "[Leggings] Type Enchantments",
   "enchantment.redstone_enchants.fast_swim": "Swift Swim",
@@ -394,6 +414,8 @@
   "enchantment.redstone_enchants.safe_fall.desc": "Increases safe fall height",
   "enchantment.redstone_enchants.striding": "Striding",
   "enchantment.redstone_enchants.striding.desc": "Increases step height and base speed",
+  "enchantment.redstone_enchants.tactical_knee": "Tactical Kneepad",
+  "enchantment.redstone_enchants.tactical_knee.desc": "Sneaking upon landing negates fall damage.",
 
   "_enchantment.foot_armor": "[Boots] Type Enchantments",
   "enchantment.redstone_enchants.aura_speed": "Speed Aura",
@@ -422,33 +444,36 @@
   "enchantment.redstone_enchants.aura_burning.desc": "Ignites a 2-block radius while moving (grants Fire Resistance)",
   "enchantment.redstone_enchants.aura_infested": "Infested Aura",
   "enchantment.redstone_enchants.aura_infested.desc": "Creates an Infested effect in a 4-block radius while moving",
-
   "enchantment.redstone_enchants.walker_magma": "Magma Walker",
   "enchantment.redstone_enchants.walker_magma.desc": "Turns lava into basalt while walking",
   "enchantment.redstone_enchants.walker_grass": "Turf Walker",
   "enchantment.redstone_enchants.walker_grass.desc": "Turns dirt into grass blocks while walking",
   "enchantment.redstone_enchants.walker_snowmelt": "Snowmelt Walker",
   "enchantment.redstone_enchants.walker_snowmelt.desc": "Melts snow while walking",
-
   "enchantment.redstone_enchants.gallop": "Gallop",
   "enchantment.redstone_enchants.gallop.desc": "Increases sprint speed",
   "enchantment.redstone_enchants.gallop_sand": "Sand Sprint",
   "enchantment.redstone_enchants.gallop_sand.desc": "Boosts speed on sand",
   "enchantment.redstone_enchants.gallop_end": "End Sprint",
   "enchantment.redstone_enchants.gallop_end.desc": "Grants Speed in the End",
-
   "enchantment.redstone_enchants.crop_dance": "Crop Dance",
   "enchantment.redstone_enchants.crop_dance.desc": "Accelerates crop growth when sneaking through farmland",
   "enchantment.redstone_enchants.jump_amplifier": "Jump Boost",
   "enchantment.redstone_enchants.jump_amplifier.desc": "Increases jump height",
   "enchantment.redstone_enchants.pegasus": "Pegasus",
   "enchantment.redstone_enchants.pegasus.desc": "Grants Slow Falling while riding",
+  "enchantment.redstone_enchants.wave_walker": "Wave Walker",
+  "enchantment.redstone_enchants.wave_walker.desc": "Allows walking on water. Sneaking makes you sink underwater.",
 
   "_enchantment.horse_armor": "[Horse Armor] Type Enchantments",
   "enchantment.redstone_enchants.frost_hooves": "Frost Hooves",
   "enchantment.redstone_enchants.frost_hooves.desc": "Freezes nearby water into packed ice while moving",
   "enchantment.redstone_enchants.my_little_pony": "My Little Pony",
   "enchantment.redstone_enchants.my_little_pony.desc": "Shrinks horse size and increases jump power",
+  "enchantment.redstone_enchants.pasture": "Pasture",
+  "enchantment.redstone_enchants.pasture.desc": "Horses naturally regenerate health when on grass blocks.",
+  "enchantment.redstone_enchants.spirit": "Spirit",
+  "enchantment.redstone_enchants.spirit.desc": "Increases horse speed during the night.",
 
   "_enchantment.animal_armor": "[Horse+Wolf Armor] Type Enchantments",
   "enchantment.redstone_enchants.enhanced_armor": "Enhanced Armor",
@@ -459,6 +484,12 @@
   "_enchantment.wolf_armor": "[Wolf Armor] Type Enchantments",
   "enchantment.redstone_enchants.wolf_spirit_shield": "Wolf Spirit Shield",
   "enchantment.redstone_enchants.wolf_spirit_shield.desc": "Boosts all wolf armor stats",
+  "enchantment.redstone_enchants.tracker": "Tracker",
+  "enchantment.redstone_enchants.tracker.desc": "When a wolf attacks, it marks the enemy it attacked.",
+  "enchantment.redstone_enchants.pack_leader": "Pack Leader",
+  "enchantment.redstone_enchants.pack_leader.desc": "Increases your wolf's damage for each nearby wolf.",
+  "enchantment.redstone_enchants.carrion_eater": "Carrion Eater",
+  "enchantment.redstone_enchants.carrion_eater.desc": "Wolves restore a percentage of their maximum health after killing a mob.",
 
 
   "_enchantment.tooltip":"工具提示",
