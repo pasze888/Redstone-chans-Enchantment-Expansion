@@ -20,7 +20,7 @@
     "mainhand",
     "offhand"
   ],
-  "exclusive_set": "#redstone_enchants:exclusive_set/boots_speed",
+  "exclusive_set": "#redstone_enchants:exclusive_set/boots_gallop",
   "effects": {
     "minecraft:hit_block": [
       {

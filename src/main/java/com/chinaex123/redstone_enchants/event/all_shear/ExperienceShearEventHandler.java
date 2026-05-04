@@ -7,6 +7,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
@@ -72,5 +74,19 @@ public class ExperienceShearEventHandler {
 
         sheep.gameEvent(GameEvent.SHEAR, player);
         stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(event.getHand()));
+
+        Holder.Reference<Enchantment> harvestEchoEnchant = level
+                .registryAccess()
+                .registryOrThrow(Registries.ENCHANTMENT)
+                .getHolder(ResourceLocation.fromNamespaceAndPath(RedstoneEnchants.MOD_ID, "harvest_echo"))
+                .orElse(null);
+
+        if (harvestEchoEnchant != null) {
+            @SuppressWarnings("deprecation")
+            int harvestLevel = stack.getEnchantments().getLevel(harvestEchoEnchant);
+            if (harvestLevel > 0) {
+                player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 60, 0, false, true));
+            }
+        }
     }
 }

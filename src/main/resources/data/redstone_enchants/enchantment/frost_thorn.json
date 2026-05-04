@@ -3,8 +3,8 @@
     "color": "#FF55FF",
     "translate": "enchantment.redstone_enchants.frost_thorn"
   },
-  "supported_items": "#redstone_enchants:armors",
-  "primary_items": "#redstone_enchants:armors",
+  "supported_items": "#redstone_enchants:armors_chest",
+  "primary_items": "#redstone_enchants:armors_chest",
   "weight": 3,
   "max_level": 5,
   "min_cost": {

@@ -5,7 +5,9 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Unit;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -51,19 +53,19 @@ public class SturdyEventHandler {
             var source = event.getSource();
 
             // 免疫爆炸
-            if (source.is(net.minecraft.tags.DamageTypeTags.IS_EXPLOSION)) {
+            if (source.is(DamageTypeTags.IS_EXPLOSION)) {
                 event.setNewDamage(0);
                 return;
             }
 
             // 免疫闪电
-            if (source.is(net.minecraft.world.damagesource.DamageTypes.LIGHTNING_BOLT)) {
+            if (source.is(DamageTypes.LIGHTNING_BOLT)) {
                 event.setNewDamage(0);
                 return;
             }
 
             // 免疫岩浆/火焰
-            if (source.is(net.minecraft.tags.DamageTypeTags.IS_FIRE)) {
+            if (source.is(DamageTypeTags.IS_FIRE)) {
                 event.setNewDamage(0);
                 return;
             }

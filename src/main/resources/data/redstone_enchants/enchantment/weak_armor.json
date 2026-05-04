@@ -19,7 +19,7 @@
   "slots": [
     "armor"
   ],
-  "exclusive_set": "#minecraft:exclusive_set/armors",
+  "exclusive_set": "#redstone_enchants:exclusive_set/armors",
   "effects": {
     "minecraft:attributes": [
       {

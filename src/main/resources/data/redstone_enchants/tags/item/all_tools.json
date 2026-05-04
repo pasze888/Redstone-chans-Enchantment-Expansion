@@ -9,6 +9,6 @@
     "minecraft:trident",
     "#c:tools/bow",
     "#c:tools/mace",
-    "#all_special_tools"
+    "#redstone_enchants:all_special_tools"
   ]
 }

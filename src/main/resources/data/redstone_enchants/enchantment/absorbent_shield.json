@@ -17,7 +17,6 @@
   },
   "anvil_cost": 8,
   "slots": [
-    "mainhand",
     "offhand"
   ],
   "exclusive_set": "#redstone_enchants:exclusive_set/shield",

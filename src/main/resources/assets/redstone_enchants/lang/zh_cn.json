@@ -31,7 +31,7 @@
   "enchantment.redstone_enchants.curse_of_double_edge":"双刃剑诅咒",
   "enchantment.redstone_enchants.curse_of_double_edge.desc": "使用时有几率伤害自己",
   "enchantment.redstone_enchants.curse_of_water_source":"水源诅咒",
-  "enchantment.redstone_enchants.curse_of_water_source.desc": "接触水会受到伤害或负面效果",
+  "enchantment.redstone_enchants.curse_of_water_source.desc": "接触水会给予中毒效果",
   "enchantment.redstone_enchants.curse_of_vulnerability":"脆弱诅咒",
   "enchantment.redstone_enchants.curse_of_vulnerability.desc": "减少护甲同时增加移动速度",
 
@@ -340,8 +340,6 @@
   "enchantment.redstone_enchants.snowball.desc": "佩戴时受伤会概率向攻击者扔雪球",
   "enchantment.redstone_enchants.fortitude": "坚定",
   "enchantment.redstone_enchants.fortitude.desc": "提升护甲值",
-  "enchantment.redstone_enchants.frost_thorn": "冰霜荆棘",
-  "enchantment.redstone_enchants.frost_thorn.desc": "被攻击时使攻击者获得缓慢/虚弱效果",
   "enchantment.redstone_enchants.revive_ward": "重生护盾",
   "enchantment.redstone_enchants.revive_ward.desc": "受到致命伤害时阻止死亡，并给予生命恢复/抗性提升和抗火，触发后该附魔消失1个等级",
   "enchantment.redstone_enchants.daynight_cycle": "昼夜流转",
@@ -400,6 +398,8 @@
   "enchantment.redstone_enchants.magic_resist.desc": "增强[铁魔法]的法术抗性",
   "enchantment.redstone_enchants.berserk": "狂战士",
   "enchantment.redstone_enchants.berserk.desc": "根据损失的生命值百分比增加近战伤害",
+  "enchantment.redstone_enchants.frost_thorn": "冰霜荆棘",
+  "enchantment.redstone_enchants.frost_thorn.desc": "被攻击时使攻击者获得缓慢/虚弱效果",
 
   "_enchantment.leg_armor":"[护腿]类型附魔",
   "enchantment.redstone_enchants.fast_swim": "快速游泳",

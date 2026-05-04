@@ -5,6 +5,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.Sheep;
@@ -66,7 +67,7 @@ public class EndlessWoolEventHandler {
                 sheep.setSheared(false);
 
                 // 发送数据包让客户端显示粒子
-                ((net.minecraft.server.level.ServerLevel) level).sendParticles(
+                ((ServerLevel) level).sendParticles(
                         ParticleTypes.HAPPY_VILLAGER,
                         sheep.getX(), sheep.getY() + 1, sheep.getZ(),
                         10, 0.5, 0.5, 0.5, 0.1

@@ -18,35 +18,5 @@
   "anvil_cost": 6,
   "slots": [
     "armor"
-  ],
-  "effects": {
-    "minecraft:tick": [
-      {
-        "effect": {
-          "type": "minecraft:damage_entity",
-          "damage_type": "redstone_enchants:water_block",
-          "min_damage": 1,
-          "max_damage": 1
-        },
-        "requirements": {
-          "condition": "minecraft:location_check",
-          "predicate": {
-            "fluid": {
-              "fluids": "#minecraft:water"
-            }
-          }
-        }
-      },
-      {
-        "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:hydrophobia_rain"
-        },
-        "requirements": {
-          "condition": "minecraft:weather_check",
-          "raining": true
-        }
-      }
-    ]
-  }
+  ]
 }

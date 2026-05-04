@@ -92,7 +92,6 @@ public class ShepherdEventHandler {
         event.setCancellationResult(InteractionResult.SUCCESS);
 
         // 生成基础蜜脾掉落（3个）
-        // 生成基础蜜脾掉落（3个）
         ItemStack honeycomb = new ItemStack(Items.HONEYCOMB, 3);
         ItemEntity itemEntity = new ItemEntity(level, event.getPos().getX() + 0.5, event.getPos().getY() + 0.5, event.getPos().getZ() + 0.5, honeycomb.copy());
         level.addFreshEntity(itemEntity);
@@ -113,7 +112,6 @@ public class ShepherdEventHandler {
         // 消耗耐久
         stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(event.getHand()));
     }
-
     private static void handleSheepShearing(Player player, Level level, ItemStack stack, Sheep sheep, int enchantLevel, PlayerInteractEvent.EntityInteract event) {
         if (!sheep.isShearable(player, stack, level, sheep.blockPosition())) return;
 
@@ -128,8 +126,7 @@ public class ShepherdEventHandler {
         for (ItemStack drop : drops) {
             sheep.spawnShearedDrop(level, sheep.blockPosition(), drop);
             if (probability >= 1.0 || random.nextDouble() < probability) {
-                int extraCount = enchantLevel;
-                ItemStack extraDrop = drop.copyWithCount(drop.getCount() + extraCount);
+                ItemStack extraDrop = drop.copy();
                 sheep.spawnShearedDrop(level, sheep.blockPosition(), extraDrop);
             }
         }

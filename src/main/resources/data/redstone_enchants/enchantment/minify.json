@@ -19,7 +19,7 @@
   "slots": [
     "head"
   ],
-  "exclusive_set": "#redstone_enchants:exclusive_set/armor_head",
+  "exclusive_set": "#redstone_enchants:exclusive_set/armors_head",
   "effects": {
     "minecraft:attributes": [
       {

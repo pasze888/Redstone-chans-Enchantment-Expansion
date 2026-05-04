@@ -19,21 +19,5 @@
   "slots": [
     "any"
   ],
-  "exclusive_set": "#redstone_enchants:exclusive_set/unbreaking",
-  "effects": {
-    "minecraft:post_attack": [
-      {
-        "enchanted": "victim",
-        "affected": "victim",
-        "effect": {
-          "type": "minecraft:damage_item",
-          "amount": {
-            "type": "minecraft:linear",
-            "base": -1.0,
-            "per_level_above_first": -0.5
-          }
-        }
-      }
-    ]
-  }
+  "exclusive_set": "#redstone_enchants:exclusive_set/unbreaking"
 }

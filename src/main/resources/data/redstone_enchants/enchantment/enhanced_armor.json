@@ -22,84 +22,24 @@
   "effects": {
     "minecraft:attributes": [
       {
-        "id": "redstone_enchants:enchantment.enhanced_armor_1",
-        "attribute": "minecraft:generic.scale",
-        "operation": "add_multiplied_base",
+        "id": "redstone_enchants:enhanced_armor_bonus",
+        "attribute": "minecraft:generic.armor",
         "amount": {
           "type": "minecraft:linear",
-          "base": 0.4,
-          "per_level_above_first": 0.2
-        }
+          "base": 2,
+          "per_level_above_first": 2
+        },
+        "operation": "add_value"
       },
       {
-        "id": "redstone_enchants:enchantment.enhanced_armor_2",
-        "attribute": "minecraft:generic.step_height",
-        "operation": "add_multiplied_base",
-        "amount": {
-          "type": "minecraft:linear",
-          "base": 1,
-          "per_level_above_first": 0.5
-        }
-      },
-      {
-        "id": "redstone_enchants:enchantment.enhanced_armor_3",
-        "attribute": "minecraft:generic.max_health",
-        "operation": "add_multiplied_base",
-        "amount": {
-          "type": "minecraft:linear",
-          "base": 0.5,
-          "per_level_above_first": 0.25
-        }
-      },
-      {
-        "id": "redstone_enchants:enchantment.enhanced_armor_4",
-        "attribute": "minecraft:generic.movement_speed",
-        "operation": "add_multiplied_base",
-        "amount": {
-          "type": "minecraft:linear",
-          "base": 0.2,
-          "per_level_above_first": 0.1
-        }
-      },
-      {
-        "id": "redstone_enchants:enchantment.enhanced_armor_5",
-        "attribute": "minecraft:generic.movement_efficiency",
-        "operation": "add_value",
-        "amount": {
-          "type": "minecraft:linear",
-          "base": 1,
-          "per_level_above_first": 0.5
-        }
-      },
-      {
-        "id": "redstone_enchants:enchantment.enhanced_armor_6",
-        "attribute": "minecraft:generic.water_movement_efficiency",
-        "operation": "add_value",
-        "amount": {
-          "type": "minecraft:linear",
-          "base": 0.4,
-          "per_level_above_first": 0.3
-        }
-      },
-      {
-        "id": "redstone_enchants:enchantment.enhanced_armor_7",
+        "id": "redstone_enchants:enhanced_armor_penalty",
         "attribute": "minecraft:generic.jump_strength",
-        "operation": "add_multiplied_base",
         "amount": {
           "type": "minecraft:linear",
-          "base": -0.2,
-          "per_level_above_first": -0.1
-        }
-      },
-      {
-        "id": "redstone_enchants:enchantment.enhanced_armor_8",
-        "attribute": "minecraft:generic.attack_damage",
-        "operation": "add_multiplied_base",
-        "amount": {
-          "type": "minecraft:linear",
-          "base": 0.75,
-          "per_level_above_first": 0.25
-        }
+          "base": -0.05,
+          "per_level_above_first": -0.05
+        },
+        "operation": "add_multiplied_base"
       }
     ]
   }

@@ -83,13 +83,36 @@ config="${mod_id}.mixins.json"
 [[dependencies.${mod_id}]]
     modId="minecraft"
     type="required"
-    # This version range declares a minimum of the current minecraft version up to but not including the next major version
     versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"
 
-# Features are specific properties of the game environment, that you may want to declare you require. This example declares
-# that your mod requires GL version 3.2 or higher. Other features will be added. They are side aware so declaring this won't
-# stop your mod loading on the server for example.
-#[features.${mod_id}]
-#openGLVersion="[3.2,)"
+# 血量护甲显示上限
+[[dependencies.${mod_id}]]
+    modId="overflowing_bars"
+    type="optional"
+    versionRange="[21.1,)"
+    ordering="NONE"
+    side="BOTH"
+# 附魔描述
+[[dependencies.${mod_id}]]
+    modId="enchantment_descriptions"
+    type="optional"
+    versionRange="[21.1,)"
+    ordering="NONE"
+    side="BOTH"
+# 属性修复
+[[dependencies.${mod_id}]]
+    modId="attributefix"
+    type="optional"
+    versionRange="[21.1,)"
+    ordering="NONE"
+    side="BOTH"
+# 移除铁砧昂贵
+[[dependencies.${mod_id}]]
+    modId="ante"
+    type="optional"
+    versionRange="[1.2.1,)"
+    ordering="NONE"
+    side="BOTH"
+
