@@ -86,6 +86,7 @@
     "redstone_enchants:adaptive",
     "redstone_enchants:revive_ward",
     "redstone_enchants:gambler",
+    "redstone_enchants:indestructible",
 
     {
       "id": "redstone_enchants:touch_bleeding",

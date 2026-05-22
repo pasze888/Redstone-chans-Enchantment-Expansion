@@ -182,6 +182,7 @@
     "redstone_enchants:daynight_cycle",
     "redstone_enchants:gambler",
     "redstone_enchants:master_gatherer",
+    "redstone_enchants:indestructible",
 
     {
       "id": "redstone_enchants:touch_bleeding",
