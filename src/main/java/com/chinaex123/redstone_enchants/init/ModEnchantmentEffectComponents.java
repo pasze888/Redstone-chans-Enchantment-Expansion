@@ -109,6 +109,9 @@ public final class ModEnchantmentEffectComponents {
     /** 灼烧（searing）：右键点燃的额外伤害 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> SEARING_DAMAGE =
             value("searing_damage");
+    /** 腐蚀诅咒（curse_of_rust）：水中/雨中每秒消耗的耐久（每级） */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> CURSE_OF_RUST_DURABILITY =
+            value("curse_of_rust_durability");
 
     /** 攻击附加掉落（模板）：在受害实体位置生成物品堆，供 swords 类附魔通过 post_attack 声明 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<TargetedConditionalEffect<EnchantmentEntityEffect>>>> POST_ATTACK_SUMMON =

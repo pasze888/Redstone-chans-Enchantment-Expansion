@@ -19,6 +19,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> BUTCHER = key("butcher");
     public static final ResourceKey<Enchantment> CALAMITY = key("calamity");
     public static final ResourceKey<Enchantment> CHAIN_HASTE = key("chain_haste");
+    public static final ResourceKey<Enchantment> CURSE_OF_RUST = key("curse_of_rust");
     public static final ResourceKey<Enchantment> DECAPITATION = key("decapitation");
     public static final ResourceKey<Enchantment> ECHOES_BATTLE = key("echoes_battle");
     public static final ResourceKey<Enchantment> EQUALIZER = key("equalizer");
