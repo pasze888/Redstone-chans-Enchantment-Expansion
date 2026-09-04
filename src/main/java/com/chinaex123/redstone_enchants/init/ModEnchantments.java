@@ -46,6 +46,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> SNIPE = key("snipe");
     public static final ResourceKey<Enchantment> STURDY = key("sturdy");
     public static final ResourceKey<Enchantment> TIMBER = key("timber");
+    public static final ResourceKey<Enchantment> VOLT = key("volt");
 
     public static ResourceKey<Enchantment> key(String path) {
         return ResourceKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource(path));

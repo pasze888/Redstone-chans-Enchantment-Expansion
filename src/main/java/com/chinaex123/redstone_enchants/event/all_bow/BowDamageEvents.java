@@ -28,6 +28,7 @@ public final class BowDamageEvents {
     public static void onLivingDamagePre(LivingDamageEvent.Pre event) {
         // 固定顺序：狙击 → 伏特（各段以 original 为基数直接 setNewDamage，与旧版一致地相互覆盖、不叠加）
         snipe(event);
+        volt(event);
     }
 
     // ---- 狙击 ----
@@ -63,6 +64,42 @@ public final class BowDamageEvents {
         int distanceBonus = (int) (distance / DISTANCE_STEP);
         float bonusPer10Blocks = EnchantmentUtil.itemValue(serverLevel, bow, ModEnchantmentEffectComponents.SNIPE_BONUS.get());
         float bonus = distanceBonus * bonusPer10Blocks;
+
+        event.setNewDamage(event.getOriginalDamage() * (1 + bonus));
+    }
+
+    // ---- 伏特 ----
+
+    private static void volt(LivingDamageEvent.Pre event) {
+        if (!(event.getSource().getDirectEntity() instanceof AbstractArrow arrow)) {
+            return;
+        }
+        Entity shooter = arrow.getOwner();
+        if (!(shooter instanceof Player player)) {
+            return;
+        }
+        if (!(player.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+
+        // 检查是否是雷雨天
+        if (!player.level().isThundering()) {
+            return;
+        }
+
+        ItemStack bow = player.getMainHandItem();
+        if (bow.isEmpty()) {
+            bow = player.getOffhandItem();
+        }
+        if (bow.isEmpty()) {
+            return;
+        }
+        if (!EnchantmentHelper.has(bow, ModEnchantmentEffectComponents.VOLT_BONUS.get())) {
+            return;
+        }
+
+        // 每级增加 25% 伤害
+        float bonus = EnchantmentUtil.itemValue(serverLevel, bow, ModEnchantmentEffectComponents.VOLT_BONUS.get());
 
         event.setNewDamage(event.getOriginalDamage() * (1 + bonus));
     }
