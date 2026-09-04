@@ -102,10 +102,11 @@ public final class ArmorHeadTickEvents {
             return;
         }
 
-        // 获取范围内的敌对生物数量
+        // 获取范围内的敌对生物数量（修复：已死亡实体不再计入，旧版无过滤）
         List<Monster> nearbyEnemies = player.level().getEntitiesOfClass(
                 Monster.class,
-                player.getBoundingBox().inflate(AAO_DETECTION_RANGE)
+                player.getBoundingBox().inflate(AAO_DETECTION_RANGE),
+                net.minecraft.world.entity.LivingEntity::isAlive
         );
         int enemyCount = nearbyEnemies.size();
 
