@@ -1,35 +1,20 @@
 {
+  "anvil_cost": 8,
   "description": {
     "color": "#FF55FF",
     "translate": "enchantment.redstone_enchants.fire_protection"
   },
-  "supported_items": "#redstone_enchants:armors",
-  "primary_items": "#redstone_enchants:armors",
-  "weight": 3,
-  "max_level": 4,
-  "min_cost": {
-    "base": 12,
-    "per_level_above_first": 6
-  },
-  "max_cost": {
-    "base": 24,
-    "per_level_above_first": 12
-  },
-  "anvil_cost": 8,
-  "slots": [
-    "armor"
-  ],
   "effects": {
     "minecraft:attributes": [
       {
-        "id": "minecraft:enchantment.fire_protection_1",
-        "attribute": "minecraft:generic.burning_time",
-        "operation": "add_multiplied_base",
         "amount": {
           "type": "minecraft:linear",
           "base": -0.25,
           "per_level_above_first": -0.25
-        }
+        },
+        "attribute": "minecraft:generic.burning_time",
+        "id": "minecraft:enchantment.fire_protection_1",
+        "operation": "add_multiplied_base"
       }
     ],
     "minecraft:damage_protection": [
@@ -64,5 +49,20 @@
         }
       }
     ]
-  }
+  },
+  "max_cost": {
+    "base": 24,
+    "per_level_above_first": 12
+  },
+  "max_level": 4,
+  "min_cost": {
+    "base": 12,
+    "per_level_above_first": 6
+  },
+  "primary_items": "#redstone_enchants:armors",
+  "slots": [
+    "armor"
+  ],
+  "supported_items": "#redstone_enchants:armors",
+  "weight": 3
 }

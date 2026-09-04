@@ -55,20 +55,28 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> CONDUCTIVE_LINE = key("conductive_line");
     public static final ResourceKey<Enchantment> CROP_DANCE = key("crop_dance");
     public static final ResourceKey<Enchantment> CURSE_OF_RUST = key("curse_of_rust");
+    public static final ResourceKey<Enchantment> CURSE_OF_BLAST = key("curse_of_blast");
+    public static final ResourceKey<Enchantment> CURSE_OF_STILLNESS = key("curse_of_stillness");
+    public static final ResourceKey<Enchantment> CURSE_OF_VULNERABILITY = key("curse_of_vulnerability");
     public static final ResourceKey<Enchantment> CURSE_OF_WATER_SOURCE = key("curse_of_water_source");
     public static final ResourceKey<Enchantment> DAYNIGHT_CYCLE = key("daynight_cycle");
     public static final ResourceKey<Enchantment> DECAPITATION = key("decapitation");
     public static final ResourceKey<Enchantment> DESPERATE_COUNTER = key("desperate_counter");
     public static final ResourceKey<Enchantment> DEVOURING = key("devouring");
+    public static final ResourceKey<Enchantment> DANGEROUS_EDGE = key("dangerous_edge");
     public static final ResourceKey<Enchantment> DYNAMO = key("dynamo");
     public static final ResourceKey<Enchantment> ECHOES_BATTLE = key("echoes_battle");
     public static final ResourceKey<Enchantment> ENDLESS_WOOL = key("endless_wool");
+    public static final ResourceKey<Enchantment> EXOSKELETON = key("exoskeleton");
     public static final ResourceKey<Enchantment> EQUALIZER = key("equalizer");
     public static final ResourceKey<Enchantment> EXCAVATOR = key("excavator");
     public static final ResourceKey<Enchantment> EXECUTION = key("execution");
     public static final ResourceKey<Enchantment> EXPERIENCE_SHEAR = key("experience_shear");
     public static final ResourceKey<Enchantment> FATAL_ARROW = key("fatal_arrow");
     public static final ResourceKey<Enchantment> FIRE_ARROWS = key("fire_arrows");
+    public static final ResourceKey<Enchantment> FIRE_PROTECTION = key("fire_protection");
+    public static final ResourceKey<Enchantment> FORTITUDE = key("fortitude");
+    public static final ResourceKey<Enchantment> FURY = key("fury");
     public static final ResourceKey<Enchantment> FOCUS = key("focus");
     public static final ResourceKey<Enchantment> FLAME_WALKER = key("flame_walker");
     public static final ResourceKey<Enchantment> GAMBLER = key("gambler");
@@ -90,6 +98,10 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> PEGASUS = key("pegasus");
     public static final ResourceKey<Enchantment> PRESERVATION = key("preservation");
     public static final ResourceKey<Enchantment> POTENTIAL_CONVERSION = key("potential_conversion");
+    public static final ResourceKey<Enchantment> PROTECTION_DAY = key("protection_day");
+    public static final ResourceKey<Enchantment> PROTECTION_END = key("protection_end");
+    public static final ResourceKey<Enchantment> PROTECTION_NETHER = key("protection_nether");
+    public static final ResourceKey<Enchantment> PROTECTION_NIGHT = key("protection_night");
     public static final ResourceKey<Enchantment> RAIN_DRIPSTONE = key("rain_dripstone");
     public static final ResourceKey<Enchantment> RAIN_FORGE = key("rain_forge");
     public static final ResourceKey<Enchantment> RAPID = key("rapid");
@@ -118,6 +130,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> SHEPHERD = key("shepherd");
     public static final ResourceKey<Enchantment> SWIFT_SHADOWCUTTER = key("swift_shadowcutter");
     public static final ResourceKey<Enchantment> SNIPE = key("snipe");
+    public static final ResourceKey<Enchantment> SNOWBALL = key("snowball");
     public static final ResourceKey<Enchantment> SPIRIT = key("spirit");
     public static final ResourceKey<Enchantment> STURDY = key("sturdy");
     public static final ResourceKey<Enchantment> TACTICAL_KNEE = key("tactical_knee");
@@ -142,6 +155,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> VOLT = key("volt");
     public static final ResourceKey<Enchantment> WATER_BOTTLE_PROJECTION = key("water_bottle_projection");
     public static final ResourceKey<Enchantment> WAVE_WALKER = key("wave_walker");
+    public static final ResourceKey<Enchantment> WEAK_ARMOR = key("weak_armor");
     public static final ResourceKey<Enchantment> WEIGHTED = key("weighted");
     public static final ResourceKey<Enchantment> XP_REAPER_MOBS = key("xp_reaper_mobs");
 
