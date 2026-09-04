@@ -12,6 +12,7 @@ import net.neoforged.bus.api.IEventBus;
 public final class ModEnchantments {
     public static final ResourceKey<Enchantment> ADAPTIVE = key("adaptive");
     public static final ResourceKey<Enchantment> ADVANCED_UNBREAKING = key("advanced_unbreaking");
+    public static final ResourceKey<Enchantment> AGAINST_ALL_ODDS = key("against_all_odds");
     public static final ResourceKey<Enchantment> ANGLER = key("angler");
     public static final ResourceKey<Enchantment> AMBUSH = key("ambush");
     public static final ResourceKey<Enchantment> AUTO_SMELT = key("auto_smelt");

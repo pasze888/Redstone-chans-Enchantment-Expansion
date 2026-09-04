@@ -82,6 +82,13 @@ public final class ModEnchantmentProvider {
                 0xFFAA00)
                 .withEffect(ModEnchantmentEffectComponents.ADAPTIVE.get()));
 
+        register(context, ModEnchantments.AGAINST_ALL_ODDS, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 2, 5,
+                        Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.HEAD),
+                0xFFAA00)
+                .withEffect(ModEnchantmentEffectComponents.AGAINST_ALL_ODDS_BONUS_PER_ENEMY.get(),
+                        new SetValue(LevelBasedValue.perLevel(0.02F))));
+
         register(context, ModEnchantments.AMBUSH, colored(
                 Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 3, 5,
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),

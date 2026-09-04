@@ -2,9 +2,16 @@ package com.chinaex123.redstone_enchants.event.armor_head;
 
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
 import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
+import com.chinaex123.redstone_enchants.init.ModEnchantments;
+import com.chinaex123.redstone_enchants.util.EnchantmentUtil;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -12,18 +19,26 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
+import java.util.List;
+
 /**
  * 头盔（armors_head）附魔在实体 tick 事件上的统一分发器。
  * <p>行为参数由附魔 JSON 组件声明，这里按固定顺序驱动各效果。
- * 旧实现是每个附魔一个独立订阅者；分发器固定执行顺序：矿工 → （后续）以寡敌众/反伪装/绝境逆袭。
+ * 旧实现是每个附魔一个独立订阅者；分发器固定执行顺序：矿工 → 以寡敌众 → （后续）反伪装/绝境逆袭。
  */
 @EventBusSubscriber(modid = RedstoneEnchants.MOD_ID)
 public final class ArmorHeadTickEvents {
+    private static final ResourceLocation AAO_DAMAGE_MODIFIER_ID =
+            ResourceLocation.fromNamespaceAndPath(RedstoneEnchants.MOD_ID, "against_all_odds_damage");
+    private static final ResourceLocation AAO_ARMOR_MODIFIER_ID =
+            ResourceLocation.fromNamespaceAndPath(RedstoneEnchants.MOD_ID, "against_all_odds_armor");
+    private static final double AAO_DETECTION_RANGE = 8.0;
 
     @SubscribeEvent
     public static void onEntityTick(EntityTickEvent.Post event) {
         // 固定顺序：矿工 → 以寡敌众 → 反伪装 → 绝境逆袭（旧版为独立订阅者，顺序未定义）
         adaptive(event);
+        againstAllOdds(event);
     }
 
     // ---- 矿工 ----
@@ -52,6 +67,68 @@ public final class ArmorHeadTickEvents {
             // 不在 Y0 以下时，移除夜视效果
             if (player.hasEffect(MobEffects.NIGHT_VISION)) {
                 player.removeEffect(MobEffects.NIGHT_VISION);
+            }
+        }
+    }
+
+    // ---- 以寡敌众 ----
+
+    private static void againstAllOdds(EntityTickEvent.Post event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+        if (!(player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel)) {
+            // 属性修饰符以服务端为准，客户端由属性同步获得
+            return;
+        }
+
+        // 检查头盔是否有以寡敌众附魔
+        ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
+        if (helmet.isEmpty()) {
+            return;
+        }
+        if (!EnchantmentHelper.has(helmet, ModEnchantmentEffectComponents.AGAINST_ALL_ODDS_BONUS_PER_ENEMY.get())) {
+            return;
+        }
+        float bonusPerEnemy = EnchantmentUtil.itemValue(serverLevel, helmet,
+                ModEnchantmentEffectComponents.AGAINST_ALL_ODDS_BONUS_PER_ENEMY.get());
+        if (bonusPerEnemy <= 0) {
+            return;
+        }
+
+        // 获取范围内的敌对生物数量
+        List<Monster> nearbyEnemies = player.level().getEntitiesOfClass(
+                Monster.class,
+                player.getBoundingBox().inflate(AAO_DETECTION_RANGE)
+        );
+        int enemyCount = nearbyEnemies.size();
+
+        // 获取属性
+        AttributeInstance attackDamageAttribute = player.getAttribute(Attributes.ATTACK_DAMAGE);
+        AttributeInstance armorAttribute = player.getAttribute(Attributes.ARMOR);
+
+        if (attackDamageAttribute != null && armorAttribute != null) {
+            // 移除旧的修饰符
+            attackDamageAttribute.removeModifier(AAO_DAMAGE_MODIFIER_ID);
+            armorAttribute.removeModifier(AAO_ARMOR_MODIFIER_ID);
+
+            if (enemyCount > 0) {
+                // 每多一个敌人，伤害/护甲 +2%（每级）
+                double bonus = enemyCount * bonusPerEnemy;
+
+                AttributeModifier damageModifier = new AttributeModifier(
+                        AAO_DAMAGE_MODIFIER_ID,
+                        bonus,
+                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                );
+                attackDamageAttribute.addPermanentModifier(damageModifier);
+
+                AttributeModifier armorModifier = new AttributeModifier(
+                        AAO_ARMOR_MODIFIER_ID,
+                        bonus,
+                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                );
+                armorAttribute.addPermanentModifier(armorModifier);
             }
         }
     }
