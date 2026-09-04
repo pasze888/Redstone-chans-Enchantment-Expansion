@@ -91,6 +91,14 @@ public final class ModEnchantmentProvider {
                 0xFFAA00)
                 .withEffect(ModEnchantmentEffectComponents.DECAPITATION_CHANCE.get(), new AddValue(LevelBasedValue.perLevel(0.2F))));
 
+        register(context, ModEnchantments.SACRIFICE, colored(
+                Enchantment.definition(items.getOrThrow(ENCHANTABLES), items.getOrThrow(ENCHANTABLES), 2, 5,
+                        Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.ANY),
+                0xFFAA00)
+                .exclusiveWith(enchantments.getOrThrow(UNBREAKING_EXCLUSIVE))
+                .withEffect(ModEnchantmentEffectComponents.SACRIFICE_REPAIR.get(),
+                        new SetValue(LevelBasedValue.perLevel(1.0F, 0.5F))));
+
         register(context, ModEnchantments.BOONS, colored(
                 Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 2, 5,
                         Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.MAINHAND),
