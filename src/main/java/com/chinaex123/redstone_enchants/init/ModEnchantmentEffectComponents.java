@@ -151,6 +151,9 @@ public final class ModEnchantmentEffectComponents {
     /** 防弹（bulletproof）：免疫潜影子弹伤害的概率（含 1 级基础） */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> BULLETPROOF_IMMUNITY_CHANCE =
             value("bulletproof_immunity_chance");
+    /** 尸体回收（carrion_eater）：狼击杀后按最大生命比例回复（每级） */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> CARRION_EATER_HEAL =
+            value("carrion_eater_heal");
     /** 海风（sea_breeze）：三叉戟命中后造成风压爆炸 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> SEA_BREEZE =
             unit("sea_breeze");

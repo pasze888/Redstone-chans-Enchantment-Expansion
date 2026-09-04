@@ -53,6 +53,7 @@ public final class ModEnchantmentProvider {
     private static final TagKey<Item> ARMORS_FOOT = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("armors_foot"));
     private static final TagKey<Item> ARMORS_CHEST = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("armors_chest"));
     private static final TagKey<Item> ARMORS_LEG = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("armors_leg"));
+    private static final TagKey<Item> WOLF_ARMOR = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("wolf_armor"));
     private static final TagKey<Enchantment> MACE_EXCLUSIVE = TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/mace"));
     private static final TagKey<Enchantment> NO_SEA_BREEZE_EXCLUSIVE = TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/no_sea_breeze"));
     private static final TagKey<Item> ENCHANTABLES = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "enchantables"));
@@ -348,6 +349,13 @@ public final class ModEnchantmentProvider {
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK,
                         EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
                         new RandomHarmfulMobEffect(LevelBasedValue.perLevel(0.05F))));
+
+        register(context, ModEnchantments.CARRION_EATER, colored(
+                Enchantment.definition(items.getOrThrow(WOLF_ARMOR), items.getOrThrow(WOLF_ARMOR), 3, 5,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.BODY),
+                0xFF55FF)
+                .withEffect(ModEnchantmentEffectComponents.CARRION_EATER_HEAL.get(),
+                        new SetValue(LevelBasedValue.perLevel(0.25F))));
 
         register(context, ModEnchantments.EQUALIZER, colored(
                 Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 3, 5,
