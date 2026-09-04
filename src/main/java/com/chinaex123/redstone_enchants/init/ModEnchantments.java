@@ -10,6 +10,7 @@ import net.neoforged.bus.api.IEventBus;
  * 模组附魔的 ResourceKey 常量表。附魔本体是数据包条目，由 {@code data/ModEnchantmentProvider} 生成。
  */
 public final class ModEnchantments {
+    public static final ResourceKey<Enchantment> ACCURACY_SHOT = key("accuracy_shot");
     public static final ResourceKey<Enchantment> ADAPTIVE = key("adaptive");
     public static final ResourceKey<Enchantment> ADVANCED_UNBREAKING = key("advanced_unbreaking");
     public static final ResourceKey<Enchantment> AGAINST_ALL_ODDS = key("against_all_odds");
@@ -34,11 +35,15 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> BERSERK = key("berserk");
     public static final ResourceKey<Enchantment> BOONS = key("boons");
     public static final ResourceKey<Enchantment> BOLTBRINGER = key("boltbringer");
+    public static final ResourceKey<Enchantment> BLAST_ARROWS = key("blast_arrows");
+    public static final ResourceKey<Enchantment> BOMB_ARROWS = key("bomb_arrows");
+    public static final ResourceKey<Enchantment> BULLET_TIME = key("bullet_time");
     public static final ResourceKey<Enchantment> BULLETPROOF = key("bulletproof");
     public static final ResourceKey<Enchantment> BUTCHER = key("butcher");
     public static final ResourceKey<Enchantment> CALAMITY = key("calamity");
     public static final ResourceKey<Enchantment> CARRION_EATER = key("carrion_eater");
     public static final ResourceKey<Enchantment> CHAIN_HASTE = key("chain_haste");
+    public static final ResourceKey<Enchantment> CHAIN_REACTION = key("chain_reaction");
     public static final ResourceKey<Enchantment> CONDUCTIVE_LINE = key("conductive_line");
     public static final ResourceKey<Enchantment> CROP_DANCE = key("crop_dance");
     public static final ResourceKey<Enchantment> CURSE_OF_RUST = key("curse_of_rust");
@@ -52,12 +57,17 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> EXCAVATOR = key("excavator");
     public static final ResourceKey<Enchantment> EXECUTION = key("execution");
     public static final ResourceKey<Enchantment> EXPERIENCE_SHEAR = key("experience_shear");
+    public static final ResourceKey<Enchantment> FATAL_ARROW = key("fatal_arrow");
+    public static final ResourceKey<Enchantment> FIRE_ARROWS = key("fire_arrows");
+    public static final ResourceKey<Enchantment> FOCUS = key("focus");
     public static final ResourceKey<Enchantment> FLAME_WALKER = key("flame_walker");
     public static final ResourceKey<Enchantment> GAMBLER = key("gambler");
     public static final ResourceKey<Enchantment> GEOLOGY = key("geology");
+    public static final ResourceKey<Enchantment> GLASS_BREAKER = key("glass_breaker");
     public static final ResourceKey<Enchantment> GOLDFINGER = key("goldfinger");
     public static final ResourceKey<Enchantment> HARVEST_ECHO = key("harvest_echo");
     public static final ResourceKey<Enchantment> HASTE = key("haste");
+    public static final ResourceKey<Enchantment> ICE_ARROWS = key("ice_arrows");
     public static final ResourceKey<Enchantment> INDESTRUCTIBLE = key("indestructible");
     public static final ResourceKey<Enchantment> INVISIBILITY_CLOAK = key("invisibility_cloak");
     public static final ResourceKey<Enchantment> LIFE_STEAL = key("life_steal");
@@ -70,10 +80,16 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> PEGASUS = key("pegasus");
     public static final ResourceKey<Enchantment> PRESERVATION = key("preservation");
     public static final ResourceKey<Enchantment> POTENTIAL_CONVERSION = key("potential_conversion");
+    public static final ResourceKey<Enchantment> RAIN_DRIPSTONE = key("rain_dripstone");
+    public static final ResourceKey<Enchantment> RAIN_FORGE = key("rain_forge");
+    public static final ResourceKey<Enchantment> RAPID = key("rapid");
+    public static final ResourceKey<Enchantment> RICOCHET = key("ricochet");
     public static final ResourceKey<Enchantment> REVIVE_WARD = key("revive_ward");
     public static final ResourceKey<Enchantment> SACRIFICE = key("sacrifice");
+    public static final ResourceKey<Enchantment> SCATTER = key("scatter");
     public static final ResourceKey<Enchantment> SEA_BREEZE = key("sea_breeze");
     public static final ResourceKey<Enchantment> SEARING = key("searing");
+    public static final ResourceKey<Enchantment> SHOTGUN = key("shotgun");
     public static final ResourceKey<Enchantment> SPLASH_BLINDNESS = key("splash_blindness");
     public static final ResourceKey<Enchantment> SPLASH_DELAYED_EXPLOSION = key("splash_delayed_explosion");
     public static final ResourceKey<Enchantment> SPLASH_GLOWING = key("splash_glowing");

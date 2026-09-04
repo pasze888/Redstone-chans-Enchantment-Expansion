@@ -25,11 +25,16 @@ public final class ModDataGenerator {
         DataGenerator generator = event.getGenerator();
         PackOutput output = generator.getPackOutput();
 
-        // splash_delayed_explosion 依赖 ars_nouveau 的状态效果（ars_nouveau:blasting），带 mod_loaded 条件
+        // splash_delayed_explosion 依赖 ars_nouveau 的状态效果（ars_nouveau:blasting）；
+        // rapid 依赖 apothic_attributes 的属性（apothic_attributes:draw_speed）——均带 mod_loaded 条件
         generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(
                 output, event.getLookupProvider(), ModEnchantmentProvider.DATA_BUILDER,
-                conditions -> conditions.accept(ModEnchantments.SPLASH_DELAYED_EXPLOSION,
-                        new ModLoadedCondition("ars_nouveau")),
+                conditions -> {
+                    conditions.accept(ModEnchantments.SPLASH_DELAYED_EXPLOSION,
+                            new ModLoadedCondition("ars_nouveau"));
+                    conditions.accept(ModEnchantments.RAPID,
+                            new ModLoadedCondition("apothic_attributes"));
+                },
                 Set.of(RedstoneEnchants.MOD_ID)));
     }
 

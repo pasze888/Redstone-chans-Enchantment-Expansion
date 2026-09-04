@@ -8,20 +8,31 @@ import com.chinaex123.redstone_enchants.enchantment.effect.RemoveRandomBeneficia
 import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
 import com.chinaex123.redstone_enchants.init.ModEnchantments;
 import java.util.List;
+import java.util.Optional;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderOwner;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.Vec3i;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.valueproviders.ConstantFloat;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -35,11 +46,27 @@ import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.item.enchantment.effects.AddValue;
 import net.minecraft.world.item.enchantment.effects.AllOf;
 import net.minecraft.world.item.enchantment.effects.ApplyMobEffect;
+import net.minecraft.world.item.enchantment.effects.ExplodeEffect;
+import net.minecraft.world.item.enchantment.effects.MultiplyValue;
 import net.minecraft.world.item.enchantment.effects.RemoveBinomial;
+import net.minecraft.world.item.enchantment.effects.ReplaceBlock;
 import net.minecraft.world.item.enchantment.effects.RunFunction;
 import net.minecraft.world.item.enchantment.effects.SetValue;
+import net.minecraft.world.item.enchantment.effects.SpawnParticlesEffect;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
+import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.predicates.AllOfCondition;
+import net.minecraft.world.level.storage.loot.predicates.InvertedLootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.EnchantmentLevelProvider;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * 已迁移附魔的注册表 bootstrap（runData 生成 {@code data/redstone_enchants/enchantment/*.json}）。
@@ -81,25 +108,69 @@ public final class ModEnchantmentProvider {
             TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/splash"));
     private static final TagKey<Enchantment> BOOTS_GALLOP_EXCLUSIVE =
             TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/boots_gallop"));
+    private static final TagKey<Enchantment> DAMAGE_BOW_EXCLUSIVE =
+            TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/damage_bow"));
+    private static final TagKey<Enchantment> BOW_SPREAD_EXCLUSIVE =
+            TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/bow_spread"));
+    private static final TagKey<Enchantment> NO_SHOTGUN_EXCLUSIVE =
+            TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/no_shotgun"));
+    private static final TagKey<EntityType<?>> BLACK_ENTITY =
+            TagKey.create(Registries.ENTITY_TYPE, RedstoneEnchants.asResource("black_entity"));
+    private static final TagKey<Block> GLASS_BLOCKS =
+            TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "glass_blocks"));
 
     /**
-     * 跨注册表裸 id 的 HolderSet：holder owner 恒返回 canSerializeIn=true，
+     * 跨注册表裸 id 的 Holder：holder owner 恒返回 canSerializeIn=true，
      * 使 datagen 序列化走 ResourceKey 分支直接输出 id 字符串，
-     * 不要求该注册表条目在 datagen JVM 里真实存在（如 ars_nouveau:blasting）。
+     * 不要求该注册表条目在 datagen JVM 里真实存在（如 ars_nouveau:blasting、apothic_attributes:draw_speed）。
      */
-    private static <T> HolderSet<T> foreignId(ResourceKey<T> key) {
-        return HolderSet.direct(Holder.Reference.createStandAlone(
+    private static <T> Holder<T> foreignHolder(ResourceKey<T> key) {
+        return Holder.Reference.createStandAlone(
                 new HolderOwner<T>() {
                     @Override
                     public boolean canSerializeIn(HolderOwner<T> owner) {
                         return true;
                     }
-                }, key));
+                }, key);
+    }
+
+    /** {@link #foreignHolder} 的 HolderSet 版（ApplyMobEffect.toApply 等单元素集合）。 */
+    private static <T> HolderSet<T> foreignId(ResourceKey<T> key) {
+        return HolderSet.direct(foreignHolder(key));
+    }
+
+    /** 风爆箭（blast_arrows）：爆裂效果，wind_burst 音效（裸 id 引用）。 */
+    private static ExplodeEffect windBurstExplosion(HolderGetter<DamageType> damageTypes) {
+        return new ExplodeEffect(false, Optional.of(damageTypes.getOrThrow(DamageTypes.EXPLOSION)),
+                Optional.of(LevelBasedValue.perLevel(0.5F, 0.25F)),
+                Optional.of(BuiltInRegistries.BLOCK.getOrCreateTag(BlockTags.BLOCKS_WIND_CHARGE_EXPLOSIONS)),
+                new Vec3(0, 0.5, 0), LevelBasedValue.perLevel(1.5F, 0.75F), false,
+                Level.ExplosionInteraction.NONE, ParticleTypes.GUST_EMITTER_SMALL,
+                ParticleTypes.GUST_EMITTER_LARGE, SoundEvents.WIND_CHARGE_BURST);
+    }
+
+    /** 轰炸箭（bomb_arrows）：灰烬爆炸，warden 音效固定范围 16（对象形状）。 */
+    private static ExplodeEffect ashExplosion(HolderGetter<DamageType> damageTypes, float radiusBase, float radiusPerLevel,
+                                              Optional<LevelBasedValue> knockbackMultiplier) {
+        return new ExplodeEffect(false, Optional.of(damageTypes.getOrThrow(DamageTypes.ARROW)), knockbackMultiplier,
+                Optional.empty(), new Vec3(0, 0.5, 0), LevelBasedValue.perLevel(radiusBase, radiusPerLevel), false,
+                Level.ExplosionInteraction.NONE, ParticleTypes.ASH, ParticleTypes.EXPLOSION_EMITTER,
+                Holder.direct(SoundEvent.createFixedRangeEvent(
+                        ResourceLocation.withDefaultNamespace("entity.warden.sonic_boom"), 16.0F)));
     }
 
     private static void bootstrap(BootstrapContext<Enchantment> context) {
         HolderGetter<Item> items = context.lookup(Registries.ITEM);
         HolderGetter<Enchantment> enchantments = context.lookup(Registries.ENCHANTMENT);
+        HolderGetter<DamageType> damageTypes = context.lookup(Registries.DAMAGE_TYPE);
+
+        register(context, ModEnchantments.ACCURACY_SHOT, colored(
+                Enchantment.definition(items.getOrThrow(ALL_BOW), items.getOrThrow(ALL_BOW), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8,
+                        EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.PROJECTILE_SPAWNED,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/accuracy_shot/on_shoot"))));
 
         register(context, ModEnchantments.AUTO_SMELT, colored(
                 Enchantment.definition(items.getOrThrow(TOOLS), 3, 1,
@@ -148,6 +219,50 @@ public final class ModEnchantmentProvider {
                 .withEffect(ModEnchantmentEffectComponents.BERSERK_DAMAGE_BONUS.get(),
                         new SetValue(LevelBasedValue.perLevel(0.03F))));
 
+        register(context, ModEnchantments.BLAST_ARROWS, colored(
+                Enchantment.definition(items.getOrThrow(ALL_BOW), items.getOrThrow(ALL_BOW), 2, 3,
+                        Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12,
+                        EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
+                0xFFAA00)
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        windBurstExplosion(damageTypes),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
+                                EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
+                .withEffect(EnchantmentEffectComponents.HIT_BLOCK, windBurstExplosion(damageTypes),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
+                .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
+                        new RunFunction(RedstoneEnchants.asResource("libs/kill_arrow")))
+                .exclusiveWith(enchantments.getOrThrow(DAMAGE_BOW_EXCLUSIVE)));
+
+        register(context, ModEnchantments.BOMB_ARROWS, colored(
+                Enchantment.definition(items.getOrThrow(ALL_BOW), items.getOrThrow(ALL_BOW), 2, 3,
+                        Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12,
+                        EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
+                0xFFAA00)
+                .withEffect(EnchantmentEffectComponents.DAMAGE, new AddValue(LevelBasedValue.constant(2.0F)))
+                .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
+                        new AllOf.EntityEffects(List.of(ashExplosion(damageTypes, 1.0F, 0.5F, Optional.empty()))),
+                        AllOfCondition.allOf(LootItemEntityPropertyCondition.hasProperties(
+                                LootContext.EntityTarget.THIS, EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS))))
+                .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
+                        new RunFunction(RedstoneEnchants.asResource("libs/kill_arrow")))
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        ashExplosion(damageTypes, 0.5F, 0.5F, Optional.of(LevelBasedValue.constant(0.0F))),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
+                                EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
+                .exclusiveWith(enchantments.getOrThrow(DAMAGE_BOW_EXCLUSIVE)));
+
+        register(context, ModEnchantments.BULLET_TIME, colored(
+                Enchantment.definition(items.getOrThrow(ALL_BOW), items.getOrThrow(ALL_BOW), 3, 3,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8,
+                        EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new ApplyMobEffect(HolderSet.direct(MobEffects.SLOW_FALLING),
+                                LevelBasedValue.constant(1.3F), LevelBasedValue.constant(1.3F),
+                                LevelBasedValue.perLevel(0.0F, 1.0F), LevelBasedValue.perLevel(0.0F, 1.0F))));
+
         register(context, ModEnchantments.BULLETPROOF, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS_CHEST), items.getOrThrow(ARMORS_CHEST), 3, 3,
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.CHEST),
@@ -181,6 +296,34 @@ public final class ModEnchantmentProvider {
                 .exclusiveWith(enchantments.getOrThrow(UNBREAKING_EXCLUSIVE))
                 .withEffect(ModEnchantmentEffectComponents.SACRIFICE_REPAIR.get(),
                         new SetValue(LevelBasedValue.perLevel(1.0F, 0.5F))));
+
+        register(context, ModEnchantments.ICE_ARROWS, colored(
+                Enchantment.definition(items.getOrThrow(ALL_BOW), items.getOrThrow(ALL_BOW), 2, 1,
+                        Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12,
+                        EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
+                0xFFAA00)
+                .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/ice_arrows/ice_arrows_hit_block")),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
+                .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
+                        new RunFunction(RedstoneEnchants.asResource("libs/kill_arrow")),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new AllOf.EntityEffects(List.of(
+                                new RunFunction(RedstoneEnchants.asResource("enchantment/ice_arrows/ice_arrows_hit_mob")),
+                                new ApplyMobEffect(HolderSet.direct(MobEffects.MOVEMENT_SLOWDOWN),
+                                        LevelBasedValue.constant(4.0F), LevelBasedValue.constant(8.0F),
+                                        LevelBasedValue.constant(0.0F), LevelBasedValue.constant(0.0F)))),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
+                                EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER,
+                        EnchantmentTarget.DAMAGING_ENTITY,
+                        new RunFunction(RedstoneEnchants.asResource("libs/kill_arrow")),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
+                                EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
+                .exclusiveWith(enchantments.getOrThrow(SPLASH_EXCLUSIVE)));
 
         register(context, ModEnchantments.INDESTRUCTIBLE, colored(
                 Enchantment.definition(items.getOrThrow(ENCHANTABLES), items.getOrThrow(ENCHANTABLES), 1, 1,
@@ -242,6 +385,15 @@ public final class ModEnchantmentProvider {
                 0xFF55FF)
                 .withEffect(ModEnchantmentEffectComponents.ECHOES_BATTLE.get()));
 
+        register(context, ModEnchantments.SCATTER, colored(
+                Enchantment.definition(items.getOrThrow(ALL_BOW), items.getOrThrow(ALL_BOW), 3, 3,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8,
+                        EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.PROJECTILE_SPREAD,
+                        new AddValue(LevelBasedValue.perLevel(10.0F, 10.0F)))
+                .exclusiveWith(enchantments.getOrThrow(BOW_SPREAD_EXCLUSIVE)));
+
         register(context, ModEnchantments.SEA_BREEZE, colored(
                 Enchantment.definition(items.getOrThrow(ItemTags.TRIDENT_ENCHANTABLE), items.getOrThrow(ItemTags.TRIDENT_ENCHANTABLE), 3, 3,
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.HAND),
@@ -257,6 +409,23 @@ public final class ModEnchantmentProvider {
                 0x55FFFF)
                 .withEffect(ModEnchantmentEffectComponents.SEARING_FIRE_TICKS.get(), new SetValue(LevelBasedValue.perLevel(40.0F)))
                 .withEffect(ModEnchantmentEffectComponents.SEARING_DAMAGE.get(), new SetValue(LevelBasedValue.perLevel(1.0F))));
+
+        register(context, ModEnchantments.SHOTGUN, colored(
+                Enchantment.definition(items.getOrThrow(ALL_BOW), items.getOrThrow(ALL_BOW), 2, 6,
+                        Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12,
+                        EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
+                0xFFAA00)
+                .withEffect(EnchantmentEffectComponents.PROJECTILE_COUNT,
+                        new AddValue(LevelBasedValue.perLevel(0.0F, 1.0F)))
+                .withEffect(EnchantmentEffectComponents.PROJECTILE_SPREAD,
+                        new AddValue(LevelBasedValue.perLevel(0.0F, 1.0F)))
+                .withSpecialEffect(EnchantmentEffectComponents.CROSSBOW_CHARGE_TIME,
+                        new AddValue(LevelBasedValue.perLevel(0.5F, 0.25F)))
+                .withEffect(EnchantmentEffectComponents.ITEM_DAMAGE,
+                        new MultiplyValue(new LevelBasedValue.Fraction(
+                                LevelBasedValue.constant(1.0F), LevelBasedValue.perLevel(1.0F, 1.0F))),
+                        LootItemRandomChanceCondition.randomChance(0.9F))
+                .exclusiveWith(enchantments.getOrThrow(NO_SHOTGUN_EXCLUSIVE)));
 
         register(context, ModEnchantments.SPLASH_BLINDNESS, colored(
                 Enchantment.definition(items.getOrThrow(ALL_BOW), items.getOrThrow(ALL_BOW), 3, 3,
@@ -546,6 +715,71 @@ public final class ModEnchantmentProvider {
                 0xFF55FF)
                 .withEffect(ModEnchantmentEffectComponents.DAYNIGHT_CYCLE.get()));
 
+        register(context, ModEnchantments.RAIN_DRIPSTONE, colored(
+                Enchantment.definition(items.getOrThrow(ALL_BOW), items.getOrThrow(ALL_BOW), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8,
+                        EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
+                        new AllOf.EntityEffects(List.of(
+                                new RunFunction(RedstoneEnchants.asResource("enchantment/rain/rain_dripstone")))),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
+                .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
+                        new RunFunction(RedstoneEnchants.asResource("libs/kill_arrow")))
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new AllOf.EntityEffects(List.of(
+                                new RunFunction(RedstoneEnchants.asResource("enchantment/rain/rain_dripstone")))),
+                        AllOfCondition.allOf(LootItemEntityPropertyCondition.hasProperties(
+                                LootContext.EntityTarget.DIRECT_ATTACKER,
+                                EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS))))
+                .exclusiveWith(enchantments.getOrThrow(DAMAGE_BOW_EXCLUSIVE)));
+
+        register(context, ModEnchantments.RAIN_FORGE, colored(
+                Enchantment.definition(items.getOrThrow(ALL_BOW), items.getOrThrow(ALL_BOW), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8,
+                        EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
+                        new AllOf.EntityEffects(List.of(
+                                new RunFunction(RedstoneEnchants.asResource("enchantment/rain/rain_forge")))),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
+                .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
+                        new RunFunction(RedstoneEnchants.asResource("libs/kill_arrow")))
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new AllOf.EntityEffects(List.of(
+                                new RunFunction(RedstoneEnchants.asResource("enchantment/rain/rain_forge")))),
+                        AllOfCondition.allOf(LootItemEntityPropertyCondition.hasProperties(
+                                LootContext.EntityTarget.DIRECT_ATTACKER,
+                                EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS))))
+                .exclusiveWith(enchantments.getOrThrow(DAMAGE_BOW_EXCLUSIVE)));
+
+        register(context, ModEnchantments.RAPID, colored(
+                Enchantment.definition(items.getOrThrow(ALL_BOW), items.getOrThrow(ALL_BOW), 3, 4,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8,
+                        EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("rapid"),
+                        foreignHolder(ResourceKey.create(Registries.ATTRIBUTE,
+                                ResourceLocation.fromNamespaceAndPath("apothic_attributes", "draw_speed"))),
+                        LevelBasedValue.perLevel(0.3F, 0.15F),
+                        AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)));
+
+        register(context, ModEnchantments.RICOCHET, colored(
+                Enchantment.definition(items.getOrThrow(ALL_BOW), items.getOrThrow(ALL_BOW), 3, 3,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8,
+                        EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER,
+                        EnchantmentTarget.DAMAGING_ENTITY,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/ricochet")),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
+                                EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
+                .withEffect(EnchantmentEffectComponents.PROJECTILE_PIERCING,
+                        new AddValue(LevelBasedValue.perLevel(1.0F, 1.0F))));
+
         register(context, ModEnchantments.REVIVE_WARD, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS), items.getOrThrow(ARMORS), 2, 1,
                         Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.ARMOR),
@@ -800,6 +1034,73 @@ public final class ModEnchantmentProvider {
                 .withEffect(ModEnchantmentEffectComponents.EXPERIENCE_SHEAR_EXP_PER_LEVEL.get(),
                         new SetValue(LevelBasedValue.perLevel(3.0F))));
 
+        // fatal_arrow 三条的公共条件：攻击者是箭 + 命中实体不是黑名单实体（exclusive_set/damage_bow）
+        LootItemCondition.Builder fatalCondition = AllOfCondition.allOf(
+                LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
+                        EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)),
+                InvertedLootItemCondition.invert(LootItemEntityPropertyCondition.hasProperties(
+                        LootContext.EntityTarget.THIS, EntityPredicate.Builder.entity().of(BLACK_ENTITY))));
+
+        register(context, ModEnchantments.FATAL_ARROW, colored(
+                Enchantment.definition(items.getOrThrow(ALL_BOW), items.getOrThrow(ALL_BOW), 1, 1,
+                        Enchantment.dynamicCost(80, 50), Enchantment.dynamicCost(100, 50), 200,
+                        EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
+                0xFF00BB)
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/fatal_arrow")), fatalCondition)
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER,
+                        EnchantmentTarget.DAMAGING_ENTITY,
+                        new RunFunction(RedstoneEnchants.asResource("libs/kill_arrow")), fatalCondition)
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.ATTACKER,
+                        new AllOf.EntityEffects(List.of(
+                                new ApplyMobEffect(HolderSet.direct(MobEffects.BAD_OMEN),
+                                        LevelBasedValue.constant(3.0F), LevelBasedValue.constant(3.0F),
+                                        LevelBasedValue.constant(2.0F), LevelBasedValue.constant(2.0F)),
+                                new ApplyMobEffect(HolderSet.direct(MobEffects.WEAKNESS),
+                                        LevelBasedValue.constant(120.0F), LevelBasedValue.constant(120.0F),
+                                        LevelBasedValue.constant(2.0F), LevelBasedValue.constant(2.0F)),
+                                new ApplyMobEffect(HolderSet.direct(MobEffects.UNLUCK),
+                                        LevelBasedValue.constant(600.0F), LevelBasedValue.constant(600.0F),
+                                        LevelBasedValue.constant(9.0F), LevelBasedValue.constant(9.0F)),
+                                new ApplyMobEffect(HolderSet.direct(MobEffects.BLINDNESS),
+                                        LevelBasedValue.constant(60.0F), LevelBasedValue.constant(60.0F),
+                                        LevelBasedValue.constant(1.0F), LevelBasedValue.constant(1.0F)))),
+                        fatalCondition)
+                .exclusiveWith(enchantments.getOrThrow(DAMAGE_BOW_EXCLUSIVE)));
+
+        register(context, ModEnchantments.FIRE_ARROWS, colored(
+                Enchantment.definition(items.getOrThrow(ALL_BOW), items.getOrThrow(ALL_BOW), 2, 1,
+                        Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12,
+                        EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
+                0xFFAA00)
+                .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/fire_arrows")),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
+                .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
+                        new RunFunction(RedstoneEnchants.asResource("libs/kill_arrow")),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/fire_arrows")),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
+                                EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER,
+                        EnchantmentTarget.DAMAGING_ENTITY,
+                        new RunFunction(RedstoneEnchants.asResource("libs/kill_arrow")),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
+                                EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
+                .exclusiveWith(enchantments.getOrThrow(SPLASH_EXCLUSIVE)));
+
+        register(context, ModEnchantments.FOCUS, colored(
+                Enchantment.definition(items.getOrThrow(ALL_BOW), items.getOrThrow(ALL_BOW), 3, 3,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8,
+                        EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.PROJECTILE_SPREAD,
+                        new AddValue(LevelBasedValue.perLevel(-5.0F, -5.0F)))
+                .exclusiveWith(enchantments.getOrThrow(BOW_SPREAD_EXCLUSIVE)));
+
         register(context, ModEnchantments.FLAME_WALKER, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS_FOOT), items.getOrThrow(ARMORS_FOOT), 3, 1,
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
@@ -881,6 +1182,26 @@ public final class ModEnchantmentProvider {
                 .withEffect(ModEnchantmentEffectComponents.LIFE_STEAL_RATIO.get(),
                         new SetValue(LevelBasedValue.constant(0.1F))));
 
+        register(context, ModEnchantments.CHAIN_REACTION, colored(
+                Enchantment.definition(items.getOrThrow(ALL_BOW), items.getOrThrow(ALL_BOW), 3, 3,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8,
+                        EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/chain_reaction/chain_reaction_spectral")),
+                        AllOfCondition.allOf(
+                                LootItemRandomChanceCondition.randomChance(
+                                        new EnchantmentLevelProvider(LevelBasedValue.perLevel(0.4F, 0.2F))),
+                                LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
+                                        EntityPredicate.Builder.entity().of(EntityType.SPECTRAL_ARROW))))
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/chain_reaction/chain_reaction")),
+                        AllOfCondition.allOf(
+                                LootItemRandomChanceCondition.randomChance(
+                                        new EnchantmentLevelProvider(LevelBasedValue.perLevel(0.4F, 0.2F))),
+                                LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
+                                        EntityPredicate.Builder.entity().of(EntityType.ARROW)))));
+
         register(context, ModEnchantments.CHAIN_HASTE, colored(
                 Enchantment.definition(items.getOrThrow(TOOLS), 3, 3,
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
@@ -900,6 +1221,24 @@ public final class ModEnchantmentProvider {
                 0xFF55FF)
                 .withSpecialEffect(ModEnchantmentEffectComponents.GAMBLER_DATA.get(),
                         new GamblerData(0.5F, 1.4F, 0.8F)));
+
+        register(context, ModEnchantments.GLASS_BREAKER, colored(
+                Enchantment.definition(items.getOrThrow(ALL_BOW), items.getOrThrow(ALL_BOW), 6, 1,
+                        Enchantment.dynamicCost(8, 4), Enchantment.dynamicCost(16, 8), 4,
+                        EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
+                0xFFFF55)
+                .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
+                        new ReplaceBlock(Vec3i.ZERO,
+                                Optional.of(BlockPredicate.matchesTag(Vec3i.ZERO, GLASS_BLOCKS)),
+                                BlockStateProvider.simple(Blocks.AIR), Optional.empty()),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
+                .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
+                        new SpawnParticlesEffect(ParticleTypes.ELECTRIC_SPARK,
+                                SpawnParticlesEffect.inBoundingBox(), SpawnParticlesEffect.inBoundingBox(),
+                                SpawnParticlesEffect.fixedVelocity(ConstantFloat.of(0.0F)),
+                                SpawnParticlesEffect.fixedVelocity(ConstantFloat.of(0.0F)),
+                                ConstantFloat.of(0.3F))));
 
         register(context, ModEnchantments.GEOLOGY, colored(
                 Enchantment.definition(items.getOrThrow(ItemTags.PICKAXES), 3, 5,

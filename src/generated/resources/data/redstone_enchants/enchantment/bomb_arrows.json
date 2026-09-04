@@ -1,32 +1,15 @@
 {
+  "anvil_cost": 12,
   "description": {
     "color": "#FFAA00",
     "translate": "enchantment.redstone_enchants.bomb_arrows"
   },
-  "supported_items": "#redstone_enchants:all_bow",
-  "primary_items": "#redstone_enchants:all_bow",
-  "weight": 2,
-  "max_level": 3,
-  "min_cost": {
-    "base": 16,
-    "per_level_above_first": 8
-  },
-  "max_cost": {
-    "base": 32,
-    "per_level_above_first": 16
-  },
-  "anvil_cost": 12,
-  "slots": [
-    "mainhand",
-    "offhand"
-  ],
-  "exclusive_set": "#redstone_enchants:exclusive_set/damage_bow",
   "effects": {
     "minecraft:damage": [
       {
         "effect": {
           "type": "minecraft:add",
-          "value": 2
+          "value": 2.0
         }
       }
     ],
@@ -37,27 +20,27 @@
           "effects": [
             {
               "type": "minecraft:explode",
+              "block_interaction": "none",
               "damage_type": "minecraft:arrow",
+              "large_particle": {
+                "type": "minecraft:explosion_emitter"
+              },
+              "offset": [
+                0.0,
+                0.5,
+                0.0
+              ],
               "radius": {
                 "type": "minecraft:linear",
                 "base": 1.0,
                 "per_level_above_first": 0.5
               },
-              "offset": [
-                0,
-                0.5,
-                0
-              ],
-              "block_interaction": "none",
               "small_particle": {
                 "type": "minecraft:ash"
               },
-              "large_particle": {
-                "type": "minecraft:explosion_emitter"
-              },
               "sound": {
-                "sound_id": "minecraft:entity.warden.sonic_boom",
-                "range": 16
+                "range": 16.0,
+                "sound_id": "minecraft:entity.warden.sonic_boom"
               }
             }
           ]
@@ -84,34 +67,34 @@
     ],
     "minecraft:post_attack": [
       {
-        "enchanted": "attacker",
         "affected": "victim",
         "effect": {
           "type": "minecraft:explode",
+          "block_interaction": "none",
           "damage_type": "minecraft:arrow",
+          "knockback_multiplier": 0.0,
+          "large_particle": {
+            "type": "minecraft:explosion_emitter"
+          },
+          "offset": [
+            0.0,
+            0.5,
+            0.0
+          ],
           "radius": {
             "type": "minecraft:linear",
             "base": 0.5,
             "per_level_above_first": 0.5
           },
-          "offset": [
-            0,
-            0.5,
-            0
-          ],
-          "block_interaction": "none",
           "small_particle": {
             "type": "minecraft:ash"
           },
-          "large_particle": {
-            "type": "minecraft:explosion_emitter"
-          },
           "sound": {
-            "sound_id": "minecraft:entity.warden.sonic_boom",
-            "range": 16
-          },
-          "knockback_multiplier": 0
+            "range": 16.0,
+            "sound_id": "minecraft:entity.warden.sonic_boom"
+          }
         },
+        "enchanted": "attacker",
         "requirements": {
           "condition": "minecraft:entity_properties",
           "entity": "direct_attacker",
@@ -121,5 +104,22 @@
         }
       }
     ]
-  }
+  },
+  "exclusive_set": "#redstone_enchants:exclusive_set/damage_bow",
+  "max_cost": {
+    "base": 32,
+    "per_level_above_first": 16
+  },
+  "max_level": 3,
+  "min_cost": {
+    "base": 16,
+    "per_level_above_first": 8
+  },
+  "primary_items": "#redstone_enchants:all_bow",
+  "slots": [
+    "mainhand",
+    "offhand"
+  ],
+  "supported_items": "#redstone_enchants:all_bow",
+  "weight": 2
 }

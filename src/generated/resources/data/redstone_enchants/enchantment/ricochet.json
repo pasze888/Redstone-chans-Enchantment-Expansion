@@ -1,34 +1,18 @@
 {
+  "anvil_cost": 8,
   "description": {
     "color": "#FF55FF",
     "translate": "enchantment.redstone_enchants.ricochet"
   },
-  "supported_items": "#redstone_enchants:all_bow",
-  "primary_items": "#redstone_enchants:all_bow",
-  "weight": 3,
-  "max_level": 3,
-  "min_cost": {
-    "base": 12,
-    "per_level_above_first": 6
-  },
-  "max_cost": {
-    "base": 24,
-    "per_level_above_first": 12
-  },
-  "anvil_cost": 8,
-  "slots": [
-    "mainhand",
-    "offhand"
-  ],
   "effects": {
     "minecraft:post_attack": [
       {
-        "enchanted": "attacker",
         "affected": "damaging_entity",
         "effect": {
           "type": "minecraft:run_function",
           "function": "redstone_enchants:enchantment/ricochet"
         },
+        "enchanted": "attacker",
         "requirements": {
           "condition": "minecraft:entity_properties",
           "entity": "direct_attacker",
@@ -44,11 +28,27 @@
           "type": "minecraft:add",
           "value": {
             "type": "minecraft:linear",
-            "base": 1,
-            "per_level_above_first": 1
+            "base": 1.0,
+            "per_level_above_first": 1.0
           }
         }
       }
     ]
-  }
+  },
+  "max_cost": {
+    "base": 24,
+    "per_level_above_first": 12
+  },
+  "max_level": 3,
+  "min_cost": {
+    "base": 12,
+    "per_level_above_first": 6
+  },
+  "primary_items": "#redstone_enchants:all_bow",
+  "slots": [
+    "mainhand",
+    "offhand"
+  ],
+  "supported_items": "#redstone_enchants:all_bow",
+  "weight": 3
 }
