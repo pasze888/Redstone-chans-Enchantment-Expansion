@@ -5,28 +5,11 @@
       "modid": "ars_nouveau"
     }
   ],
+  "anvil_cost": 8,
   "description": {
-		"color": "#FF55FF",
+    "color": "#FF55FF",
     "translate": "enchantment.redstone_enchants.splash_delayed_explosion"
   },
-  "supported_items": "#redstone_enchants:all_bow",
-  "primary_items": "#redstone_enchants:all_bow",
-  "weight": 2,
-  "max_level": 3,
-  "min_cost": {
-    "base": 12,
-    "per_level_above_first": 6
-  },
-  "max_cost": {
-    "base": 24,
-    "per_level_above_first": 12
-  },
-  "anvil_cost": 8,
-  "slots": [
-    "mainhand",
-    "offhand"
-  ],
-  "exclusive_set": "#redstone_enchants:exclusive_set/splash",
   "effects": {
     "minecraft:hit_block": [
       {
@@ -42,16 +25,15 @@
           }
         }
       },
-			{
-				"effect": {
-					"type": "minecraft:run_function",
-					"function": "redstone_enchants:libs/kill_arrow"
-				}
-			}
+      {
+        "effect": {
+          "type": "minecraft:run_function",
+          "function": "redstone_enchants:libs/kill_arrow"
+        }
+      }
     ],
     "minecraft:post_attack": [
       {
-        "enchanted": "attacker",
         "affected": "victim",
         "effect": {
           "type": "minecraft:all_of",
@@ -62,18 +44,19 @@
             },
             {
               "type": "minecraft:apply_mob_effect",
-              "to_apply": "ars_nouveau:blasting",
-              "min_duration": 3,
-              "max_duration": 3,
-              "min_amplifier": 0,
               "max_amplifier": {
                 "type": "minecraft:linear",
-                "base": 0,
-                "per_level_above_first": 1
-              }
+                "base": 0.0,
+                "per_level_above_first": 1.0
+              },
+              "max_duration": 3.0,
+              "min_amplifier": 0.0,
+              "min_duration": 3.0,
+              "to_apply": "ars_nouveau:blasting"
             }
           ]
         },
+        "enchanted": "attacker",
         "requirements": {
           "condition": "minecraft:entity_properties",
           "entity": "direct_attacker",
@@ -83,5 +66,22 @@
         }
       }
     ]
-  }
+  },
+  "exclusive_set": "#redstone_enchants:exclusive_set/splash",
+  "max_cost": {
+    "base": 24,
+    "per_level_above_first": 12
+  },
+  "max_level": 3,
+  "min_cost": {
+    "base": 12,
+    "per_level_above_first": 6
+  },
+  "primary_items": "#redstone_enchants:all_bow",
+  "slots": [
+    "mainhand",
+    "offhand"
+  ],
+  "supported_items": "#redstone_enchants:all_bow",
+  "weight": 2
 }

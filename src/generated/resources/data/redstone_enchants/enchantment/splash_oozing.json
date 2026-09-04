@@ -1,32 +1,15 @@
 {
-  "description": {
-		"color": "#FF55FF",
-    "translate": "enchantment.redstone_enchants.splash_weaving"
-  },
-  "supported_items": "#redstone_enchants:all_bow",
-  "primary_items": "#redstone_enchants:all_bow",
-  "weight": 3,
-  "max_level": 3,
-  "min_cost": {
-    "base": 12,
-    "per_level_above_first": 6
-  },
-  "max_cost": {
-    "base": 24,
-    "per_level_above_first": 12
-  },
   "anvil_cost": 8,
-  "slots": [
-    "mainhand",
-    "offhand"
-  ],
-  "exclusive_set": "#redstone_enchants:exclusive_set/splash",
+  "description": {
+    "color": "#FF55FF",
+    "translate": "enchantment.redstone_enchants.splash_oozing"
+  },
   "effects": {
     "minecraft:hit_block": [
       {
         "effect": {
           "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/splash_arrow/weaving"
+          "function": "redstone_enchants:enchantment/splash_arrow/oozing"
         },
         "requirements": {
           "condition": "minecraft:entity_properties",
@@ -39,29 +22,29 @@
     ],
     "minecraft:post_attack": [
       {
-        "enchanted": "attacker",
         "affected": "victim",
         "effect": {
           "type": "minecraft:all_of",
           "effects": [
             {
               "type": "minecraft:run_function",
-              "function": "redstone_enchants:enchantment/splash_arrow/weaving"
+              "function": "redstone_enchants:enchantment/splash_arrow/oozing"
             },
             {
               "type": "minecraft:apply_mob_effect",
-              "to_apply": "minecraft:weaving",
-              "min_duration": 4,
-              "max_duration": 8,
-              "min_amplifier": 0,
               "max_amplifier": {
                 "type": "minecraft:linear",
-                "base": 0,
-                "per_level_above_first": 1
-              }
+                "base": 0.0,
+                "per_level_above_first": 1.0
+              },
+              "max_duration": 8.0,
+              "min_amplifier": 0.0,
+              "min_duration": 4.0,
+              "to_apply": "minecraft:oozing"
             }
           ]
         },
+        "enchanted": "attacker",
         "requirements": {
           "condition": "minecraft:entity_properties",
           "entity": "direct_attacker",
@@ -71,5 +54,22 @@
         }
       }
     ]
-  }
+  },
+  "exclusive_set": "#redstone_enchants:exclusive_set/splash",
+  "max_cost": {
+    "base": 24,
+    "per_level_above_first": 12
+  },
+  "max_level": 3,
+  "min_cost": {
+    "base": 12,
+    "per_level_above_first": 6
+  },
+  "primary_items": "#redstone_enchants:all_bow",
+  "slots": [
+    "mainhand",
+    "offhand"
+  ],
+  "supported_items": "#redstone_enchants:all_bow",
+  "weight": 3
 }

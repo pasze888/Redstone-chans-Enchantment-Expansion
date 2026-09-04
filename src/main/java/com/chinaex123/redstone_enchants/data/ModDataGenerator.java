@@ -2,10 +2,12 @@ package com.chinaex123.redstone_enchants.data;
 
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
 import com.chinaex123.redstone_enchants.data.provider.ModEnchantmentProvider;
+import com.chinaex123.redstone_enchants.init.ModEnchantments;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
@@ -23,8 +25,12 @@ public final class ModDataGenerator {
         DataGenerator generator = event.getGenerator();
         PackOutput output = generator.getPackOutput();
 
+        // splash_delayed_explosion 依赖 ars_nouveau 的状态效果（ars_nouveau:blasting），带 mod_loaded 条件
         generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(
-                output, event.getLookupProvider(), ModEnchantmentProvider.DATA_BUILDER, Set.of(RedstoneEnchants.MOD_ID)));
+                output, event.getLookupProvider(), ModEnchantmentProvider.DATA_BUILDER,
+                conditions -> conditions.accept(ModEnchantments.SPLASH_DELAYED_EXPLOSION,
+                        new ModLoadedCondition("ars_nouveau")),
+                Set.of(RedstoneEnchants.MOD_ID)));
     }
 
     private ModDataGenerator() {
