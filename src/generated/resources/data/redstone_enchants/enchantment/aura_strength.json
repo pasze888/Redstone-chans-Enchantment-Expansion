@@ -8,8 +8,9 @@
     "minecraft:location_changed": [
       {
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/aura/strength"
+          "type": "redstone_enchants:area_mob_effect",
+          "effect": "minecraft:strength",
+          "radius": 4.0
         }
       }
     ]

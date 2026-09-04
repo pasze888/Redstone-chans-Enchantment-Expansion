@@ -8,8 +8,16 @@
     "minecraft:location_changed": [
       {
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/aura/burning"
+          "type": "redstone_enchants:area_ignite",
+          "radius": 2.0
+        }
+      },
+      {
+        "effect": {
+          "type": "redstone_enchants:area_mob_effect",
+          "effect": "minecraft:fire_resistance",
+          "radius": 2.0,
+          "target": "self"
         }
       }
     ]

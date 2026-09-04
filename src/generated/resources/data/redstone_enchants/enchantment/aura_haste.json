@@ -8,8 +8,9 @@
     "minecraft:location_changed": [
       {
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/aura/haste"
+          "type": "redstone_enchants:area_mob_effect",
+          "effect": "minecraft:haste",
+          "radius": 4.0
         }
       }
     ]

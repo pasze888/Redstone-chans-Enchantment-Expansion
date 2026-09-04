@@ -2,6 +2,8 @@ package com.chinaex123.redstone_enchants.data.provider;
 
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
 import com.chinaex123.redstone_enchants.enchantment.component.GamblerData;
+import com.chinaex123.redstone_enchants.enchantment.effect.AreaIgniteEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.AreaMobEffectEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.RandomBeneficialMobEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.RandomHarmfulMobEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.RemoveRandomBeneficialEffect;
@@ -2038,7 +2040,9 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.FEET),
                 0x55FFFF)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/burning")))
+                        new AreaIgniteEffect(2.0F, 80))
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new AreaMobEffectEffect(2.0F, MobEffects.FIRE_RESISTANCE, 60, 0, AreaMobEffectEffect.Target.SELF))
                 .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
 
         register(context, ModEnchantments.AURA_GLOWING, colored(
@@ -2046,7 +2050,7 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/glowing")))
+                        new AreaMobEffectEffect(4.0F, MobEffects.GLOWING, 60, 0, AreaMobEffectEffect.Target.OTHERS))
                 .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
 
         register(context, ModEnchantments.AURA_HASTE, colored(
@@ -2054,7 +2058,7 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/haste")))
+                        new AreaMobEffectEffect(4.0F, MobEffects.DIG_SPEED, 60, 0, AreaMobEffectEffect.Target.ALL))
                 .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
 
         register(context, ModEnchantments.AURA_INFESTED, colored(
@@ -2062,7 +2066,7 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/infested")))
+                        new AreaMobEffectEffect(4.0F, MobEffects.INFESTED, 60, 0, AreaMobEffectEffect.Target.OTHERS))
                 .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
 
         register(context, ModEnchantments.AURA_JUMP_BOOST, colored(
@@ -2070,7 +2074,7 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/jump_boost")))
+                        new AreaMobEffectEffect(4.0F, MobEffects.JUMP, 60, 0, AreaMobEffectEffect.Target.ALL))
                 .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
 
         register(context, ModEnchantments.AURA_POISON, colored(
@@ -2078,7 +2082,7 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/poison")))
+                        new AreaMobEffectEffect(4.0F, MobEffects.POISON, 60, 0, AreaMobEffectEffect.Target.OTHERS))
                 .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
 
         register(context, ModEnchantments.AURA_REGENERATION, colored(
@@ -2086,7 +2090,7 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/regeneration")))
+                        new AreaMobEffectEffect(4.0F, MobEffects.REGENERATION, 60, 0, AreaMobEffectEffect.Target.ALL))
                 .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
 
         register(context, ModEnchantments.AURA_RESISTANCE, colored(
@@ -2094,7 +2098,7 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/resistance")))
+                        new AreaMobEffectEffect(4.0F, MobEffects.DAMAGE_RESISTANCE, 60, 0, AreaMobEffectEffect.Target.ALL))
                 .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
 
         register(context, ModEnchantments.AURA_SLOWNESS, colored(
@@ -2102,7 +2106,7 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/slowness")))
+                        new AreaMobEffectEffect(4.0F, MobEffects.MOVEMENT_SLOWDOWN, 60, 0, AreaMobEffectEffect.Target.OTHERS))
                 .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
 
         register(context, ModEnchantments.AURA_SPEED, colored(
@@ -2110,7 +2114,7 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/speed")))
+                        new AreaMobEffectEffect(4.0F, MobEffects.MOVEMENT_SPEED, 60, 0, AreaMobEffectEffect.Target.ALL))
                 .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
 
         register(context, ModEnchantments.AURA_STRENGTH, colored(
@@ -2118,7 +2122,7 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/strength")))
+                        new AreaMobEffectEffect(4.0F, MobEffects.DAMAGE_BOOST, 60, 0, AreaMobEffectEffect.Target.ALL))
                 .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
 
         register(context, ModEnchantments.AURA_WEAKNESS, colored(
@@ -2126,7 +2130,7 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/weakness")))
+                        new AreaMobEffectEffect(4.0F, MobEffects.WEAKNESS, 60, 0, AreaMobEffectEffect.Target.OTHERS))
                 .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
 
         register(context, ModEnchantments.AURA_WITHER, colored(
@@ -2134,7 +2138,7 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/wither")))
+                        new AreaMobEffectEffect(4.0F, MobEffects.WITHER, 60, 0, AreaMobEffectEffect.Target.OTHERS))
                 .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
 
         register(context, ModEnchantments.CHAINS, colored(

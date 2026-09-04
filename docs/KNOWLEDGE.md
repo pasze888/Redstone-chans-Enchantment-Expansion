@@ -314,3 +314,49 @@ invisibility_cloak 附件标记精确移除、sturdy/indestructible 标记组件
 - **迁移对比法**：手写 JSON 从删除提交的父提交取（`git log --diff-filter=D` 定位），
   `temp/compare-enchant-json.ps1 -Names ...` 逐字段对比；颜色 DIFF 大多是抄错，
   以手写为准。
+
+## 光环（aura_*）附魔与 run_function（2026-08-31 排查）
+
+- **aura 13 个附魔曾整体无效**：JSON/datagen 引用
+  `redstone_enchants:enchantment/aura/<effect>` 函数，但
+  `function/enchantment/aura/` 目录从未存在（上游 1.0.0 jar 起就缺失）。
+  已补齐 13 个 mcfunction（增益 4 格含自身、减益 4 格排除自身用
+  `tag rcee_aura_source` 临时标记、burning 2 格点火 + 自身火焰抗性；
+  时长 3s、amp 0、隐藏粒子）。
+- **`RunFunction.apply`（1.21.1 反编译）**：找不到函数只
+  `LOGGER.error("Enchantment run_function effect failed for non-existent function ...")`
+  静默失败，不崩溃不进聊天栏——排查"附魔无效"先 grep 这条日志。
+  命令源为 `withEntity(entity)` + `withPosition(origin)` + 玩家朝向，
+  即函数内 `@s` = 触发实体、原点在实体位置。
+- **`EnchantmentEffectComponents.LOCATION_CHANGED`**：实体换格/移动时触发
+  （`LivingEntity` 里每 tick 调 `EnchantmentHelper.runLocationChangedEffects`），
+  停止移动不再触发——光环类需要每 tick 刷新的效果用较短时长（3s）保证
+  停下后渐退。`run_function` 同时注册在 LOCATION_BASED 与 ENTITY 两类
+  effect type 注册表，可直接用于 location_changed。
+- **点燃实体**：vanilla 无点燃命令，函数里用
+  `execute as @e[...] at @s run data merge entity @s {Fire:80s}`；
+  对玩家会静默失败（data merge 不允许作用于玩家）。
+
+### aura 改为 Java 实现（2026-08-31，替代上一节的 mcfunction 方案）
+
+- 已删除 13 个 `function/enchantment/aura/*.mcfunction`，改用两个自定义
+  location-based effect：`AreaMobEffectEffect`（radius/effect/duration_ticks/
+  amplifier/target=all|others|self，编码 `redstone_enchants:area_mob_effect`）与
+  `AreaIgniteEffect`（radius/fire_ticks，`redstone_enchants:area_ignite`），
+  注册在 `Registries.ENCHANTMENT_LOCATION_BASED_EFFECT_TYPE`（NeoForge
+  DeferredRegister 即可，见 `ModEnchantmentLocationBasedEffects`）。
+- 关键接口事实：`location_changed` 组件反序列化走
+  `EnchantmentLocationBasedEffect` 注册表，自定义类直接实现
+  `onChangedBlock(level, enchLevel, item, entity, pos, applyTransientEffects)`；
+  `EnchantmentEntityEffect.apply` 只是通过 default 方法桥接到 onChangedBlock。
+  `RunFunction` 同时注册在两个注册表所以两边都能用，自定义类只注册
+  location-based 也能用于 post_attack？——不能：post_attack 走 ENTITY 注册表，
+  需要两边都注册或实现 EnchantmentEntityEffect。
+- 效果施加：`target.addEffect(new MobEffectInstance(holder, dur, amp, true/*ambient*/, false/*隐藏粒子*/), source)`；
+  点燃用 `livingEntity.igniteForTicks(ticks)`（对玩家也生效，优于
+  函数方案里 `data merge entity {Fire:...}` 的玩家限制）。
+- MobEffects 字段名（1.21.1）：`MOVEMENT_SPEED/DIG_SPEED/DAMAGE_BOOST/JUMP/
+  REGENERATION/DAMAGE_RESISTANCE/MOVEMENT_SLOWDOWN/WEAKNESS/POISON/WITHER/
+  GLOWING/INFESTED/FIRE_RESISTANCE`。
+- **坑：`./gradlew runData build` 并行执行时 build 可能先于 runData 完成**，
+  jar 会打进旧 JSON；runData 后单独再跑一次 build 确认。
