@@ -2,11 +2,34 @@ package com.chinaex123.redstone_enchants.data.provider;
 
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
 import com.chinaex123.redstone_enchants.enchantment.component.GamblerData;
+import com.chinaex123.redstone_enchants.enchantment.effect.AddExperienceEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.AddTagEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.AirTossEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.AreaIgniteEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.AreaMobEffectEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.ChainArrowsEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.GiveItemEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.ChainBindEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.ClearMainHandEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.IgniteAreaEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.ParticleBurstEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.RainBlocksEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.RicochetEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.SnowballBurstEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.DevouringEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.DropHeldItemEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.FreezeWaterEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.HoveringArrowEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.IceArrowSlownessEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.KillSelfEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.RandomBeneficialMobEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.RandomHarmfulMobEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.RemoveRandomBeneficialEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.SplashCloudEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.ThrowWaterBottleEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.TrailParticleEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.UnleashPotentialEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.WeatherThunderEffect;
 import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
 import com.chinaex123.redstone_enchants.init.ModEnchantments;
 import java.util.List;
@@ -32,6 +55,7 @@ import net.minecraft.core.HolderOwner;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.DustColorTransitionOptions;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -56,6 +80,7 @@ import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.EnchantmentTarget;
@@ -267,7 +292,7 @@ public final class ModEnchantmentProvider {
                         EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.PROJECTILE_SPAWNED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/accuracy_shot/on_shoot"))));
+                        new HoveringArrowEffect()));
 
         register(context, ModEnchantments.AUTO_SMELT, colored(
                 Enchantment.definition(items.getOrThrow(TOOLS), 3, 1,
@@ -319,7 +344,7 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.HAND),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/air_toss/air_toss_1")),
+                        new AirTossEffect(LevelBasedValue.perLevel(0.0F, 1.0F)),
                         AllOfCondition.allOf(
                                 AnyOfCondition.anyOf(
                                         DamageSourceCondition.hasDamageSource(DamageSourcePredicate.Builder.damageType().isDirect(true)),
@@ -328,7 +353,7 @@ public final class ModEnchantmentProvider {
                                 () -> new ValueCheckCondition(
                                         new EnchantmentLevelProvider(LevelBasedValue.perLevel(1.0F, 1.0F)), IntRange.exact(1))))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/air_toss/air_toss_2")),
+                        new AirTossEffect(LevelBasedValue.perLevel(1.0F, 1.0F)),
                         AllOfCondition.allOf(
                                 AnyOfCondition.anyOf(
                                         DamageSourceCondition.hasDamageSource(DamageSourcePredicate.Builder.damageType().isDirect(true)),
@@ -507,7 +532,7 @@ public final class ModEnchantmentProvider {
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("libs/kill_arrow")))
+                        new KillSelfEffect())
                 .exclusiveWith(enchantments.getOrThrow(DAMAGE_BOW_EXCLUSIVE)));
 
         register(context, ModEnchantments.BOMB_ARROWS, colored(
@@ -521,7 +546,7 @@ public final class ModEnchantmentProvider {
                         AllOfCondition.allOf(LootItemEntityPropertyCondition.hasProperties(
                                 LootContext.EntityTarget.THIS, EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS))))
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("libs/kill_arrow")))
+                        new KillSelfEffect())
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
                         ashExplosion(damageTypes, 0.5F, 0.5F, Optional.of(LevelBasedValue.constant(0.0F))),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
@@ -620,16 +645,16 @@ public final class ModEnchantmentProvider {
                         EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
                 0xFFAA00)
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/ice_arrows/ice_arrows_hit_block")),
+                        new FreezeWaterEffect(),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("libs/kill_arrow")),
+                        new KillSelfEffect(),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
                         new AllOf.EntityEffects(List.of(
-                                new RunFunction(RedstoneEnchants.asResource("enchantment/ice_arrows/ice_arrows_hit_mob")),
+                                new FreezeWaterEffect(), new IceArrowSlownessEffect(),
                                 new ApplyMobEffect(HolderSet.direct(MobEffects.MOVEMENT_SLOWDOWN),
                                         LevelBasedValue.constant(4.0F), LevelBasedValue.constant(8.0F),
                                         LevelBasedValue.constant(0.0F), LevelBasedValue.constant(0.0F)))),
@@ -637,7 +662,7 @@ public final class ModEnchantmentProvider {
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER,
                         EnchantmentTarget.DAMAGING_ENTITY,
-                        new RunFunction(RedstoneEnchants.asResource("libs/kill_arrow")),
+                        new KillSelfEffect(),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .exclusiveWith(enchantments.getOrThrow(SPLASH_EXCLUSIVE)));
@@ -895,7 +920,7 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.MAINHAND),
                 0xFFAA00)
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.ATTACKER,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/devouring")),
+                        new DevouringEffect(),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity())));
 
@@ -995,12 +1020,12 @@ public final class ModEnchantmentProvider {
                         EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/blindness")),
+                        new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(0.122F, 0.122F, 0.137F), new Vector3f(0.122F, 0.122F, 0.137F), 1.0F), MobEffects.BLINDNESS, 100, 0, true, 2.0F, 100),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
                         new AllOf.EntityEffects(List.of(
-                                new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/blindness")),
+                                new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(0.122F, 0.122F, 0.137F), new Vector3f(0.122F, 0.122F, 0.137F), 1.0F), MobEffects.BLINDNESS, 100, 0, true, 2.0F, 100),
                                 new ApplyMobEffect(HolderSet.direct(MobEffects.BLINDNESS),
                                         LevelBasedValue.constant(4.0F), LevelBasedValue.constant(8.0F),
                                         LevelBasedValue.constant(0.0F), LevelBasedValue.perLevel(0.0F, 1.0F)))),
@@ -1014,14 +1039,14 @@ public final class ModEnchantmentProvider {
                         EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/delayed_explosion")),
+                        new SplashCloudEffect(ParticleTypes.SMALL_FLAME, foreignHolder(ResourceKey.create(Registries.MOB_EFFECT, ResourceLocation.fromNamespaceAndPath("ars_nouveau", "blasting"))), 50, 0, false, 2.0F, 40),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("libs/kill_arrow")))
+                        new KillSelfEffect())
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
                         new AllOf.EntityEffects(List.of(
-                                new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/delayed_explosion")),
+                                new SplashCloudEffect(ParticleTypes.SMALL_FLAME, foreignHolder(ResourceKey.create(Registries.MOB_EFFECT, ResourceLocation.fromNamespaceAndPath("ars_nouveau", "blasting"))), 50, 0, false, 2.0F, 40),
                                 new ApplyMobEffect(foreignId(ResourceKey.create(Registries.MOB_EFFECT,
                                                 ResourceLocation.fromNamespaceAndPath("ars_nouveau", "blasting"))),
                                         LevelBasedValue.constant(3.0F), LevelBasedValue.constant(3.0F),
@@ -1036,12 +1061,12 @@ public final class ModEnchantmentProvider {
                         EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/glowing")),
+                        new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(1.000F, 0.933F, 0.020F), new Vector3f(1.000F, 0.933F, 0.020F), 1.0F), MobEffects.GLOWING, 100, 0, true, 2.0F, 100),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
                         new AllOf.EntityEffects(List.of(
-                                new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/glowing")),
+                                new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(1.000F, 0.933F, 0.020F), new Vector3f(1.000F, 0.933F, 0.020F), 1.0F), MobEffects.GLOWING, 100, 0, true, 2.0F, 100),
                                 new ApplyMobEffect(HolderSet.direct(MobEffects.GLOWING),
                                         LevelBasedValue.constant(4.0F), LevelBasedValue.constant(8.0F),
                                         LevelBasedValue.constant(0.0F), LevelBasedValue.perLevel(0.0F, 1.0F)))),
@@ -1055,12 +1080,12 @@ public final class ModEnchantmentProvider {
                         EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/hunger")),
+                        new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(0.345F, 0.463F, 0.325F), new Vector3f(0.345F, 0.463F, 0.325F), 1.0F), MobEffects.HUNGER, 100, 0, true, 2.0F, 100),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
                         new AllOf.EntityEffects(List.of(
-                                new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/hunger")),
+                                new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(0.345F, 0.463F, 0.325F), new Vector3f(0.345F, 0.463F, 0.325F), 1.0F), MobEffects.HUNGER, 100, 0, true, 2.0F, 100),
                                 new ApplyMobEffect(HolderSet.direct(MobEffects.HUNGER),
                                         LevelBasedValue.constant(4.0F), LevelBasedValue.constant(8.0F),
                                         LevelBasedValue.constant(0.0F), LevelBasedValue.perLevel(0.0F, 1.0F)))),
@@ -1074,12 +1099,12 @@ public final class ModEnchantmentProvider {
                         EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/infested")),
+                        new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(0.549F, 0.608F, 0.549F), new Vector3f(0.549F, 0.608F, 0.549F), 1.0F), MobEffects.INFESTED, 100, 0, true, 2.0F, 100),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
                         new AllOf.EntityEffects(List.of(
-                                new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/infested")),
+                                new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(0.549F, 0.608F, 0.549F), new Vector3f(0.549F, 0.608F, 0.549F), 1.0F), MobEffects.INFESTED, 100, 0, true, 2.0F, 100),
                                 new ApplyMobEffect(HolderSet.direct(MobEffects.INFESTED),
                                         LevelBasedValue.constant(4.0F), LevelBasedValue.constant(8.0F),
                                         LevelBasedValue.constant(0.0F), LevelBasedValue.perLevel(0.0F, 1.0F)))),
@@ -1093,12 +1118,12 @@ public final class ModEnchantmentProvider {
                         EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/oozing")),
+                        new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(0.6F, 1.0F, 0.639F), new Vector3f(0.6F, 1.0F, 0.639F), 1.0F), MobEffects.OOZING, 100, 0, true, 2.0F, 100),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
                         new AllOf.EntityEffects(List.of(
-                                new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/oozing")),
+                                new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(0.6F, 1.0F, 0.639F), new Vector3f(0.6F, 1.0F, 0.639F), 1.0F), MobEffects.OOZING, 100, 0, true, 2.0F, 100),
                                 new ApplyMobEffect(HolderSet.direct(MobEffects.OOZING),
                                         LevelBasedValue.constant(4.0F), LevelBasedValue.constant(8.0F),
                                         LevelBasedValue.constant(0.0F), LevelBasedValue.perLevel(0.0F, 1.0F)))),
@@ -1112,12 +1137,12 @@ public final class ModEnchantmentProvider {
                         EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/poison")),
+                        new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(0.529F, 0.639F, 0.388F), new Vector3f(0.529F, 0.639F, 0.388F), 1.0F), MobEffects.POISON, 100, 0, true, 2.0F, 100),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
                         new AllOf.EntityEffects(List.of(
-                                new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/poison")),
+                                new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(0.529F, 0.639F, 0.388F), new Vector3f(0.529F, 0.639F, 0.388F), 1.0F), MobEffects.POISON, 100, 0, true, 2.0F, 100),
                                 new ApplyMobEffect(HolderSet.direct(MobEffects.POISON),
                                         LevelBasedValue.constant(4.0F), LevelBasedValue.constant(8.0F),
                                         LevelBasedValue.constant(0.0F), LevelBasedValue.perLevel(0.0F, 1.0F)))),
@@ -1131,12 +1156,12 @@ public final class ModEnchantmentProvider {
                         EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/regeneration")),
+                        new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(1.0F, 0.239F, 0.239F), new Vector3f(1.0F, 0.239F, 0.239F), 1.0F), MobEffects.REGENERATION, 100, 0, true, 2.0F, 100),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
                         new AllOf.EntityEffects(List.of(
-                                new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/regeneration")),
+                                new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(1.0F, 0.239F, 0.239F), new Vector3f(1.0F, 0.239F, 0.239F), 1.0F), MobEffects.REGENERATION, 100, 0, true, 2.0F, 100),
                                 new ApplyMobEffect(HolderSet.direct(MobEffects.REGENERATION),
                                         LevelBasedValue.constant(4.0F), LevelBasedValue.constant(8.0F),
                                         LevelBasedValue.constant(0.0F), LevelBasedValue.perLevel(0.0F, 1.0F)))),
@@ -1150,12 +1175,12 @@ public final class ModEnchantmentProvider {
                         EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/slow_falling")),
+                        new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(0.953F, 0.812F, 0.725F), new Vector3f(0.953F, 0.812F, 0.725F), 1.0F), MobEffects.SLOW_FALLING, 100, 0, true, 2.0F, 100),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
                         new AllOf.EntityEffects(List.of(
-                                new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/slow_falling")),
+                                new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(0.953F, 0.812F, 0.725F), new Vector3f(0.953F, 0.812F, 0.725F), 1.0F), MobEffects.SLOW_FALLING, 100, 0, true, 2.0F, 100),
                                 new ApplyMobEffect(HolderSet.direct(MobEffects.SLOW_FALLING),
                                         LevelBasedValue.constant(4.0F), LevelBasedValue.constant(8.0F),
                                         LevelBasedValue.constant(0.0F), LevelBasedValue.perLevel(0.0F, 1.0F)))),
@@ -1169,12 +1194,12 @@ public final class ModEnchantmentProvider {
                         EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/slowness")),
+                        new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(0.545F, 0.686F, 0.878F), new Vector3f(0.545F, 0.686F, 0.878F), 1.0F), MobEffects.MOVEMENT_SLOWDOWN, 100, 0, true, 2.0F, 100),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
                         new AllOf.EntityEffects(List.of(
-                                new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/slowness")),
+                                new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(0.545F, 0.686F, 0.878F), new Vector3f(0.545F, 0.686F, 0.878F), 1.0F), MobEffects.MOVEMENT_SLOWDOWN, 100, 0, true, 2.0F, 100),
                                 new ApplyMobEffect(HolderSet.direct(MobEffects.MOVEMENT_SLOWDOWN),
                                         LevelBasedValue.constant(4.0F), LevelBasedValue.constant(8.0F),
                                         LevelBasedValue.constant(0.0F), LevelBasedValue.perLevel(0.0F, 1.0F)))),
@@ -1188,12 +1213,12 @@ public final class ModEnchantmentProvider {
                         EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/speed")),
+                        new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(0.200F, 0.922F, 1.000F), new Vector3f(0.200F, 0.922F, 1.000F), 1.0F), MobEffects.MOVEMENT_SPEED, 100, 0, true, 2.0F, 100),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
                         new AllOf.EntityEffects(List.of(
-                                new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/speed")),
+                                new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(0.200F, 0.922F, 1.000F), new Vector3f(0.200F, 0.922F, 1.000F), 1.0F), MobEffects.MOVEMENT_SPEED, 100, 0, true, 2.0F, 100),
                                 new ApplyMobEffect(HolderSet.direct(MobEffects.MOVEMENT_SPEED),
                                         LevelBasedValue.constant(4.0F), LevelBasedValue.constant(8.0F),
                                         LevelBasedValue.constant(0.0F), LevelBasedValue.perLevel(0.0F, 1.0F)))),
@@ -1207,12 +1232,12 @@ public final class ModEnchantmentProvider {
                         EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/weaving")),
+                        new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(0.471F, 0.412F, 0.353F), new Vector3f(0.471F, 0.412F, 0.353F), 1.0F), MobEffects.WEAVING, 100, 0, true, 2.0F, 100),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
                         new AllOf.EntityEffects(List.of(
-                                new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/weaving")),
+                                new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(0.471F, 0.412F, 0.353F), new Vector3f(0.471F, 0.412F, 0.353F), 1.0F), MobEffects.WEAVING, 100, 0, true, 2.0F, 100),
                                 new ApplyMobEffect(HolderSet.direct(MobEffects.WEAVING),
                                         LevelBasedValue.constant(4.0F), LevelBasedValue.constant(8.0F),
                                         LevelBasedValue.constant(0.0F), LevelBasedValue.perLevel(0.0F, 1.0F)))),
@@ -1226,12 +1251,12 @@ public final class ModEnchantmentProvider {
                         EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/wind_charged")),
+                        new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(0.741F, 0.788F, 1.0F), new Vector3f(0.741F, 0.788F, 1.0F), 1.0F), MobEffects.WIND_CHARGED, 100, 0, true, 2.0F, 100),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
                         new AllOf.EntityEffects(List.of(
-                                new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/wind_charged")),
+                                new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(0.741F, 0.788F, 1.0F), new Vector3f(0.741F, 0.788F, 1.0F), 1.0F), MobEffects.WIND_CHARGED, 100, 0, true, 2.0F, 100),
                                 new ApplyMobEffect(HolderSet.direct(MobEffects.WIND_CHARGED),
                                         LevelBasedValue.constant(4.0F), LevelBasedValue.constant(8.0F),
                                         LevelBasedValue.constant(0.0F), LevelBasedValue.perLevel(0.0F, 1.0F)))),
@@ -1245,12 +1270,12 @@ public final class ModEnchantmentProvider {
                         EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/wither")),
+                        new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(0.486F, 0.490F, 0.475F), new Vector3f(0.486F, 0.490F, 0.475F), 1.0F), MobEffects.WITHER, 100, 0, true, 2.0F, 100),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
                         new AllOf.EntityEffects(List.of(
-                                new RunFunction(RedstoneEnchants.asResource("enchantment/splash_arrow/wither")),
+                                new SplashCloudEffect(new DustColorTransitionOptions(new Vector3f(0.486F, 0.490F, 0.475F), new Vector3f(0.486F, 0.490F, 0.475F), 1.0F), MobEffects.WITHER, 100, 0, true, 2.0F, 100),
                                 new ApplyMobEffect(HolderSet.direct(MobEffects.WITHER),
                                         LevelBasedValue.constant(4.0F), LevelBasedValue.constant(8.0F),
                                         LevelBasedValue.constant(0.0F), LevelBasedValue.perLevel(0.0F, 1.0F)))),
@@ -1286,7 +1311,9 @@ public final class ModEnchantmentProvider {
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().nbt(nbtPredicate("{Tags:[\"harmed_by_committed\"]}"))))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/committed")),
+                        new AllOf.EntityEffects(List.of(
+                                new ParticleBurstEffect(ParticleTypes.ANGRY_VILLAGER, 1, 0.0F, 0.0F, 0.0F, 0.0F, 2.2F),
+                                new AddTagEffect("harmed_by_committed"))),
                         AllOfCondition.allOf(
                                 InvertedLootItemCondition.invert(LootItemEntityPropertyCondition.hasProperties(
                                         LootContext.EntityTarget.THIS,
@@ -1331,10 +1358,10 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.ANY),
                 0xFF5555)
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/curse/curse_of_clumsiness/drop_punch")),
+                        new DropHeldItemEffect(),
                         LootItemRandomChanceCondition.randomChance(0.4F))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.ATTACKER,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/curse/curse_of_clumsiness/drop_attack")),
+                        new DropHeldItemEffect(),
                         LootItemRandomChanceCondition.randomChance(0.4F)));
 
         register(context, ModEnchantments.CURSE_OF_DEATH, colored(
@@ -1342,7 +1369,8 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.HAND),
                 0xFF5555)
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.ATTACKER,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/curse/curse_of_death"))));
+                        new KillSelfEffect(),
+                        LootItemRandomChanceCondition.randomChance(0.05F)));
 
         register(context, ModEnchantments.CURSE_OF_DOUBLE_EDGE, colored(
                 Enchantment.definition(items.getOrThrow(TOOLS), items.getOrThrow(TOOLS), 4, 1,
@@ -1519,14 +1547,14 @@ public final class ModEnchantmentProvider {
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
                         new AllOf.EntityEffects(List.of(
-                                new RunFunction(RedstoneEnchants.asResource("enchantment/rain/rain_dripstone")))),
+                                new RainBlocksEffect(Blocks.POINTED_DRIPSTONE, 2.3F))),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("libs/kill_arrow")))
+                        new KillSelfEffect())
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
                         new AllOf.EntityEffects(List.of(
-                                new RunFunction(RedstoneEnchants.asResource("enchantment/rain/rain_dripstone")))),
+                                new RainBlocksEffect(Blocks.POINTED_DRIPSTONE, 2.3F))),
                         AllOfCondition.allOf(LootItemEntityPropertyCondition.hasProperties(
                                 LootContext.EntityTarget.DIRECT_ATTACKER,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS))))
@@ -1539,14 +1567,14 @@ public final class ModEnchantmentProvider {
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
                         new AllOf.EntityEffects(List.of(
-                                new RunFunction(RedstoneEnchants.asResource("enchantment/rain/rain_forge")))),
+                                new RainBlocksEffect(Blocks.ANVIL, 1.6F))),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("libs/kill_arrow")))
+                        new KillSelfEffect())
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
                         new AllOf.EntityEffects(List.of(
-                                new RunFunction(RedstoneEnchants.asResource("enchantment/rain/rain_forge")))),
+                                new RainBlocksEffect(Blocks.ANVIL, 1.6F))),
                         AllOfCondition.allOf(LootItemEntityPropertyCondition.hasProperties(
                                 LootContext.EntityTarget.DIRECT_ATTACKER,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS))))
@@ -1571,7 +1599,7 @@ public final class ModEnchantmentProvider {
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER,
                         EnchantmentTarget.DAMAGING_ENTITY,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/ricochet")),
+                        new RicochetEffect(),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.PROJECTILE_PIERCING,
@@ -1618,14 +1646,14 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.CHEST),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.VICTIM, EnchantmentTarget.VICTIM,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/retrieval/spectral")),
+                        new GiveItemEffect(Items.SPECTRAL_ARROW),
                         AllOfCondition.allOf(
                                 LootItemRandomChanceCondition.randomChance(
                                         new EnchantmentLevelProvider(LevelBasedValue.perLevel(0.2F, 0.2F))),
                                 LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
                                         EntityPredicate.Builder.entity().of(EntityType.SPECTRAL_ARROW))))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.VICTIM, EnchantmentTarget.VICTIM,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/retrieval/arrow")),
+                        new GiveItemEffect(Items.ARROW),
                         AllOfCondition.allOf(
                                 LootItemRandomChanceCondition.randomChance(
                                         new EnchantmentLevelProvider(LevelBasedValue.perLevel(0.2F, 0.2F))),
@@ -1649,7 +1677,7 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(8, 4), Enchantment.dynamicCost(16, 8), 4, EquipmentSlotGroup.ARMOR),
                 0xFFFF55)
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.VICTIM, EnchantmentTarget.VICTIM,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/snowball")),
+                        new SnowballBurstEffect(),
                         LootItemRandomChanceCondition.randomChance(
                                 new EnchantmentLevelProvider(LevelBasedValue.perLevel(0.3F, 0.3F)))));
 
@@ -1682,7 +1710,7 @@ public final class ModEnchantmentProvider {
                                 new SummonEntityEffect(HolderSet.direct(EntityType.LIGHTNING_BOLT.builtInRegistryHolder()), false),
                                 new PlaySoundEffect(SoundEvents.TRIDENT_THUNDER,
                                         ConstantFloat.of(5.0F), ConstantFloat.of(1.0F)),
-                                new RunFunction(RedstoneEnchants.asResource("enchantment/thundering")))),
+                                new WeatherThunderEffect())),
                         AllOfCondition.allOf(
                                 WeatherCheck.weather().setRaining(true),
                                 LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
@@ -1821,7 +1849,7 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.MAINHAND),
                 0xFFAA00)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/unleash_potential")))
+                        new UnleashPotentialEffect())
                 .exclusiveWith(enchantments.getOrThrow(DAMAGE_EXCLUSIVE)));
 
         register(context, ModEnchantments.TRAIL_CHERRY_LEAVES, colored(
@@ -1829,63 +1857,63 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(8, 4), Enchantment.dynamicCost(16, 8), 4, EquipmentSlotGroup.HEAD),
                 0xFFFF55)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/trail/cherry_leaves"))));
+                        new TrailParticleEffect(ParticleTypes.CHERRY_LEAVES)));
 
         register(context, ModEnchantments.TRAIL_DRAGON_BREATH, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 6, 1,
                         Enchantment.dynamicCost(8, 4), Enchantment.dynamicCost(16, 8), 4, EquipmentSlotGroup.HEAD),
                 0xFFFF55)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/trail/dragon_breath"))));
+                        new TrailParticleEffect(ParticleTypes.DRAGON_BREATH)));
 
         register(context, ModEnchantments.TRAIL_FIREWORK, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 6, 1,
                         Enchantment.dynamicCost(8, 4), Enchantment.dynamicCost(16, 8), 4, EquipmentSlotGroup.HEAD),
                 0xFFFF55)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/trail/firework"))));
+                        new TrailParticleEffect(ParticleTypes.FIREWORK)));
 
         register(context, ModEnchantments.TRAIL_GLOW, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 6, 1,
                         Enchantment.dynamicCost(8, 4), Enchantment.dynamicCost(16, 8), 4, EquipmentSlotGroup.HEAD),
                 0xFFFF55)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/trail/glow"))));
+                        new TrailParticleEffect(ParticleTypes.GLOW)));
 
         register(context, ModEnchantments.TRAIL_SCULK_SOUL, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 6, 1,
                         Enchantment.dynamicCost(8, 4), Enchantment.dynamicCost(16, 8), 4, EquipmentSlotGroup.HEAD),
                 0xFFFF55)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/trail/sculk_soul"))));
+                        new TrailParticleEffect(ParticleTypes.SCULK_SOUL)));
 
         register(context, ModEnchantments.TRAIL_SNOWFLAKE, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 6, 1,
                         Enchantment.dynamicCost(8, 4), Enchantment.dynamicCost(16, 8), 4, EquipmentSlotGroup.HEAD),
                 0xFFFF55)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/trail/snowflake"))));
+                        new TrailParticleEffect(ParticleTypes.SNOWFLAKE)));
 
         register(context, ModEnchantments.TRAIL_TRIAL_OMEN, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 6, 1,
                         Enchantment.dynamicCost(8, 4), Enchantment.dynamicCost(16, 8), 4, EquipmentSlotGroup.HEAD),
                 0xFFFF55)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/trail/trial_omen"))));
+                        new TrailParticleEffect(ParticleTypes.TRIAL_OMEN)));
 
         register(context, ModEnchantments.TRAIL_WAX_OFF, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 6, 1,
                         Enchantment.dynamicCost(8, 4), Enchantment.dynamicCost(16, 8), 4, EquipmentSlotGroup.HEAD),
                 0xFFFF55)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/trail/wax_off"))));
+                        new TrailParticleEffect(ParticleTypes.WAX_OFF)));
 
         register(context, ModEnchantments.TRAIL_WAX_ON, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 6, 1,
                         Enchantment.dynamicCost(8, 4), Enchantment.dynamicCost(16, 8), 4, EquipmentSlotGroup.HEAD),
                 0xFFFF55)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/trail/wax_on"))));
+                        new TrailParticleEffect(ParticleTypes.WAX_ON)));
 
         register(context, ModEnchantments.VITALITY, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS_CHEST), items.getOrThrow(ARMORS_CHEST), 2, 4,
@@ -1915,16 +1943,14 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(8, 4), Enchantment.dynamicCost(16, 8), 4, EquipmentSlotGroup.MAINHAND),
                 0xFFFF55)
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
-                        new RunFunction(RedstoneEnchants.asResource(
-                                "enchantment/bottle_projection/water_bottle_projection/water_1")),
+                        new ThrowWaterBottleEffect(),
                         AllOfCondition.allOf(
                                 DamageSourceCondition.hasDamageSource(DamageSourcePredicate.Builder.damageType().isDirect(true)),
                                 () -> new ValueCheckCondition(
                                         new EnchantmentLevelProvider(LevelBasedValue.perLevel(1.0F, 1.0F)),
                                         IntRange.exact(1))))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
-                        new RunFunction(RedstoneEnchants.asResource(
-                                "enchantment/bottle_projection/water_bottle_projection/water_2")),
+                        new ThrowWaterBottleEffect(),
                         AllOfCondition.allOf(
                                 DamageSourceCondition.hasDamageSource(DamageSourcePredicate.Builder.damageType().isDirect(true)),
                                 () -> new ValueCheckCondition(
@@ -2146,7 +2172,7 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/chains/chains_initial")),
+                        new ChainBindEffect(),
                         AllOfCondition.allOf(
                                 DamageSourceCondition.hasDamageSource(DamageSourcePredicate.Builder.damageType().isDirect(true)),
                                 LootItemRandomChanceCondition.randomChance(
@@ -2173,19 +2199,7 @@ public final class ModEnchantmentProvider {
         register(context, ModEnchantments.TELEPORT, colored(
                 Enchantment.definition(items.getOrThrow(TRIDENT_AND_BOW), items.getOrThrow(TRIDENT_AND_BOW), 3, 1,
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.ANY),
-                0xFF55FF)
-                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/teleport/hostile_int")),
-                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
-                                EntityPredicate.Builder.entity().of(PROJECTILES)))
-                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.ATTACKER,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/teleport/player_int")),
-                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
-                                EntityPredicate.Builder.entity().of(PROJECTILES)))
-                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/teleport/hostile_tp")),
-                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
-                                EntityPredicate.Builder.entity().of(PROJECTILES))));
+                0xFF55FF));
 
         register(context, ModEnchantments.TIDE_SENSE, colored(
                 Enchantment.definition(items.getOrThrow(ALL_FISHING), items.getOrThrow(ALL_FISHING), 3, 3,
@@ -2254,7 +2268,7 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.HAND),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/first_impression/mark")))
+                        new AddTagEffect("redstone_enchants.first_impression"))
                 .withEffect(EnchantmentEffectComponents.DAMAGE,
                         new AddValue(LevelBasedValue.perLevel(5.0F, 2.5F)),
                         InvertedLootItemCondition.invert(LootItemEntityPropertyCondition.hasProperties(
@@ -2280,10 +2294,12 @@ public final class ModEnchantmentProvider {
                         EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
                 0xFF00BB)
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/fatal_arrow")), fatalCondition)
+                        new AllOf.EntityEffects(List.of(
+                                new ParticleBurstEffect(ParticleTypes.SONIC_BOOM, 50, 1.0F, 1.0F, 1.0F, 0.5F, 0.0F),
+                                new KillSelfEffect())), fatalCondition)
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER,
                         EnchantmentTarget.DAMAGING_ENTITY,
-                        new RunFunction(RedstoneEnchants.asResource("libs/kill_arrow")), fatalCondition)
+                        new KillSelfEffect(), fatalCondition)
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.ATTACKER,
                         new AllOf.EntityEffects(List.of(
                                 new ApplyMobEffect(HolderSet.direct(MobEffects.BAD_OMEN),
@@ -2307,20 +2323,20 @@ public final class ModEnchantmentProvider {
                         EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
                 0xFFAA00)
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/fire_arrows")),
+                        new IgniteAreaEffect(),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("libs/kill_arrow")),
+                        new KillSelfEffect(),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/fire_arrows")),
+                        new IgniteAreaEffect(),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER,
                         EnchantmentTarget.DAMAGING_ENTITY,
-                        new RunFunction(RedstoneEnchants.asResource("libs/kill_arrow")),
+                        new KillSelfEffect(),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
                                 EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)))
                 .exclusiveWith(enchantments.getOrThrow(SPLASH_EXCLUSIVE)));
@@ -2619,7 +2635,7 @@ public final class ModEnchantmentProvider {
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(PROJECTILES)))
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("libs/kill_arrow")),
+                        new KillSelfEffect(),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(PROJECTILES)))
                 .exclusiveWith(enchantments.getOrThrow(SPLASH_EXCLUSIVE)));
@@ -2659,12 +2675,12 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(120, 100), Enchantment.dynamicCost(150, 120), 200, EquipmentSlotGroup.MAINHAND),
                 0xFF00BB)
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.ATTACKER,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/last_hope")),
+                        new ClearMainHandEffect(),
                         InvertedLootItemCondition.invert(LootItemEntityPropertyCondition.hasProperties(
                                 LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(BLACK_ENTITY))))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
-                        new RunFunction(RedstoneEnchants.asResource("libs/particle/sonic_boom")))
+                        new ParticleBurstEffect(ParticleTypes.SONIC_BOOM, 50, 1.0F, 1.0F, 1.0F, 0.5F, 0.0F))
                 .withEffect(EnchantmentEffectComponents.DAMAGE,
                         new AddValue(LevelBasedValue.constant(2.14748365E9F)),
                         InvertedLootItemCondition.invert(LootItemEntityPropertyCondition.hasProperties(
@@ -2685,14 +2701,14 @@ public final class ModEnchantmentProvider {
                         EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/chain_reaction/chain_reaction_spectral")),
+                        new ChainArrowsEffect(true),
                         AllOfCondition.allOf(
                                 LootItemRandomChanceCondition.randomChance(
                                         new EnchantmentLevelProvider(LevelBasedValue.perLevel(0.4F, 0.2F))),
                                 LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
                                         EntityPredicate.Builder.entity().of(EntityType.SPECTRAL_ARROW))))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/chain_reaction/chain_reaction")),
+                        new ChainArrowsEffect(false),
                         AllOfCondition.allOf(
                                 LootItemRandomChanceCondition.randomChance(
                                         new EnchantmentLevelProvider(LevelBasedValue.perLevel(0.4F, 0.2F))),
@@ -3218,7 +3234,7 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.HAND),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.ATTACKER,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/xp_blade")),
+                        new AddExperienceEffect(-15),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.ATTACKER,
                                 EntityPredicate.Builder.entity().subPredicate(
                                         PlayerPredicate.Builder.player().setLevel(MinMaxBounds.Ints.atLeast(10)).build())))

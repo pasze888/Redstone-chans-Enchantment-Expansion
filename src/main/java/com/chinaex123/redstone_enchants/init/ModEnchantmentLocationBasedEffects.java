@@ -3,6 +3,8 @@ package com.chinaex123.redstone_enchants.init;
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
 import com.chinaex123.redstone_enchants.enchantment.effect.AreaIgniteEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.AreaMobEffectEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.TrailParticleEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.UnleashPotentialEffect;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.enchantment.effects.EnchantmentLocationBasedEffect;
@@ -29,6 +31,14 @@ public final class ModEnchantmentLocationBasedEffects {
     /** 光环：点燃范围内生物（不含触发者） */
     public static final DeferredHolder<MapCodec<? extends EnchantmentLocationBasedEffect>, MapCodec<? extends EnchantmentLocationBasedEffect>> AREA_IGNITE =
             TYPES.register("area_ignite", () -> AreaIgniteEffect.CODEC);
+
+    /** 移动轨迹（trail_*）：移动时在头部上方撒粒子 */
+    public static final DeferredHolder<MapCodec<? extends EnchantmentLocationBasedEffect>, MapCodec<? extends EnchantmentLocationBasedEffect>> TRAIL_PARTICLE =
+            TYPES.register("trail_particle", () -> TrailParticleEffect.CODEC);
+
+    /** 激发潜能（unleash_potential）：饥饿越低越强 */
+    public static final DeferredHolder<MapCodec<? extends EnchantmentLocationBasedEffect>, MapCodec<? extends EnchantmentLocationBasedEffect>> UNLEASH_POTENTIAL =
+            TYPES.register("unleash_potential", () -> UnleashPotentialEffect.CODEC);
 
     public static void register(IEventBus eventBus) {
         TYPES.register(eventBus);
