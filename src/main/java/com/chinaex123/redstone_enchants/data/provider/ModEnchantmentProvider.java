@@ -43,6 +43,7 @@ public final class ModEnchantmentProvider {
     private static final TagKey<Item> MACE_ITEMS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "tools/mace"));
     private static final TagKey<Item> SHIELD_ITEMS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "tools/shield"));
     private static final TagKey<Item> ALL_FLINT_AND_STEEL = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("all_flint_and_steel"));
+    private static final TagKey<Item> ARMORS = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("armors"));
     private static final TagKey<Enchantment> MACE_EXCLUSIVE = TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/mace"));
     private static final TagKey<Enchantment> NO_SEA_BREEZE_EXCLUSIVE = TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/no_sea_breeze"));
     private static final TagKey<Item> ENCHANTABLES = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "enchantables"));
@@ -166,6 +167,12 @@ public final class ModEnchantmentProvider {
                 0xFF5555)
                 .withEffect(ModEnchantmentEffectComponents.CURSE_OF_RUST_DURABILITY.get(),
                         new SetValue(LevelBasedValue.perLevel(1.0F))));
+
+        register(context, ModEnchantments.CURSE_OF_WATER_SOURCE, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS), items.getOrThrow(ARMORS), 4, 1,
+                        Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.ARMOR),
+                0xFF5555)
+                .withEffect(ModEnchantmentEffectComponents.CURSE_OF_WATER_SOURCE.get()));
 
         register(context, ModEnchantments.BOONS, colored(
                 Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 2, 5,
