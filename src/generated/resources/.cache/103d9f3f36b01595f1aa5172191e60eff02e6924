@@ -1,4 +1,4 @@
-// 1.21.1	2026-09-04T19:47:30.2481846	Registries
+// 1.21.1	2026-09-04T19:48:26.4263435	Registries
 29ad3becde1b6c0ff60e89178f426269d2b93321 data/redstone_enchants/enchantment/advanced_unbreaking.json
 e7fbadf4574badbf688a04ccb6e4992e38152308 data/redstone_enchants/enchantment/ambush.json
 62adef69d04f09bab9391cb9e0c3dd4810a2b6f8 data/redstone_enchants/enchantment/auto_smelt.json
@@ -32,5 +32,6 @@ eec63661b771860e7ec6666facc0081dd5841bca data/redstone_enchants/enchantment/pote
 6f19cebe8f2e7f18d30d5c41946f3d2020a553e2 data/redstone_enchants/enchantment/sacrifice.json
 2a2a9daac51fd3b630ea3adc110ef3735711ba09 data/redstone_enchants/enchantment/searing.json
 2346693b7f4100035f9078ecb27213a78911aac4 data/redstone_enchants/enchantment/sea_breeze.json
+669d64bb713172ca317046967a6b7a1a8bca6d3e data/redstone_enchants/enchantment/snipe.json
 d7948a38240b624d389633ecf2107ac368a55ef4 data/redstone_enchants/enchantment/sturdy.json
 94e34c386bebecd767d6d73ef6f32afb85c30e17 data/redstone_enchants/enchantment/timber.json
