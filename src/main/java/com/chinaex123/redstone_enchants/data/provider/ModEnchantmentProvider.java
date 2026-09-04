@@ -1,6 +1,7 @@
 package com.chinaex123.redstone_enchants.data.provider;
 
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
+import com.chinaex123.redstone_enchants.enchantment.component.GamblerData;
 import com.chinaex123.redstone_enchants.enchantment.effect.RandomBeneficialMobEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.RandomHarmfulMobEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.RemoveRandomBeneficialEffect;
@@ -35,6 +36,7 @@ public final class ModEnchantmentProvider {
     private static final TagKey<Item> TOOLS = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("tools"));
     private static final TagKey<Item> SWORDS = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("swords"));
     private static final TagKey<Item> SWORDS_AND_AXES = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("swords_and_axes"));
+    private static final TagKey<Item> SWORDS_AND_BOW = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("swords_and_bow"));
     private static final TagKey<Enchantment> STONE_TRANSMUTATION_EXCLUSIVE =
             TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/stone_transmutation"));
 
@@ -83,6 +85,14 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
                 0xFF55FF)
                 .withEffect(ModEnchantmentEffectComponents.AREA_BREAK_RADIUS.get(), new AddValue(LevelBasedValue.perLevel(1.0F))));
+
+        register(context, ModEnchantments.GAMBLER, colored(
+                Enchantment.definition(items.getOrThrow(SWORDS_AND_BOW), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8,
+                        EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
+                0xFF55FF)
+                .withSpecialEffect(ModEnchantmentEffectComponents.GAMBLER_DATA.get(),
+                        new GamblerData(0.5F, 1.4F, 0.8F)));
 
         register(context, ModEnchantments.GEOLOGY, colored(
                 Enchantment.definition(items.getOrThrow(ItemTags.PICKAXES), 3, 5,

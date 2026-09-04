@@ -13,6 +13,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.effects.EnchantmentValueEffect;
 import org.apache.commons.lang3.mutable.MutableFloat;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +30,21 @@ public final class EnchantmentUtil {
         EnchantmentHelper.runIterationOnItem(stack, (enchantment, enchantmentLevel) ->
                 enchantment.value().modifyItemFilteredCount(componentType, level, enchantmentLevel, stack, value));
         return value.floatValue();
+    }
+
+    /**
+     * 读取物品附魔上的单值（复合）组件（{@code withSpecialEffect} 声明的形态），
+     * 取第一个携带该组件的附魔的值；物品上没有任何附魔携带时返回 {@code null}。
+     */
+    public static <E> E specialValue(ItemStack stack, DataComponentType<E> componentType) {
+        List<E> found = new ArrayList<>(1);
+        EnchantmentHelper.runIterationOnItem(stack, (enchantment, enchantmentLevel) -> {
+            E value = enchantment.value().effects().get(componentType);
+            if (value != null) {
+                found.add(value);
+            }
+        });
+        return found.isEmpty() ? null : found.get(0);
     }
 
     /** 物品上该附魔的等级 */

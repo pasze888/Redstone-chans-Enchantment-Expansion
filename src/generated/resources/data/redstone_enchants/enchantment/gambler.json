@@ -1,0 +1,29 @@
+{
+  "anvil_cost": 8,
+  "description": {
+    "color": "#FF55FF",
+    "translate": "enchantment.redstone_enchants.gambler"
+  },
+  "effects": {
+    "redstone_enchants:gambler_data": {
+      "bonus_multiplier": 1.4,
+      "odds": 0.5,
+      "penalty_multiplier": 0.8
+    }
+  },
+  "max_cost": {
+    "base": 24,
+    "per_level_above_first": 12
+  },
+  "max_level": 1,
+  "min_cost": {
+    "base": 12,
+    "per_level_above_first": 6
+  },
+  "slots": [
+    "mainhand",
+    "offhand"
+  ],
+  "supported_items": "#redstone_enchants:swords_and_bow",
+  "weight": 3
+}

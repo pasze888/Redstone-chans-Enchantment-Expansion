@@ -58,6 +58,10 @@ public final class ModEnchantmentEffectComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<LevelBasedValue>> RAW_VALUE =
             special("raw_value", LevelBasedValue.CODEC);
 
+    /** 赌徒（gambler）：触发概率与加/减伤乘数的复合参数 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<com.chinaex123.redstone_enchants.enchantment.component.GamblerData>> GAMBLER_DATA =
+            special("gambler_data", com.chinaex123.redstone_enchants.enchantment.component.GamblerData.CODEC);
+
     private static DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> value(String name) {
         return TYPES.register(name, () -> DataComponentType.<List<ConditionalEffect<EnchantmentValueEffect>>>builder()
                 .persistent(ConditionalEffect.codec(EnchantmentValueEffect.CODEC, LootContextParamSets.ENCHANTED_ITEM).listOf())

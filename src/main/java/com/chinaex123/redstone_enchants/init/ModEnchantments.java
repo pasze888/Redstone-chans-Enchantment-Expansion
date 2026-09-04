@@ -15,6 +15,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> CALAMITY = key("calamity");
     public static final ResourceKey<Enchantment> CHAIN_HASTE = key("chain_haste");
     public static final ResourceKey<Enchantment> EXCAVATOR = key("excavator");
+    public static final ResourceKey<Enchantment> GAMBLER = key("gambler");
     public static final ResourceKey<Enchantment> GEOLOGY = key("geology");
     public static final ResourceKey<Enchantment> GOLDFINGER = key("goldfinger");
     public static final ResourceKey<Enchantment> HASTE = key("haste");
