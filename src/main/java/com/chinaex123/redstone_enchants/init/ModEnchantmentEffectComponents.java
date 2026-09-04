@@ -130,6 +130,9 @@ public final class ModEnchantmentEffectComponents {
     /** 保全（preservation）：装备不因无耐久而损坏消失（主功能在 PreservationMixin） */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> PRESERVATION =
             unit("preservation");
+    /** 飞马座（pegasus）：骑乘时给玩家与坐骑缓降 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> PEGASUS =
+            unit("pegasus");
     /** 势能转化（potential_conversion）：下落攻击每格加伤比例（每级） */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> POTENTIAL_CONVERSION_FALL_BONUS =
             value("potential_conversion_fall_bonus");

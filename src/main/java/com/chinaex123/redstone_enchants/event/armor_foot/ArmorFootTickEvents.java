@@ -7,7 +7,11 @@ import com.chinaex123.redstone_enchants.util.EnchantmentUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -43,6 +47,7 @@ public final class ArmorFootTickEvents {
         // 固定顺序：庄稼舞 → 踏焰者 → 飞马座 → 踏浪者（旧版为独立订阅者，顺序未定义）
         cropDance(event);
         flameWalker(event);
+        pegasus(event);
     }
 
     // ---- 庄稼舞 ----
@@ -163,6 +168,63 @@ public final class ArmorFootTickEvents {
             player.fallDistance = 0;
             // 标记为在地面上
             player.setOnGround(true);
+        }
+    }
+
+    // ---- 飞马座 ----
+
+    private static final int PEGASUS_EFFECT_DURATION = 80; // 缓降持续时间（tick）
+
+    private static void pegasus(EntityTickEvent.Post event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+
+        ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
+        if (boots.isEmpty()) {
+            return;
+        }
+
+        boolean hasEnchant = EnchantmentHelper.has(boots, ModEnchantmentEffectComponents.PEGASUS.get());
+
+        if (hasEnchant && player.getVehicle() != null) {
+            // 给玩家添加缓降
+            if (!player.hasEffect(MobEffects.SLOW_FALLING)) {
+                player.addEffect(new MobEffectInstance(
+                        MobEffects.SLOW_FALLING,
+                        PEGASUS_EFFECT_DURATION,
+                        0,
+                        false,
+                        false
+                ));
+            }
+
+            // 给骑乘的生物添加缓降
+            Entity vehicle = player.getVehicle();
+            if (vehicle instanceof LivingEntity livingVehicle) {
+                if (!livingVehicle.hasEffect(MobEffects.SLOW_FALLING)) {
+                    livingVehicle.addEffect(new MobEffectInstance(
+                            MobEffects.SLOW_FALLING,
+                            PEGASUS_EFFECT_DURATION,
+                            0,
+                            false,
+                            false
+                    ));
+                }
+            }
+        } else {
+            // 移除玩家的缓降
+            if (player.hasEffect(MobEffects.SLOW_FALLING)) {
+                player.removeEffect(MobEffects.SLOW_FALLING);
+            }
+
+            // 移除骑乘生物的缓降
+            Entity vehicle = player.getVehicle();
+            if (vehicle instanceof LivingEntity livingVehicle) {
+                if (livingVehicle.hasEffect(MobEffects.SLOW_FALLING)) {
+                    livingVehicle.removeEffect(MobEffects.SLOW_FALLING);
+                }
+            }
         }
     }
 

@@ -48,6 +48,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> MASTER_GATHERER = key("master_gatherer");
     public static final ResourceKey<Enchantment> MOIST = key("moist");
     public static final ResourceKey<Enchantment> NULLIFY = key("nullify");
+    public static final ResourceKey<Enchantment> PEGASUS = key("pegasus");
     public static final ResourceKey<Enchantment> PRESERVATION = key("preservation");
     public static final ResourceKey<Enchantment> POTENTIAL_CONVERSION = key("potential_conversion");
     public static final ResourceKey<Enchantment> REVIVE_WARD = key("revive_ward");

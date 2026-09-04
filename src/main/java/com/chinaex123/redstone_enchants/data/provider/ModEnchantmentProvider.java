@@ -145,6 +145,12 @@ public final class ModEnchantmentProvider {
                 0xFF55FF)
                 .withEffect(ModEnchantmentEffectComponents.STURDY.get()));
 
+        register(context, ModEnchantments.PEGASUS, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_FOOT), items.getOrThrow(ARMORS_FOOT), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
+                0xFF55FF)
+                .withEffect(ModEnchantmentEffectComponents.PEGASUS.get()));
+
         register(context, ModEnchantments.PRESERVATION, colored(
                 Enchantment.definition(items.getOrThrow(ENCHANTABLES), items.getOrThrow(ENCHANTABLES), 3, 1,
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.ANY),
