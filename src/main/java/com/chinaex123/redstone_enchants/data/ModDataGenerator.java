@@ -36,6 +36,10 @@ public final class ModDataGenerator {
                             new ModLoadedCondition("apothic_attributes"));
                     conditions.accept(ModEnchantments.TOUCH_BLEEDING,
                             new ModLoadedCondition("apothic_attributes"));
+                    conditions.accept(ModEnchantments.UNDERCURRENT,
+                            new ModLoadedCondition("apothic_attributes"));
+                    conditions.accept(ModEnchantments.UNDERCURRENT,
+                            new ModLoadedCondition("twilightforest"));
                 },
                 Set.of(RedstoneEnchants.MOD_ID)));
     }

@@ -51,6 +51,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> CARRION_EATER = key("carrion_eater");
     public static final ResourceKey<Enchantment> CHAIN_HASTE = key("chain_haste");
     public static final ResourceKey<Enchantment> CHAIN_REACTION = key("chain_reaction");
+    public static final ResourceKey<Enchantment> CHAINS = key("chains");
     public static final ResourceKey<Enchantment> CONDUCTIVE_LINE = key("conductive_line");
     public static final ResourceKey<Enchantment> CROP_DANCE = key("crop_dance");
     public static final ResourceKey<Enchantment> CURSE_OF_RUST = key("curse_of_rust");
@@ -58,6 +59,8 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> DAYNIGHT_CYCLE = key("daynight_cycle");
     public static final ResourceKey<Enchantment> DECAPITATION = key("decapitation");
     public static final ResourceKey<Enchantment> DESPERATE_COUNTER = key("desperate_counter");
+    public static final ResourceKey<Enchantment> DEVOURING = key("devouring");
+    public static final ResourceKey<Enchantment> DYNAMO = key("dynamo");
     public static final ResourceKey<Enchantment> ECHOES_BATTLE = key("echoes_battle");
     public static final ResourceKey<Enchantment> ENDLESS_WOOL = key("endless_wool");
     public static final ResourceKey<Enchantment> EQUALIZER = key("equalizer");
@@ -90,6 +93,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> RAIN_DRIPSTONE = key("rain_dripstone");
     public static final ResourceKey<Enchantment> RAIN_FORGE = key("rain_forge");
     public static final ResourceKey<Enchantment> RAPID = key("rapid");
+    public static final ResourceKey<Enchantment> RESILIENCE_SHIELD = key("resilience_shield");
     public static final ResourceKey<Enchantment> RICOCHET = key("ricochet");
     public static final ResourceKey<Enchantment> REVIVE_WARD = key("revive_ward");
     public static final ResourceKey<Enchantment> SACRIFICE = key("sacrifice");
@@ -112,6 +116,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> SPLASH_WIND_CHARGED = key("splash_wind_charged");
     public static final ResourceKey<Enchantment> SPLASH_WITHER = key("splash_wither");
     public static final ResourceKey<Enchantment> SHEPHERD = key("shepherd");
+    public static final ResourceKey<Enchantment> SWIFT_SHADOWCUTTER = key("swift_shadowcutter");
     public static final ResourceKey<Enchantment> SNIPE = key("snipe");
     public static final ResourceKey<Enchantment> SPIRIT = key("spirit");
     public static final ResourceKey<Enchantment> STURDY = key("sturdy");
@@ -122,6 +127,9 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> TOUCH_POISON = key("touch_poison");
     public static final ResourceKey<Enchantment> TOUCH_WITHER = key("touch_wither");
     public static final ResourceKey<Enchantment> TRACKER = key("tracker");
+    public static final ResourceKey<Enchantment> UNDERCURRENT = key("undercurrent");
+    public static final ResourceKey<Enchantment> UNDER_PRESSURE = key("under_pressure");
+    public static final ResourceKey<Enchantment> UNLEASH_POTENTIAL = key("unleash_potential");
     public static final ResourceKey<Enchantment> TRAIL_CHERRY_LEAVES = key("trail_cherry_leaves");
     public static final ResourceKey<Enchantment> TRAIL_DRAGON_BREATH = key("trail_dragon_breath");
     public static final ResourceKey<Enchantment> TRAIL_FIREWORK = key("trail_firework");
@@ -132,7 +140,10 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> TRAIL_WAX_OFF = key("trail_wax_off");
     public static final ResourceKey<Enchantment> TRAIL_WAX_ON = key("trail_wax_on");
     public static final ResourceKey<Enchantment> VOLT = key("volt");
+    public static final ResourceKey<Enchantment> WATER_BOTTLE_PROJECTION = key("water_bottle_projection");
     public static final ResourceKey<Enchantment> WAVE_WALKER = key("wave_walker");
+    public static final ResourceKey<Enchantment> WEIGHTED = key("weighted");
+    public static final ResourceKey<Enchantment> XP_REAPER_MOBS = key("xp_reaper_mobs");
 
     public static ResourceKey<Enchantment> key(String path) {
         return ResourceKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource(path));

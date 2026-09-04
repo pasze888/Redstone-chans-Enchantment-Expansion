@@ -1,0 +1,69 @@
+{
+  "anvil_cost": 8,
+  "description": {
+    "color": "#FF55FF",
+    "translate": "enchantment.redstone_enchants.chains"
+  },
+  "effects": {
+    "minecraft:post_attack": [
+      {
+        "affected": "victim",
+        "effect": {
+          "type": "minecraft:run_function",
+          "function": "redstone_enchants:enchantment/chains/chains_initial"
+        },
+        "enchanted": "attacker",
+        "requirements": {
+          "condition": "minecraft:all_of",
+          "terms": [
+            {
+              "condition": "minecraft:damage_source_properties",
+              "predicate": {
+                "is_direct": true
+              }
+            },
+            {
+              "chance": {
+                "type": "minecraft:enchantment_level",
+                "amount": {
+                  "type": "minecraft:linear",
+                  "base": 0.2,
+                  "per_level_above_first": 0.2
+                }
+              },
+              "condition": "minecraft:random_chance"
+            },
+            {
+              "condition": "minecraft:inverted",
+              "term": {
+                "condition": "minecraft:entity_properties",
+                "entity": "this",
+                "predicate": {
+                  "effects": {
+                    "minecraft:slowness": {},
+                    "minecraft:weakness": {}
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "max_cost": {
+    "base": 24,
+    "per_level_above_first": 12
+  },
+  "max_level": 4,
+  "min_cost": {
+    "base": 12,
+    "per_level_above_first": 6
+  },
+  "primary_items": "#redstone_enchants:swords",
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#redstone_enchants:swords_and_axes",
+  "weight": 3
+}
