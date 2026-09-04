@@ -34,6 +34,8 @@ public final class ModDataGenerator {
                             new ModLoadedCondition("ars_nouveau"));
                     conditions.accept(ModEnchantments.RAPID,
                             new ModLoadedCondition("apothic_attributes"));
+                    conditions.accept(ModEnchantments.DUAL_CRITICAL_BOOST,
+                            new ModLoadedCondition("apothic_attributes"));
                     conditions.accept(ModEnchantments.TOUCH_BLEEDING,
                             new ModLoadedCondition("apothic_attributes"));
                     conditions.accept(ModEnchantments.UNDERCURRENT,

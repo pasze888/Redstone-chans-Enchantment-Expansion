@@ -461,6 +461,16 @@ public final class ModEnchantmentProvider {
                 .withEffect(ModEnchantmentEffectComponents.DESPERATE_COUNTER_DAMAGE.get(),
                         new SetValue(LevelBasedValue.perLevel(0.25F))));
 
+        register(context, ModEnchantments.SAFE_FALL, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_LEG), items.getOrThrow(ARMORS_LEG), 3, 4,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.LEGS),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.safe_fall_1"),
+                        Attributes.SAFE_FALL_DISTANCE,
+                        LevelBasedValue.perLevel(2.0F, 1.0F),
+                        AttributeModifier.Operation.ADD_VALUE)));
+
         register(context, ModEnchantments.SACRIFICE, colored(
                 Enchantment.definition(items.getOrThrow(ENCHANTABLES), items.getOrThrow(ENCHANTABLES), 2, 5,
                         Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.ANY),
@@ -503,6 +513,21 @@ public final class ModEnchantmentProvider {
                 0xFF00BB)
                 .exclusiveWith(enchantments.getOrThrow(INDESTRUCTIBLE_EXCLUSIVE))
                 .withEffect(ModEnchantmentEffectComponents.INDESTRUCTIBLE.get()));
+
+        register(context, ModEnchantments.STRIDING, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_LEG), items.getOrThrow(ARMORS_LEG), 3, 3,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.LEGS),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.striding_1"),
+                        Attributes.STEP_HEIGHT,
+                        LevelBasedValue.perLevel(0.5F, 0.25F),
+                        AttributeModifier.Operation.ADD_VALUE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.striding_2"),
+                        Attributes.MOVEMENT_SPEED,
+                        LevelBasedValue.perLevel(0.0F, 0.05F),
+                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
 
         register(context, ModEnchantments.STURDY, colored(
                 Enchantment.definition(items.getOrThrow(ENCHANTABLES), items.getOrThrow(ENCHANTABLES), 3, 1,
@@ -566,6 +591,23 @@ public final class ModEnchantmentProvider {
                         LevelBasedValue.perLevel(2.5F, 1.5F),
                         AttributeModifier.Operation.ADD_VALUE))
                 .exclusiveWith(enchantments.getOrThrow(ARMORS_EXCLUSIVE)));
+
+        register(context, ModEnchantments.DUAL_CRITICAL_BOOST, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_CHEST), items.getOrThrow(ARMORS_CHEST), 1, 5,
+                        Enchantment.dynamicCost(18, 8), Enchantment.dynamicCost(48, 18), 16, EquipmentSlotGroup.CHEST),
+                0xFF00BB)
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.dual_critical_boost_1"),
+                        foreignHolder(ResourceKey.create(Registries.ATTRIBUTE,
+                                ResourceLocation.fromNamespaceAndPath("apothic_attributes", "crit_chance"))),
+                        LevelBasedValue.perLevel(0.233F, 0.126F),
+                        AttributeModifier.Operation.ADD_VALUE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.dual_critical_boost_2"),
+                        foreignHolder(ResourceKey.create(Registries.ATTRIBUTE,
+                                ResourceLocation.fromNamespaceAndPath("apothic_attributes", "crit_damage"))),
+                        LevelBasedValue.perLevel(0.582F, 0.286F),
+                        AttributeModifier.Operation.ADD_VALUE)));
 
         register(context, ModEnchantments.DEVOURING, colored(
                 Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 2, 1,
@@ -1155,6 +1197,51 @@ public final class ModEnchantmentProvider {
                         LevelBasedValue.perLevel(0.2F, 0.1F),
                         AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
 
+        register(context, ModEnchantments.RESILIENCE_SENTINEL, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_LEG), items.getOrThrow(ARMORS_LEG), 2, 4,
+                        Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.LEGS),
+                0xFFAA00)
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.VICTIM, EnchantmentTarget.VICTIM,
+                        new AllOf.EntityEffects(List.of(new ApplyMobEffect(HolderSet.direct(MobEffects.DAMAGE_RESISTANCE),
+                                LevelBasedValue.constant(6.0F), LevelBasedValue.constant(12.0F),
+                                LevelBasedValue.constant(0.0F), LevelBasedValue.constant(2.0F)))),
+                        LootItemRandomChanceCondition.randomChance(
+                                new EnchantmentLevelProvider(LevelBasedValue.perLevel(0.1F, 0.2F))))
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.VICTIM, EnchantmentTarget.ATTACKER,
+                        new AllOf.EntityEffects(List.of(new ApplyMobEffect(HolderSet.direct(MobEffects.WEAKNESS),
+                                LevelBasedValue.constant(3.0F), LevelBasedValue.constant(3.0F),
+                                LevelBasedValue.constant(0.0F), LevelBasedValue.constant(0.0F)))),
+                        LootItemRandomChanceCondition.randomChance(
+                                new EnchantmentLevelProvider(LevelBasedValue.perLevel(0.1F, 0.05F)))));
+
+        register(context, ModEnchantments.RESILIENT_BASTION, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_CHEST), items.getOrThrow(ARMORS_CHEST), 2, 3,
+                        Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.CHEST),
+                0xFFAA00)
+                .withEffect(EnchantmentEffectComponents.TICK,
+                        new ApplyMobEffect(HolderSet.direct(MobEffects.DAMAGE_RESISTANCE),
+                                LevelBasedValue.constant(0.2F), LevelBasedValue.constant(0.2F),
+                                LevelBasedValue.perLevel(0.0F, 1.0F), LevelBasedValue.perLevel(0.0F, 1.0F))));
+
+        register(context, ModEnchantments.RETRIEVAL, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_CHEST), items.getOrThrow(ARMORS_CHEST), 3, 4,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.CHEST),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.VICTIM, EnchantmentTarget.VICTIM,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/retrieval/spectral")),
+                        AllOfCondition.allOf(
+                                LootItemRandomChanceCondition.randomChance(
+                                        new EnchantmentLevelProvider(LevelBasedValue.perLevel(0.2F, 0.2F))),
+                                LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
+                                        EntityPredicate.Builder.entity().of(EntityType.SPECTRAL_ARROW))))
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.VICTIM, EnchantmentTarget.VICTIM,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/retrieval/arrow")),
+                        AllOfCondition.allOf(
+                                LootItemRandomChanceCondition.randomChance(
+                                        new EnchantmentLevelProvider(LevelBasedValue.perLevel(0.2F, 0.2F))),
+                                LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
+                                        EntityPredicate.Builder.entity().of(EntityType.ARROW)))));
+
         register(context, ModEnchantments.REVIVE_WARD, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS), items.getOrThrow(ARMORS), 2, 1,
                         Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.ARMOR),
@@ -1363,6 +1450,16 @@ public final class ModEnchantmentProvider {
                 0xFFFF55)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
                         new RunFunction(RedstoneEnchants.asResource("enchantment/trail/wax_on"))));
+
+        register(context, ModEnchantments.VITALITY, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_CHEST), items.getOrThrow(ARMORS_CHEST), 2, 4,
+                        Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.CHEST),
+                0xFFAA00)
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.vitality_1"),
+                        Attributes.MAX_HEALTH,
+                        LevelBasedValue.perLevel(0.25F, 0.25F),
+                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
 
         register(context, ModEnchantments.VOLT, colored(
                 Enchantment.definition(items.getOrThrow(ALL_BOW), items.getOrThrow(ALL_BOW), 3, 4,
@@ -1656,6 +1753,19 @@ public final class ModEnchantmentProvider {
                 InvertedLootItemCondition.invert(LootItemEntityPropertyCondition.hasProperties(
                         LootContext.EntityTarget.THIS, EntityPredicate.Builder.entity().of(BLACK_ENTITY))));
 
+        register(context, ModEnchantments.FAST_SWIM, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_LEG), items.getOrThrow(ARMORS_LEG), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.LEGS),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.TICK,
+                        new ApplyMobEffect(HolderSet.direct(MobEffects.DOLPHINS_GRACE),
+                                LevelBasedValue.constant(4.0F), LevelBasedValue.constant(8.0F),
+                                LevelBasedValue.constant(0.0F), LevelBasedValue.constant(0.0F)),
+                        AllOfCondition.allOf(LootItemEntityPropertyCondition.hasProperties(
+                                LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().flags(EntityFlagsPredicate.Builder.flags().setSwimming(true))
+                                        .periodicTick(80)))));
+
         register(context, ModEnchantments.FATAL_ARROW, colored(
                 Enchantment.definition(items.getOrThrow(ALL_BOW), items.getOrThrow(ALL_BOW), 1, 1,
                         Enchantment.dynamicCost(80, 50), Enchantment.dynamicCost(100, 50), 200,
@@ -1732,6 +1842,19 @@ public final class ModEnchantmentProvider {
                                         .tag(TagPredicate.is(DamageTypeTags.IS_FIRE))
                                         .tag(TagPredicate.isNot(DamageTypeTags.BYPASSES_INVULNERABILITY))))));
 
+        register(context, ModEnchantments.FORTRESS_STANCE, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_LEG), items.getOrThrow(ARMORS_LEG), 2, 4,
+                        Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.LEGS),
+                0xFFAA00)
+                .withEffect(EnchantmentEffectComponents.TICK,
+                        new ApplyMobEffect(
+                                HolderSet.direct(MobEffects.MOVEMENT_SLOWDOWN, MobEffects.DAMAGE_RESISTANCE),
+                                LevelBasedValue.constant(0.8F), LevelBasedValue.constant(0.8F),
+                                LevelBasedValue.perLevel(0.0F, 1.0F), LevelBasedValue.perLevel(0.0F, 1.0F)),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().flags(EntityFlagsPredicate.Builder.flags()
+                                        .setOnGround(true).setCrouching(true)))));
+
         register(context, ModEnchantments.FORTITUDE, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS), items.getOrThrow(ARMORS), 3, 4,
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.ARMOR),
@@ -1741,6 +1864,53 @@ public final class ModEnchantmentProvider {
                         Attributes.ARMOR,
                         LevelBasedValue.perLevel(0.14F, 0.12F),
                         AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
+
+        register(context, ModEnchantments.FROST_THORN, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_CHEST), items.getOrThrow(ARMORS_CHEST), 3, 5,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.CHEST),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.VICTIM, EnchantmentTarget.ATTACKER,
+                        new AllOf.EntityEffects(List.of(
+                                new DamageEntity(LevelBasedValue.constant(1.0F), LevelBasedValue.constant(5.0F),
+                                        damageTypes.getOrThrow(DamageTypes.THORNS)),
+                                new PlaySoundEffect(BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.PLAYER_HURT_FREEZE),
+                                        ConstantFloat.of(5.0F), UniformFloat.of(0.6F, 0.8F)),
+                                new SpawnParticlesEffect(ParticleTypes.SNOWFLAKE,
+                                        new SpawnParticlesEffect.PositionSource(SpawnParticlesEffect.PositionSourceType.BOUNDING_BOX, 0.0F, 1.0F),
+                                        new SpawnParticlesEffect.PositionSource(SpawnParticlesEffect.PositionSourceType.BOUNDING_BOX, 0.5F, 1.0F),
+                                        new SpawnParticlesEffect.VelocitySource(0.0F, ConstantFloat.ZERO),
+                                        new SpawnParticlesEffect.VelocitySource(0.0F, ConstantFloat.ZERO),
+                                        ConstantFloat.of(1.0F)),
+                                new SpawnParticlesEffect(ParticleTypes.SNOWFLAKE,
+                                        new SpawnParticlesEffect.PositionSource(SpawnParticlesEffect.PositionSourceType.BOUNDING_BOX, 0.0F, 1.0F),
+                                        new SpawnParticlesEffect.PositionSource(SpawnParticlesEffect.PositionSourceType.BOUNDING_BOX, 0.5F, 1.0F),
+                                        new SpawnParticlesEffect.VelocitySource(0.0F, ConstantFloat.ZERO),
+                                        new SpawnParticlesEffect.VelocitySource(0.0F, ConstantFloat.ZERO),
+                                        ConstantFloat.of(1.0F)),
+                                new SpawnParticlesEffect(ParticleTypes.SNOWFLAKE,
+                                        new SpawnParticlesEffect.PositionSource(SpawnParticlesEffect.PositionSourceType.BOUNDING_BOX, 0.0F, 1.0F),
+                                        new SpawnParticlesEffect.PositionSource(SpawnParticlesEffect.PositionSourceType.BOUNDING_BOX, 0.5F, 1.0F),
+                                        new SpawnParticlesEffect.VelocitySource(0.0F, ConstantFloat.ZERO),
+                                        new SpawnParticlesEffect.VelocitySource(0.0F, ConstantFloat.ZERO),
+                                        ConstantFloat.of(1.0F)))))
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.VICTIM, EnchantmentTarget.VICTIM,
+                        new AllOf.EntityEffects(List.of(
+                                new DamageItem(LevelBasedValue.perLevel(0.15F, 0.0F)))))
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.VICTIM, EnchantmentTarget.ATTACKER,
+                        new ApplyMobEffect(HolderSet.direct(MobEffects.MOVEMENT_SLOWDOWN),
+                                LevelBasedValue.perLevel(1.0F, 1.0F), LevelBasedValue.perLevel(5.0F, 5.0F),
+                                LevelBasedValue.perLevel(0.0F, 0.25F), LevelBasedValue.perLevel(1.0F, 0.5F)))
+                .withEffect(EnchantmentEffectComponents.TICK,
+                        new SpawnParticlesEffect(ParticleTypes.SNOWFLAKE,
+                                new SpawnParticlesEffect.PositionSource(SpawnParticlesEffect.PositionSourceType.BOUNDING_BOX, 0.0F, 2.0F),
+                                new SpawnParticlesEffect.PositionSource(SpawnParticlesEffect.PositionSourceType.BOUNDING_BOX, 1.0F, 2.0F),
+                                new SpawnParticlesEffect.VelocitySource(0.0F, ConstantFloat.of(0.0F)),
+                                new SpawnParticlesEffect.VelocitySource(0.0F, ConstantFloat.of(0.5F)),
+                                ConstantFloat.of(0.25F)),
+                        AllOfCondition.allOf(
+                                LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                        EntityPredicate.Builder.entity().periodicTick(15)),
+                                LootItemRandomChanceCondition.randomChance(0.75F))));
 
         register(context, ModEnchantments.FURY, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS), items.getOrThrow(ARMORS), 3, 4,
