@@ -140,3 +140,35 @@ gambler 双分支随机）。迁移它们 = 每个附魔写自定义 effect 类�
   非潜行重置）迁入分发器；组件求值需 ServerLevel，伏击/背刺/均衡器/生命吸取/屠夫/斩首均只服务端执行
   （旧版伏击在双侧维护 Map 副本，结果行为不变）。
 - 背刺基数是 `getNewDamage()`（非 original，与其他附魔叠加方式不同，公式原样保留）。
+
+## unbreaking 家族批次（2026-09 迁移验证，advanced_unbreaking/sacrifice/indestructible/sturdy/preservation 共 5 个）
+
+已验证（compileJava / build / runData 全通过，生成 JSON 逐字段核对）的 API 事实：
+
+- `LevelBasedValue.perLevel(base, perLevelAfterFirst)` = `Linear(base, perLevelAboveFirst)`，
+  `calculate = base + perLevelAfterFirst × (级 - 1)`（LevelBasedValue.java:38）。
+  sacrifice 修复量 `floor(1.0 + 0.5×(级-1))` 用 `SetValue(LevelBasedValue.perLevel(1.0F, 0.5F))` 表达。
+- `LevelBasedValue.Fraction(numerator, denominator)`（LevelBasedValue.java:98，分子分母都是 LevelBasedValue，
+  序列化为 `minecraft:fraction`，常量序列化成裸数）。
+- `RemoveBinomial(LevelBasedValue chance)`（RemoveBinomial.java）：对每一"点"耐久消耗按 chance 判定是否不消耗
+  （advanced_unbreaking 的 `minecraft:item_damage` + `remove_binomial`，chance = fraction 4/5）。
+- `EquipmentSlotGroup.ANY`（序列化 `"any"`，EquipmentSlotGroup.java:13）。
+- `#c:enchantables`：provider 里 `TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "enchantables"))`，
+  datagen `items.getOrThrow(...)` 直接解析（NeoForge 公共标签，runData 实测）。
+- `Enchantment.Builder.exclusiveWith(HolderSet<Enchantment>)`（Enchantment.java:561）+ 手写 exclusive_set tag 的
+  `enchantments.getOrThrow(...)` 解析（批次 1 模式复用，本次 indestructible/unbreaking 两个标签同样通过）。
+- Mixin 内读附魔组件与事件侧一致：`EnchantmentHelper.has(stack, 标记组件)` 替代"registry 按名 getHolder + getLevel"
+  （PreservationMixin 已改造，mixin 注册配置未动）。
+- unbreaking 家族组件全部是"标记/单值"形态：advanced_unbreaking 纯原版组件、sacrifice 数值、其余 3 个标记。
+
+### unbreaking 批次行为变更备忘（有意为之）
+
+- 旧 4 个 handler → 4 个按钩子分发器：`UnbreakingDamageEvents`（Pre 坚固免疫 + Post 牺牲自修）、
+  `UnbreakingEquipmentEvents`（坚不可摧挂/卸 UNBREAKABLE）、`UnbreakingItemEntityEvents`（坚固掉落物
+  EntityTick/爆炸/闪电）、`UnbreakingPlayerEvents`（保全 tick 特效/阻止挖掘/tooltip）。
+- 新增效果只在服务端执行（sacrifice 旧版双侧写 setDamageValue，客户端为无效写，结果行为不变）。
+- **已知副作用原样保留（潜在问题，待用户决定是否修）**：
+  - indestructible 的 else 分支：任何未带附魔的已装备物品都会被 `remove(UNBREAKABLE)`，会剥离其它来源的组件；
+  - sturdy 的 EntityTick else 分支：任何不带坚固的掉落物都会被 `remove(FIRE_RESISTANT)`，会剥离其它来源的
+    组件（如下界合金物品）；
+  - sturdy 的 Pre 段语义：穿戴坚固 → 本体对爆炸/闪电/火**整次伤害免疫**（不只保护装备）——旧行为照抄。
