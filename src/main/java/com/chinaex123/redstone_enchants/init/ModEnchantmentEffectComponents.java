@@ -43,6 +43,12 @@ public final class ModEnchantmentEffectComponents {
     /** 导电鱼线（conductive_line）：雷雨天勾住生物召唤闪电 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> CONDUCTIVE_LINE =
             unit("conductive_line");
+    /** 庄稼舞（crop_dance）：潜行触发周围作物催熟 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> CROP_DANCE =
+            unit("crop_dance");
+    /** 庄稼舞（crop_dance）：催熟概率（每级线性，含 1 级基础） */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> CROP_DANCE_GROWTH_CHANCE =
+            value("crop_dance_growth_chance");
     /** 潮汐感知（tide_sense）：雷雨天钓起为鱼的概率 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> TIDE_SENSE_FISH_CHANCE =
             value("tide_sense_fish_chance");

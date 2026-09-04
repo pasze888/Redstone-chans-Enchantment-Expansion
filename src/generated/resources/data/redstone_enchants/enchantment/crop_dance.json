@@ -1,0 +1,37 @@
+{
+  "anvil_cost": 16,
+  "description": {
+    "color": "#FF00BB",
+    "translate": "enchantment.redstone_enchants.crop_dance"
+  },
+  "effects": {
+    "redstone_enchants:crop_dance": {},
+    "redstone_enchants:crop_dance_growth_chance": [
+      {
+        "effect": {
+          "type": "minecraft:set",
+          "value": {
+            "type": "minecraft:linear",
+            "base": 0.2,
+            "per_level_above_first": 0.1
+          }
+        }
+      }
+    ]
+  },
+  "max_cost": {
+    "base": 48,
+    "per_level_above_first": 18
+  },
+  "max_level": 1,
+  "min_cost": {
+    "base": 18,
+    "per_level_above_first": 8
+  },
+  "primary_items": "#redstone_enchants:armors_foot",
+  "slots": [
+    "feet"
+  ],
+  "supported_items": "#redstone_enchants:armors_foot",
+  "weight": 1
+}
