@@ -2,7 +2,6 @@ package com.chinaex123.redstone_enchants.event.all_shear;
 
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
 import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
-import com.chinaex123.redstone_enchants.init.ModEnchantments;
 import com.chinaex123.redstone_enchants.util.EnchantmentUtil;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -40,6 +39,7 @@ public final class ShearEntityInteractEvents {
         // 固定顺序：绵延不绝 → 经验修剪 → 收获回响 → 牧羊人（旧版为独立订阅者，顺序未定义）
         endlessWool(event);
         experienceShear(event);
+        harvestEcho(event);
     }
 
     // ---- 绵延不绝 ----
@@ -137,11 +137,29 @@ public final class ShearEntityInteractEvents {
         stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(event.getHand()));
 
         // 旧 handler 内嵌的收获回响检查（同一次剪毛附带生命恢复）
-        int harvestLevel = EnchantmentUtil.levelOn(
-                EnchantmentUtil.holder(serverLevel.registryAccess(), ModEnchantments.HARVEST_ECHO), stack);
-        if (harvestLevel > 0) {
+        if (EnchantmentHelper.has(stack, ModEnchantmentEffectComponents.HARVEST_ECHO.get())) {
             player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 60, 0, false, true));
         }
+    }
+
+    // ---- 收获回响 ----
+
+    private static void harvestEcho(PlayerInteractEvent.EntityInteract event) {
+        Player player = event.getEntity();
+        if (!(player.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+
+        ItemStack stack = event.getItemStack();
+        if (!stack.is(Items.SHEARS)) {
+            return;
+        }
+        if (!EnchantmentHelper.has(stack, ModEnchantmentEffectComponents.HARVEST_ECHO.get())) {
+            return;
+        }
+
+        // 给予 1 级生命恢复效果 3 秒
+        player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 60, 0, false, true));
     }
 
     private ShearEntityInteractEvents() {

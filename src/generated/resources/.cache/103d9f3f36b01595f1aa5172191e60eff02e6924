@@ -1,4 +1,4 @@
-// 1.21.1	2026-09-04T19:55:19.7934107	Registries
+// 1.21.1	2026-09-04T19:56:08.8592905	Registries
 29ad3becde1b6c0ff60e89178f426269d2b93321 data/redstone_enchants/enchantment/advanced_unbreaking.json
 e7fbadf4574badbf688a04ccb6e4992e38152308 data/redstone_enchants/enchantment/ambush.json
 8116d4cab23f5d8e00de0ffb4de6585c63ab9053 data/redstone_enchants/enchantment/angler.json
@@ -23,6 +23,7 @@ c4491add953b12e4b4b4cdb70ad0bc5b1c3ea03c data/redstone_enchants/enchantment/exec
 45fbe62138188876a056e58d0cedb72d265e1989 data/redstone_enchants/enchantment/gambler.json
 837ac9d0fb15a8f4998bad498d40a972e2917f01 data/redstone_enchants/enchantment/geology.json
 91ec08bf6fdc046165d045792f6e88c41b3bf035 data/redstone_enchants/enchantment/goldfinger.json
+5d008b721aada440863c7e71b1bc369c0878a511 data/redstone_enchants/enchantment/harvest_echo.json
 100e5a283c779f7469263378308b72908d96080b data/redstone_enchants/enchantment/haste.json
 84ef24d7217347fdf419a125eea487f284807b3d data/redstone_enchants/enchantment/indestructible.json
 8b1fa4e0ee96e7cb02b2b01beb34c2c3f78234fc data/redstone_enchants/enchantment/life_steal.json

@@ -70,6 +70,9 @@ public final class ModEnchantmentEffectComponents {
     /** 经验修剪（experience_shear）：每份掉落转化为经验球的经验上限倍数（每级） */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> EXPERIENCE_SHEAR_EXP_PER_LEVEL =
             value("experience_shear_exp_per_level");
+    /** 收获回响（harvest_echo）：剪刀右键时获得生命恢复 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> HARVEST_ECHO =
+            unit("harvest_echo");
     /** 生命吸取（life_steal）：按本次实际造成伤害恢复的比例 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> LIFE_STEAL_RATIO =
             value("life_steal_ratio");
