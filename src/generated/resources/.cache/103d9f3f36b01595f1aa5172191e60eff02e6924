@@ -1,4 +1,4 @@
-// 1.21.1	2026-09-04T20:01:27.5749675	Registries
+// 1.21.1	2026-09-04T20:02:26.6404633	Registries
 913d5e1b80904ec058aa8021a1962c3c080f3440 data/redstone_enchants/enchantment/adaptive.json
 29ad3becde1b6c0ff60e89178f426269d2b93321 data/redstone_enchants/enchantment/advanced_unbreaking.json
 b0a37f51f24776b5d9c3d679639ff238bf5c5e29 data/redstone_enchants/enchantment/against_all_odds.json
@@ -17,6 +17,7 @@ ec29f4bb2eed83b3109ab356292212c35b7d3930 data/redstone_enchants/enchantment/chai
 1a40505660a161fc0b3b745d62ef406efbf3ece3 data/redstone_enchants/enchantment/curse_of_water_source.json
 2a2ab2e97dd68468a0122a9bcb685762a4d722ec data/redstone_enchants/enchantment/daynight_cycle.json
 9a81a641e83c3795e2bba1cfb2a4ea35a8ba7bca data/redstone_enchants/enchantment/decapitation.json
+33deecf4a304d791f487a500d1c06625b2b44fdb data/redstone_enchants/enchantment/desperate_counter.json
 9fdda477968291e98f36872c1af863a09bbee1b6 data/redstone_enchants/enchantment/echoes_battle.json
 8ceccb1b9e9bbcf50fbff9f5822db1d91ba9183f data/redstone_enchants/enchantment/endless_wool.json
 07e7afb8adb9c7a55a96df009845744a38c86755 data/redstone_enchants/enchantment/equalizer.json

@@ -32,6 +32,8 @@ public final class ArmorHeadTickEvents {
             ResourceLocation.fromNamespaceAndPath(RedstoneEnchants.MOD_ID, "against_all_odds_damage");
     private static final ResourceLocation AAO_ARMOR_MODIFIER_ID =
             ResourceLocation.fromNamespaceAndPath(RedstoneEnchants.MOD_ID, "against_all_odds_armor");
+    private static final ResourceLocation DC_DAMAGE_MODIFIER_ID =
+            ResourceLocation.fromNamespaceAndPath(RedstoneEnchants.MOD_ID, "desperate_counter_damage");
     private static final double AAO_DETECTION_RANGE = 8.0;
     private static final double AC_DETECTION_RANGE = 16.0; // 反伪装检测范围 16 格
     private static final int AC_BASE_DURATION = 40; // 反伪装发光基础时长（tick）
@@ -42,6 +44,7 @@ public final class ArmorHeadTickEvents {
         adaptive(event);
         againstAllOdds(event);
         antiCamouflage(event);
+        desperateCounter(event);
     }
 
     // ---- 矿工 ----
@@ -172,6 +175,52 @@ public final class ArmorHeadTickEvents {
         int duration = AC_BASE_DURATION + (int) durationBonus;
         for (Monster monster : nearbyMonsters) {
             monster.addEffect(new MobEffectInstance(MobEffects.GLOWING, duration, 0, false, false));
+        }
+    }
+
+    // ---- 绝境逆袭 ----
+
+    private static void desperateCounter(EntityTickEvent.Post event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+        if (!(player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel)) {
+            // 属性修饰符以服务端为准，客户端由属性同步获得
+            return;
+        }
+
+        // 检查头盔是否有绝境逆袭附魔
+        ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
+        if (helmet.isEmpty()) {
+            return;
+        }
+        if (!EnchantmentHelper.has(helmet, ModEnchantmentEffectComponents.DESPERATE_COUNTER_DAMAGE.get())) {
+            return;
+        }
+
+        // 检查是否有失明或黑暗效果
+        boolean hasBlindness = player.hasEffect(MobEffects.BLINDNESS);
+        boolean hasDarkness = player.hasEffect(MobEffects.DARKNESS);
+
+        // 获取攻击伤害属性
+        AttributeInstance attackDamageAttribute = player.getAttribute(Attributes.ATTACK_DAMAGE);
+        if (attackDamageAttribute == null) {
+            return;
+        }
+
+        // 移除旧的修饰符
+        attackDamageAttribute.removeModifier(DC_DAMAGE_MODIFIER_ID);
+
+        // 如果有失明或黑暗，添加伤害加成（0.25×级）
+        if (hasBlindness || hasDarkness) {
+            float damagePerLevel = EnchantmentUtil.itemValue(serverLevel, helmet,
+                    ModEnchantmentEffectComponents.DESPERATE_COUNTER_DAMAGE.get());
+            AttributeModifier modifier = new AttributeModifier(
+                    DC_DAMAGE_MODIFIER_ID,
+                    damagePerLevel,
+                    AttributeModifier.Operation.ADD_MULTIPLIED_BASE
+            );
+            attackDamageAttribute.addPermanentModifier(modifier);
         }
     }
 

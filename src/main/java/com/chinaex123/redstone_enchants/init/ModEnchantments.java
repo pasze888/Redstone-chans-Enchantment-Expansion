@@ -28,6 +28,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> CURSE_OF_WATER_SOURCE = key("curse_of_water_source");
     public static final ResourceKey<Enchantment> DAYNIGHT_CYCLE = key("daynight_cycle");
     public static final ResourceKey<Enchantment> DECAPITATION = key("decapitation");
+    public static final ResourceKey<Enchantment> DESPERATE_COUNTER = key("desperate_counter");
     public static final ResourceKey<Enchantment> ECHOES_BATTLE = key("echoes_battle");
     public static final ResourceKey<Enchantment> ENDLESS_WOOL = key("endless_wool");
     public static final ResourceKey<Enchantment> EQUALIZER = key("equalizer");

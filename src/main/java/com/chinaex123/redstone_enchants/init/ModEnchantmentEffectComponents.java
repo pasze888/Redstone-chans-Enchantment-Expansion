@@ -106,6 +106,9 @@ public final class ModEnchantmentEffectComponents {
     /** 斩首（decapitation）：击杀有头颅生物时掉落头颅的概率（每级） */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> DECAPITATION_CHANCE =
             value("decapitation_chance");
+    /** 绝境逆袭（desperate_counter）：失明/黑暗时的攻击伤害加成（每级） */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> DESPERATE_COUNTER_DAMAGE =
+            value("desperate_counter_damage");
     /** 牺牲（sacrifice）：受击时每件带此附魔装备的自修量 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> SACRIFICE_REPAIR =
             value("sacrifice_repair");

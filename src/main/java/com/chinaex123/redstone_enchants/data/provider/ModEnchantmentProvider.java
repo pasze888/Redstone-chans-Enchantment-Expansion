@@ -114,6 +114,13 @@ public final class ModEnchantmentProvider {
                 0xFFAA00)
                 .withEffect(ModEnchantmentEffectComponents.DECAPITATION_CHANCE.get(), new AddValue(LevelBasedValue.perLevel(0.2F))));
 
+        register(context, ModEnchantments.DESPERATE_COUNTER, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 3, 5,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.HEAD),
+                0xFF55FF)
+                .withEffect(ModEnchantmentEffectComponents.DESPERATE_COUNTER_DAMAGE.get(),
+                        new SetValue(LevelBasedValue.perLevel(0.25F))));
+
         register(context, ModEnchantments.SACRIFICE, colored(
                 Enchantment.definition(items.getOrThrow(ENCHANTABLES), items.getOrThrow(ENCHANTABLES), 2, 5,
                         Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.ANY),
