@@ -91,6 +91,9 @@ public final class ModEnchantmentEffectComponents {
     /** 势能转化（potential_conversion）：目标有护甲时的额外系数 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> POTENTIAL_CONVERSION_ARMOR_FACTOR =
             value("potential_conversion_armor_factor");
+    /** 闪电使者（boltbringer）：高处攻击时召唤闪电 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> BOLTBRINGER =
+            unit("boltbringer");
 
     /** 攻击附加掉落（模板）：在受害实体位置生成物品堆，供 swords 类附魔通过 post_attack 声明 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<TargetedConditionalEffect<EnchantmentEntityEffect>>>> POST_ATTACK_SUMMON =
