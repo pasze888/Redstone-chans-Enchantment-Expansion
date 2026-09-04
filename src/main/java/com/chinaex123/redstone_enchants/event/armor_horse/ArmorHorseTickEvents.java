@@ -4,8 +4,12 @@ import com.chinaex123.redstone_enchants.RedstoneEnchants;
 import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
 import com.chinaex123.redstone_enchants.util.EnchantmentUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -17,15 +21,18 @@ import net.neoforged.neoforge.event.tick.EntityTickEvent;
 /**
  * 马铠（horse_armor）附魔在实体 tick 事件上的统一分发器。
  * <p>行为参数由附魔 JSON 组件声明，这里按固定顺序驱动各效果。
- * 旧实现是每个附魔一个独立订阅者；分发器固定执行顺序：牧场 → （后续）精神。
+ * 旧实现是每个附魔一个独立订阅者；分发器固定执行顺序：牧场 → 精神。
  */
 @EventBusSubscriber(modid = RedstoneEnchants.MOD_ID)
 public final class ArmorHorseTickEvents {
+    private static final ResourceLocation SPIRIT_SPEED_MODIFIER_ID =
+            ResourceLocation.fromNamespaceAndPath(RedstoneEnchants.MOD_ID, "spirit_speed");
 
     @SubscribeEvent
     public static void onEntityTick(EntityTickEvent.Post event) {
         // 固定顺序：牧场 → 精神（旧版为独立订阅者，顺序未定义）
         pasture(event);
+        spirit(event);
     }
 
     // ---- 牧场 ----
@@ -65,6 +72,57 @@ public final class ArmorHorseTickEvents {
                         ModEnchantmentEffectComponents.PASTURE_HEAL.get());
                 horse.heal(healPerLevel);
             }
+        }
+    }
+
+    // ---- 精神 ----
+
+    private static void spirit(EntityTickEvent.Post event) {
+        if (!(event.getEntity() instanceof AbstractHorse horse)) {
+            return;
+        }
+
+        // 检查马是否有鞍（被骑乘）
+        if (!horse.isSaddled()) {
+            return;
+        }
+
+        // 检查马铠是否有精神附魔
+        ItemStack armor = horse.getItemBySlot(EquipmentSlot.BODY);
+        if (armor.isEmpty()) {
+            return;
+        }
+        if (!EnchantmentHelper.has(armor, ModEnchantmentEffectComponents.SPIRIT_SPEED_BONUS.get())) {
+            return;
+        }
+        if (!(horse.level() instanceof ServerLevel serverLevel)) {
+            // 属性修饰符以服务端为准，客户端由属性同步获得
+            return;
+        }
+
+        // 检查是否是夜晚
+        long dayTime = horse.level().getDayTime() % 24000;
+        boolean isNight = dayTime >= 13000 && dayTime < 23000;
+
+        // 获取移动速度属性
+        AttributeInstance speedAttribute = horse.getAttribute(Attributes.MOVEMENT_SPEED);
+        if (speedAttribute == null) {
+            return;
+        }
+
+        // 移除旧的修饰符
+        speedAttribute.removeModifier(SPIRIT_SPEED_MODIFIER_ID);
+
+        // 如果是夜晚，添加速度加成（0.25×级）
+        if (isNight) {
+            float speedPerLevel = EnchantmentUtil.itemValue(serverLevel, armor,
+                    ModEnchantmentEffectComponents.SPIRIT_SPEED_BONUS.get());
+            AttributeModifier modifier = new AttributeModifier(
+                    SPIRIT_SPEED_MODIFIER_ID,
+                    speedPerLevel,
+                    AttributeModifier.Operation.ADD_MULTIPLIED_BASE
+            );
+            speedAttribute.addPermanentModifier(modifier);
         }
     }
 

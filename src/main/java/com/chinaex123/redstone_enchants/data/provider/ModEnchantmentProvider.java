@@ -257,6 +257,13 @@ public final class ModEnchantmentProvider {
                 0xFF55FF)
                 .withEffect(ModEnchantmentEffectComponents.SNIPE_BONUS.get(), new AddValue(LevelBasedValue.perLevel(0.15F))));
 
+        register(context, ModEnchantments.SPIRIT, colored(
+                Enchantment.definition(items.getOrThrow(HORSE_ARMOR), items.getOrThrow(HORSE_ARMOR), 3, 5,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.BODY),
+                0xFF55FF)
+                .withEffect(ModEnchantmentEffectComponents.SPIRIT_SPEED_BONUS.get(),
+                        new SetValue(LevelBasedValue.perLevel(0.25F))));
+
         register(context, ModEnchantments.TRACKER, colored(
                 Enchantment.definition(items.getOrThrow(WOLF_ARMOR), items.getOrThrow(WOLF_ARMOR), 4, 1,
                         Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.BODY),
