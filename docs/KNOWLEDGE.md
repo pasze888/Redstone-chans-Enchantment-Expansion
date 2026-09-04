@@ -172,3 +172,71 @@ gambler 双分支随机）。迁移它们 = 每个附魔写自定义 effect 类�
   - sturdy 的 EntityTick else 分支：任何不带坚固的掉落物都会被 `remove(FIRE_RESISTANT)`，会剥离其它来源的
     组件（如下界合金物品）；
   - sturdy 的 Pre 段语义：穿戴坚固 → 本体对爆炸/闪电/火**整次伤害免疫**（不只保护装备）——旧行为照抄。
+
+## 旧式 handler 全量迁移批次（2026-09，potential_conversion→spirit 共 35 个全部完成）
+
+至此 `event/` 目录下**不再有任何逐附魔 handler**，全部为家族分发器（每家族按钩子建类，
+`@EventBusSubscriber(modid = MOD_ID)` + 私有构造 + 固定顺序段）。本批覆盖：potential_conversion、
+boltbringer、echoes_battle、sea_breeze、searing、curse_of_rust、curse_of_water_source、daynight_cycle、
+revive_ward、snipe、volt、fishing 3（angler/conductive_line/tide_sense）、shear 4（endless_wool/
+experience_shear/harvest_echo/shepherd）、armor_head 4（adaptive/against_all_odds/anti_camouflage/
+desperate_counter）、armor_foot 4（crop_dance/flame_walker/pegasus/wave_walker）、armor_chest 2
+（berserk/bulletproof）、armor_leg 2（invisibility_cloak/tactical_knee）、armor_wolf 3（carrion_eater/
+pack_leader/tracker）、armor_horse 2（pasture/spirit）。
+
+已验证（每附魔独立提交，compileJava / runData / build 全通过，生成 JSON 逐字段核对）的 API 事实：
+
+- `EnchantmentUtil.itemValue(ServerLevel, ItemStack, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>)`
+  签名要求 **ServerLevel**（不是 Level）——含数值求值的段一律 `instanceof ServerLevel` guard 后再求值。
+- 等级信息全部进组件后，事件侧不再需要 registry `getHolder` + `getLevel`：
+  `EnchantmentHelper.has(stack, 标记组件)` 判存在，`itemValue` 取每级数值。
+  `EnchantmentUtil.levelOn(EnchantmentUtil.holder(RegistryAccess, ResourceKey), stack)` 保留给
+  "需要确切等级"的场景（本批 35 个均未用到）。
+- 原版 exclusive_set 复刻：`Enchantment.Builder.exclusiveWith(HolderSet.direct(enchantments.getOrThrow(Enchantments.DEPTH_STRIDER)))`
+  （flame_walker/wave_walker；provider 需 import `net.minecraft.core.HolderSet` + `Enchantments`），
+  序列化输出 `"exclusive_set": "minecraft:depth_strider"`。
+- 原版组件复刻：tide_sense 直接 `.withEffect(EnchantmentEffectComponents.FISHING_TIME_REDUCTION, new AddValue(perLevel(10.0F)))`
+  （10×级 每级减 10t 钓鱼等待），datagen 与原版 JSON 同构。
+- `TagKey` 在 provider 里必须 `items.getOrThrow(tagKey)` 解析（sea_breeze 踩坑：把 TagKey 直接传给
+  `definition(...)` 编译错）。
+- `EquipmentSlotGroup.LEGS / BODY / FEET` 均存在（armor_leg/armor_wolf/armor_horse/armor_foot 已用）；
+  `#redstone_enchants:armors_head/armors_chest/armors_leg/wolf_armor/horse_armor` 标签照抄手写 JSON。
+- 钩子签名已用例：`LivingFallEvent.setCanceled(true)`（tactical_knee）、`LivingDeathEvent`（carrion_eater）、
+  `LivingEquipmentChangeEvent.getSlot()`（armor_head/armor_horse 摘除清理）、
+  `AbstractHorse.isSaddled()` + BODY 槽（armor_horse）、
+  `AttributeInstance.removeModifier(ResourceLocation)` / `addPermanentModifier(modifier)`（1.21.1 按
+  ResourceLocation 移除的重载存在，spirit 已编译验证）、`LivingIncomingDamageEvent.setCanceled()`
+  （bulletproof）、`EntityTickEvent.Post` 双用途（玩家 tick 与马 tick）。
+- `LevelBasedValue.perLevel(base, per)` 系列照抄汇总：crop_dance `perLevel(0.2,0.1)`=0.1+0.1×级、
+  bulletproof `perLevel(0.5,0.25)`、berserk `perLevel(0.03,0)`（等价 perLevel(0.03F)）——
+  **旧"×级"公式必须写成 `perLevel(v)`（base=v, per=v）而不是 `perLevel(0,v)`**，二者序列化不同但语义同；
+  pasture/heal 类 `heal(级×0.5)` 写 `SetValue(perLevel(0.5F))`。
+
+### 行为变更备忘（本批，有意为之 / 怪癖原样保留）
+
+- 逐附魔 handler 全删；每家族分发器固定顺序（旧版为多个独立订阅者，顺序未定义）：
+  armor_head tick `adaptive → against_all_odds → anti_camouflage → desperate_counter`，
+  armor_foot tick `crop_dance → flame_walker → pegasus → wave_walker`，
+  sword Pre `赌徒 → 伏击 → 背刺 → 均衡器 → 处决`，armor_wolf Pre `pack_leader → tracker`，
+  armor_horse tick `pasture → spirit`。
+- **仅服务端执行**（旧版双侧跑，行为不变）：所有 itemValue 段（armor 全家族、berserk/bulletproof、
+  snipe/volt、fishing 3、shear 4、sea_breeze/searing、potential_conversion、echoes_battle、daynight_cycle、
+  revive_ward）。纯标记/纯事件段保真双侧：tactical_knee（客户端取消本地坠落预测）、
+  invisibility_cloak（本地效果预览）。
+- 怪癖原样保留清单：
+  - armor_foot `LAST_SNEAKING` 是 `ConcurrentHashMap`，实体卸载/死亡后条目**不清理**（泄漏），照抄；
+  - invisibility_cloak else 分支 `removeEffect(INVISIBILITY)` **不区分效果来源**（任何来源的隐身都会被
+    抹掉），照抄；
+  - pack_leader 旧注释写"每级每只狼+5%"但常量是 **0.5（=50%）**，行为以 50% 为准照抄；
+  - spirit 用 `addPermanentModifier` 且每 tick 先 `removeModifier(spirit_speed)` 再加（非临时修饰符，
+    摘除马铠靠 LivingEquipmentChangeEvent 清理，modifier id `spirit_speed` 照抄）；
+  - armor_head 的 AAO_DAMAGE/AAO_ARMOR attribute modifier id 照抄；against_all_odds 只统计
+    8 格内生物数（无 alive/可攻击过滤），照抄；
+  - revive_ward 在 `LivingDamageEvent.Pre` 用 `getNewDamage()` 判死——**不考虑同 tick 其它 Pre 加成
+    之后的值变化时序**（旧版即如此）；
+  - experience_shear/harvest_echo 的"检查目标是否玩家/已被剪"等内嵌条件改为组件存在性读取后语义不变；
+  - boltbringer/echoes_battle 的数值与状态字段照抄（详见各自提交）。
+- **bug 修复（已注明）**：life_steal ID `leeching`→`life_steal`（swords 批次）；本批无新修复。
+- 组件命名沿用 `组件名 = 效果语义`：数值组件带 `_bonus/_heal/_chance/_penalty` 等后缀，标记组件
+  （unit）用附魔名本身（`CROP_DANCE/FLAME_WALKER/PEGASUS/WAVE_WALKER/INVISIBILITY_CLOAK/TACTICAL_KNEE`
+  等），datagen 侧与事件侧一一对应。
