@@ -65,6 +65,8 @@ public final class ModEnchantmentProvider {
             TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/unbreaking"));
     private static final TagKey<Enchantment> INDESTRUCTIBLE_EXCLUSIVE =
             TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/indestructible"));
+    private static final TagKey<Enchantment> AURA_EXCLUSIVE =
+            TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/aura"));
 
     private static void bootstrap(BootstrapContext<Enchantment> context) {
         HolderGetter<Item> items = context.lookup(Registries.ITEM);
@@ -360,6 +362,110 @@ public final class ModEnchantmentProvider {
                 0xFF55FF)
                 .withEffect(ModEnchantmentEffectComponents.ANTI_CAMOUFLAGE_DURATION_BONUS.get(),
                         new AddValue(LevelBasedValue.perLevel(10.0F))));
+
+        register(context, ModEnchantments.AURA_BURNING, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_FOOT), items.getOrThrow(ARMORS_FOOT), 4, 1,
+                        Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.FEET),
+                0x55FFFF)
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/burning")))
+                .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
+
+        register(context, ModEnchantments.AURA_GLOWING, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_FOOT), items.getOrThrow(ARMORS_FOOT), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/glowing")))
+                .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
+
+        register(context, ModEnchantments.AURA_HASTE, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_FOOT), items.getOrThrow(ARMORS_FOOT), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/haste")))
+                .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
+
+        register(context, ModEnchantments.AURA_INFESTED, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_FOOT), items.getOrThrow(ARMORS_FOOT), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/infested")))
+                .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
+
+        register(context, ModEnchantments.AURA_JUMP_BOOST, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_FOOT), items.getOrThrow(ARMORS_FOOT), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/jump_boost")))
+                .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
+
+        register(context, ModEnchantments.AURA_POISON, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_FOOT), items.getOrThrow(ARMORS_FOOT), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/poison")))
+                .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
+
+        register(context, ModEnchantments.AURA_REGENERATION, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_FOOT), items.getOrThrow(ARMORS_FOOT), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/regeneration")))
+                .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
+
+        register(context, ModEnchantments.AURA_RESISTANCE, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_FOOT), items.getOrThrow(ARMORS_FOOT), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/resistance")))
+                .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
+
+        register(context, ModEnchantments.AURA_SLOWNESS, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_FOOT), items.getOrThrow(ARMORS_FOOT), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/slowness")))
+                .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
+
+        register(context, ModEnchantments.AURA_SPEED, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_FOOT), items.getOrThrow(ARMORS_FOOT), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/speed")))
+                .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
+
+        register(context, ModEnchantments.AURA_STRENGTH, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_FOOT), items.getOrThrow(ARMORS_FOOT), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/strength")))
+                .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
+
+        register(context, ModEnchantments.AURA_WEAKNESS, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_FOOT), items.getOrThrow(ARMORS_FOOT), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/weakness")))
+                .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
+
+        register(context, ModEnchantments.AURA_WITHER, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_FOOT), items.getOrThrow(ARMORS_FOOT), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/aura/wither")))
+                .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
 
         register(context, ModEnchantments.CONDUCTIVE_LINE, colored(
                 Enchantment.definition(items.getOrThrow(ALL_FISHING), items.getOrThrow(ALL_FISHING), 3, 1,
