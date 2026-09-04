@@ -42,6 +42,7 @@ public final class SwordLivingDamageEvents {
         gamblerRoll(event);
         ambushStrike(event);
         backstab(event);
+        equalizer(event);
         executionKill(event);
     }
 
@@ -161,6 +162,35 @@ public final class SwordLivingDamageEvents {
             float front = EnchantmentUtil.itemValue(serverLevel, weapon, ModEnchantmentEffectComponents.BACKSTAB_FRONT_PENALTY.get());
             event.setNewDamage(event.getNewDamage() * (1 - front));
         }
+    }
+
+    // ---- 均衡器 ----
+
+    private static void equalizer(LivingDamageEvent.Pre event) {
+        // 旧版用 getDirectEntity + Player 判定攻击者
+        if (!(event.getSource().getDirectEntity() instanceof Player attacker)) {
+            return;
+        }
+        if (!(attacker.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        ItemStack weapon = attacker.getMainHandItem();
+        if (weapon.isEmpty()) {
+            return;
+        }
+        if (!EnchantmentHelper.has(weapon, ModEnchantmentEffectComponents.EQUALIZER_BONUS.get())) {
+            return;
+        }
+        LivingEntity target = event.getEntity();
+
+        // 计算目标血量百分比
+        float maxHealth = target.getMaxHealth();
+        float currentHealth = target.getHealth();
+        float healthPercentage = currentHealth / maxHealth;
+
+        // 旧版公式原样：伤害 = original × (1 + hp% × 0.2×级)
+        float bonusMultiplier = healthPercentage * EnchantmentUtil.itemValue(serverLevel, weapon, ModEnchantmentEffectComponents.EQUALIZER_BONUS.get());
+        event.setNewDamage(event.getOriginalDamage() * (1 + bonusMultiplier));
     }
 
     // ---- 处决 ----

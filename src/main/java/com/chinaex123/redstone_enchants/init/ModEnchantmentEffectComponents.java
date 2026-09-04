@@ -64,6 +64,9 @@ public final class ModEnchantmentEffectComponents {
     /** 背刺（backstab）：从目标正面攻击的减伤比例（每级） */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> BACKSTAB_FRONT_PENALTY =
             value("backstab_front_penalty");
+    /** 均衡器（equalizer）：伤害随目标血量百分比变化的加成系数（每级） */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> EQUALIZER_BONUS =
+            value("equalizer_bonus");
 
     /** 攻击附加掉落（模板）：在受害实体位置生成物品堆，供 swords 类附魔通过 post_attack 声明 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<TargetedConditionalEffect<EnchantmentEntityEffect>>>> POST_ATTACK_SUMMON =

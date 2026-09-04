@@ -1,10 +1,11 @@
-// 1.21.1	2026-09-04T19:13:06.6956123	Registries
+// 1.21.1	2026-09-04T19:14:22.5477832	Registries
 e7fbadf4574badbf688a04ccb6e4992e38152308 data/redstone_enchants/enchantment/ambush.json
 62adef69d04f09bab9391cb9e0c3dd4810a2b6f8 data/redstone_enchants/enchantment/auto_smelt.json
 8e543a4a36e550940958d194e62ae71231870b80 data/redstone_enchants/enchantment/backstab.json
 4dbea2b2de2a40cd14db8e901a58399bf0e64586 data/redstone_enchants/enchantment/boons.json
 0f22ea9b4b68d7d4c7d2e52b8f560d7070f16c7f data/redstone_enchants/enchantment/calamity.json
 ec29f4bb2eed83b3109ab356292212c35b7d3930 data/redstone_enchants/enchantment/chain_haste.json
+07e7afb8adb9c7a55a96df009845744a38c86755 data/redstone_enchants/enchantment/equalizer.json
 1908557260c891d47ff6948cfcbacdee1185d621 data/redstone_enchants/enchantment/excavator.json
 c4491add953b12e4b4b4cdb70ad0bc5b1c3ea03c data/redstone_enchants/enchantment/execution.json
 45fbe62138188876a056e58d0cedb72d265e1989 data/redstone_enchants/enchantment/gambler.json

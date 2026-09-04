@@ -80,6 +80,12 @@ public final class ModEnchantmentProvider {
                         EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
                         new RandomHarmfulMobEffect(LevelBasedValue.perLevel(0.05F))));
 
+        register(context, ModEnchantments.EQUALIZER, colored(
+                Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 3, 5,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
+                0xFF55FF)
+                .withEffect(ModEnchantmentEffectComponents.EQUALIZER_BONUS.get(), new AddValue(LevelBasedValue.perLevel(0.2F))));
+
         register(context, ModEnchantments.NULLIFY, colored(
                 Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 2, 5,
                         Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.MAINHAND),
