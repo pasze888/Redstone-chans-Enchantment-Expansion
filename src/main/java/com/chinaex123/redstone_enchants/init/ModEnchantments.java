@@ -59,8 +59,14 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> CURSE_OF_ACROPHOBIA = key("curse_of_acrophobia");
     public static final ResourceKey<Enchantment> CURSE_OF_BASIPHOBIA = key("curse_of_basiphobia");
     public static final ResourceKey<Enchantment> CURSE_OF_BLINDNESS = key("curse_of_blindness");
+    public static final ResourceKey<Enchantment> CURSE_OF_BREAKING = key("curse_of_breaking");
+    public static final ResourceKey<Enchantment> CURSE_OF_CLUMSINESS = key("curse_of_clumsiness");
+    public static final ResourceKey<Enchantment> CURSE_OF_DEATH = key("curse_of_death");
+    public static final ResourceKey<Enchantment> CURSE_OF_DOUBLE_EDGE = key("curse_of_double_edge");
     public static final ResourceKey<Enchantment> CURSE_OF_GRAVITY = key("curse_of_gravity");
+    public static final ResourceKey<Enchantment> CURSE_OF_HIDING = key("curse_of_hiding");
     public static final ResourceKey<Enchantment> CURSE_OF_HUNGER = key("curse_of_hunger");
+    public static final ResourceKey<Enchantment> CURSE_OF_REACH = key("curse_of_reach");
     public static final ResourceKey<Enchantment> CURSE_OF_UNLUCKY = key("curse_of_unlucky");
     public static final ResourceKey<Enchantment> CURSE_OF_BLAST = key("curse_of_blast");
     public static final ResourceKey<Enchantment> CURSE_OF_STILLNESS = key("curse_of_stillness");
@@ -84,6 +90,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> EXCAVATOR = key("excavator");
     public static final ResourceKey<Enchantment> EXECUTION = key("execution");
     public static final ResourceKey<Enchantment> EXPERIENCE_SHEAR = key("experience_shear");
+    public static final ResourceKey<Enchantment> EXTEND = key("extend");
     public static final ResourceKey<Enchantment> FATAL_ARROW = key("fatal_arrow");
     public static final ResourceKey<Enchantment> FAST_SWIM = key("fast_swim");
     public static final ResourceKey<Enchantment> FIRE_ARROWS = key("fire_arrows");
@@ -109,6 +116,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> JUMP_AMPLIFIER = key("jump_amplifier");
     public static final ResourceKey<Enchantment> INVISIBILITY_CLOAK = key("invisibility_cloak");
     public static final ResourceKey<Enchantment> LIFE_STEAL = key("life_steal");
+    public static final ResourceKey<Enchantment> LIGHTWEIGHT = key("lightweight");
     public static final ResourceKey<Enchantment> LUCKY_BOOST = key("lucky_boost");
     public static final ResourceKey<Enchantment> LUCKY_LIGHT = key("lucky_light");
     public static final ResourceKey<Enchantment> LIGHTNESS_HEAVY_DUALISM = key("lightness-heavy_dualism");
@@ -206,6 +214,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> WIND_PROPULSION = key("wind_propulsion");
     public static final ResourceKey<Enchantment> WOLF_SPIRIT_SHIELD = key("wolf_spirit_shield");
     public static final ResourceKey<Enchantment> XP_REAPER_MOBS = key("xp_reaper_mobs");
+    public static final ResourceKey<Enchantment> XP_SPRING_BLOCK = key("xp_spring_block");
 
     public static ResourceKey<Enchantment> key(String path) {
         return ResourceKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource(path));

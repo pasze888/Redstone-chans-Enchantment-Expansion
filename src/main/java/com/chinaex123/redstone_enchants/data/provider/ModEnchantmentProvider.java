@@ -118,6 +118,8 @@ public final class ModEnchantmentProvider {
     private static final TagKey<Item> TRIDENT_AND_BOW = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("trident_and_bow"));
     private static final TagKey<Item> ELYTRA = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("elytra"));
     private static final TagKey<Item> HORSE_ANIMAL_ARMOR = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("horse_animal_armor"));
+    private static final TagKey<Item> ALL_TOOLS = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("all_tools"));
+    private static final TagKey<Item> C_ENCHANTABLES = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "enchantables"));
     private static final TagKey<Item> MACE_ITEMS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "tools/mace"));
     private static final TagKey<Item> SHIELD_ITEMS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "tools/shield"));
     private static final TagKey<Item> ALL_FLINT_AND_STEEL = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("all_flint_and_steel"));
@@ -1066,6 +1068,42 @@ public final class ModEnchantmentProvider {
                                 LevelBasedValue.constant(3.0F), LevelBasedValue.constant(3.0F),
                                 LevelBasedValue.perLevel(0.0F, 1.0F), LevelBasedValue.perLevel(0.0F, 1.0F))));
 
+        register(context, ModEnchantments.CURSE_OF_BREAKING, colored(
+                Enchantment.definition(items.getOrThrow(C_ENCHANTABLES), items.getOrThrow(C_ENCHANTABLES), 4, 4,
+                        Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.ANY),
+                0xFF5555)
+                .withEffect(EnchantmentEffectComponents.ITEM_DAMAGE,
+                        new AddValue(LevelBasedValue.perLevel(1.0F, 1.0F)),
+                        LootItemRandomChanceCondition.randomChance(
+                                new EnchantmentLevelProvider(LevelBasedValue.perLevel(0.15F, 0.15F)))));
+
+        register(context, ModEnchantments.CURSE_OF_CLUMSINESS, colored(
+                Enchantment.definition(items.getOrThrow(C_ENCHANTABLES), items.getOrThrow(C_ENCHANTABLES), 4, 1,
+                        Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.ANY),
+                0xFF5555)
+                .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/curse/curse_of_clumsiness/drop_punch")),
+                        LootItemRandomChanceCondition.randomChance(0.4F))
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.ATTACKER,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/curse/curse_of_clumsiness/drop_attack")),
+                        LootItemRandomChanceCondition.randomChance(0.4F)));
+
+        register(context, ModEnchantments.CURSE_OF_DEATH, colored(
+                Enchantment.definition(items.getOrThrow(TOOLS), items.getOrThrow(TOOLS), 4, 1,
+                        Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.HAND),
+                0xFF5555)
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.ATTACKER,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/curse/curse_of_death"))));
+
+        register(context, ModEnchantments.CURSE_OF_DOUBLE_EDGE, colored(
+                Enchantment.definition(items.getOrThrow(TOOLS), items.getOrThrow(TOOLS), 4, 1,
+                        Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.HAND),
+                0xFF5555)
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.ATTACKER,
+                        new DamageEntity(LevelBasedValue.constant(2.0F), LevelBasedValue.constant(4.0F),
+                                damageTypes.getOrThrow(DamageTypes.MAGIC)),
+                        LootItemRandomChanceCondition.randomChance(0.4F)));
+
         register(context, ModEnchantments.CURSE_OF_GRAVITY, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS_FOOT), items.getOrThrow(ARMORS_FOOT), 4, 3,
                         Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.FEET),
@@ -1076,6 +1114,16 @@ public final class ModEnchantmentProvider {
                         LevelBasedValue.perLevel(0.02F, 0.06F),
                         AttributeModifier.Operation.ADD_VALUE)));
 
+        register(context, ModEnchantments.CURSE_OF_HIDING, colored(
+                Enchantment.definition(items.getOrThrow(TOOLS), items.getOrThrow(TOOLS), 4, 1,
+                        Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.HAND),
+                0xFF5555)
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new ApplyMobEffect(HolderSet.direct(MobEffects.INVISIBILITY),
+                                LevelBasedValue.perLevel(2.0F, 3.0F), LevelBasedValue.perLevel(5.0F, 5.0F),
+                                LevelBasedValue.perLevel(1.0F, 1.0F), LevelBasedValue.perLevel(1.0F, 1.0F)),
+                        DamageSourceCondition.hasDamageSource(DamageSourcePredicate.Builder.damageType())));
+
         register(context, ModEnchantments.CURSE_OF_HUNGER, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 4, 4,
                         Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.HEAD),
@@ -1084,6 +1132,21 @@ public final class ModEnchantmentProvider {
                         new ApplyMobEffect(HolderSet.direct(MobEffects.HUNGER),
                                 LevelBasedValue.constant(0.2F), LevelBasedValue.constant(0.2F),
                                 LevelBasedValue.perLevel(0.0F, 1.0F), LevelBasedValue.perLevel(0.0F, 1.0F))));
+
+        register(context, ModEnchantments.CURSE_OF_REACH, colored(
+                Enchantment.definition(items.getOrThrow(TOOLS), items.getOrThrow(TOOLS), 4, 3,
+                        Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.HAND),
+                0xFF5555)
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.curse_of_reach_1"),
+                        Attributes.BLOCK_INTERACTION_RANGE,
+                        LevelBasedValue.perLevel(-1.0F, -1.0F),
+                        AttributeModifier.Operation.ADD_VALUE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.curse_of_reach_2"),
+                        Attributes.ENTITY_INTERACTION_RANGE,
+                        LevelBasedValue.perLevel(-1.0F, -1.0F),
+                        AttributeModifier.Operation.ADD_VALUE)));
 
         register(context, ModEnchantments.CURSE_OF_UNLUCKY, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 5, 4,
@@ -1591,6 +1654,13 @@ public final class ModEnchantmentProvider {
                 0xFF55FF)
                 .withEffect(ModEnchantmentEffectComponents.VOLT_BONUS.get(), new AddValue(LevelBasedValue.perLevel(0.25F))));
 
+        register(context, ModEnchantments.XP_SPRING_BLOCK, colored(
+                Enchantment.definition(items.getOrThrow(TOOLS), items.getOrThrow(TOOLS), 4, 3,
+                        Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.MAINHAND),
+                0x55FFFF)
+                .withEffect(EnchantmentEffectComponents.BLOCK_EXPERIENCE,
+                        new MultiplyValue(LevelBasedValue.perLevel(1.5F, 1.0F))));
+
         register(context, ModEnchantments.WATER_BOTTLE_PROJECTION, colored(
                 Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 6, 2,
                         Enchantment.dynamicCost(8, 4), Enchantment.dynamicCost(16, 8), 4, EquipmentSlotGroup.MAINHAND),
@@ -1893,6 +1963,21 @@ public final class ModEnchantmentProvider {
                         EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS)),
                 InvertedLootItemCondition.invert(LootItemEntityPropertyCondition.hasProperties(
                         LootContext.EntityTarget.THIS, EntityPredicate.Builder.entity().of(BLACK_ENTITY))));
+
+        register(context, ModEnchantments.EXTEND, colored(
+                Enchantment.definition(items.getOrThrow(ALL_TOOLS), items.getOrThrow(ALL_TOOLS), 2, 3,
+                        Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.HAND),
+                0xFFAA00)
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.extend_1"),
+                        Attributes.BLOCK_INTERACTION_RANGE,
+                        LevelBasedValue.perLevel(1.0F, 1.0F),
+                        AttributeModifier.Operation.ADD_VALUE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.extend_2"),
+                        Attributes.ENTITY_INTERACTION_RANGE,
+                        LevelBasedValue.perLevel(1.0F, 1.0F),
+                        AttributeModifier.Operation.ADD_VALUE)));
 
         register(context, ModEnchantments.FAST_SWIM, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS_LEG), items.getOrThrow(ARMORS_LEG), 3, 1,
@@ -2527,6 +2612,16 @@ public final class ModEnchantmentProvider {
                         RedstoneEnchants.asResource("haste"),
                         Attributes.BLOCK_BREAK_SPEED,
                         LevelBasedValue.perLevel(0.1F, 0.1F),
+                        AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)));
+
+        register(context, ModEnchantments.LIGHTWEIGHT, colored(
+                Enchantment.definition(items.getOrThrow(ALL_TOOLS), items.getOrThrow(ALL_TOOLS), 3, 4,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("lightweight"),
+                        Attributes.MOVEMENT_SPEED,
+                        LevelBasedValue.perLevel(0.05F, 0.05F),
                         AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)));
 
         register(context, ModEnchantments.LUCKY_BOOST, colored(
