@@ -1,4 +1,4 @@
-// 1.21.1	2026-09-04T20:03:57.4456213	Registries
+// 1.21.1	2026-09-04T20:04:51.8220205	Registries
 913d5e1b80904ec058aa8021a1962c3c080f3440 data/redstone_enchants/enchantment/adaptive.json
 29ad3becde1b6c0ff60e89178f426269d2b93321 data/redstone_enchants/enchantment/advanced_unbreaking.json
 b0a37f51f24776b5d9c3d679639ff238bf5c5e29 data/redstone_enchants/enchantment/against_all_odds.json
@@ -25,6 +25,7 @@ ec29f4bb2eed83b3109ab356292212c35b7d3930 data/redstone_enchants/enchantment/chai
 1908557260c891d47ff6948cfcbacdee1185d621 data/redstone_enchants/enchantment/excavator.json
 c4491add953b12e4b4b4cdb70ad0bc5b1c3ea03c data/redstone_enchants/enchantment/execution.json
 87a9732f7c3ad119b2d3de21df61fd462f52ec46 data/redstone_enchants/enchantment/experience_shear.json
+ddb3da0d5ecfd85d777fb856bddcc12f1fc95b1e data/redstone_enchants/enchantment/flame_walker.json
 45fbe62138188876a056e58d0cedb72d265e1989 data/redstone_enchants/enchantment/gambler.json
 837ac9d0fb15a8f4998bad498d40a972e2917f01 data/redstone_enchants/enchantment/geology.json
 91ec08bf6fdc046165d045792f6e88c41b3bf035 data/redstone_enchants/enchantment/goldfinger.json

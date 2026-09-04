@@ -36,6 +36,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> EXCAVATOR = key("excavator");
     public static final ResourceKey<Enchantment> EXECUTION = key("execution");
     public static final ResourceKey<Enchantment> EXPERIENCE_SHEAR = key("experience_shear");
+    public static final ResourceKey<Enchantment> FLAME_WALKER = key("flame_walker");
     public static final ResourceKey<Enchantment> GAMBLER = key("gambler");
     public static final ResourceKey<Enchantment> GEOLOGY = key("geology");
     public static final ResourceKey<Enchantment> GOLDFINGER = key("goldfinger");

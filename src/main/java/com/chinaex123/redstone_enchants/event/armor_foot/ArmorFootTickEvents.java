@@ -13,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -25,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 靴子（armors_foot）附魔在实体 tick 事件上的统一分发器。
  * <p>行为参数由附魔 JSON 组件声明，这里按固定顺序驱动各效果。
- * 旧实现是每个附魔一个独立订阅者；分发器固定执行顺序：庄稼舞 → （后续）踏焰者/飞马座/踏浪者。
+ * 旧实现是每个附魔一个独立订阅者；分发器固定执行顺序：庄稼舞 → 踏焰者 → （后续）飞马座/踏浪者。
  */
 @EventBusSubscriber(modid = RedstoneEnchants.MOD_ID)
 public final class ArmorFootTickEvents {
@@ -41,6 +42,7 @@ public final class ArmorFootTickEvents {
     public static void onEntityTick(EntityTickEvent.Post event) {
         // 固定顺序：庄稼舞 → 踏焰者 → 飞马座 → 踏浪者（旧版为独立订阅者，顺序未定义）
         cropDance(event);
+        flameWalker(event);
     }
 
     // ---- 庄稼舞 ----
@@ -109,6 +111,59 @@ public final class ArmorFootTickEvents {
                 }
             }
         });
+    }
+
+    // ---- 踏焰者 ----
+
+    private static void flameWalker(EntityTickEvent.Post event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+
+        ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
+        if (boots.isEmpty()) {
+            return;
+        }
+        if (!EnchantmentHelper.has(boots, ModEnchantmentEffectComponents.FLAME_WALKER.get())) {
+            return;
+        }
+
+        // 如果玩家潜行，允许正常下潜
+        if (player.isCrouching()) {
+            return;
+        }
+
+        // 检查玩家是否不在岩浆中
+        if (player.isInLava()) {
+            return;
+        }
+
+        // 检测脚底下方 0.4 格的位置是否有岩浆
+        BlockPos entityPos = player.blockPosition();
+        BlockPos lavaCheckPos = new BlockPos(
+                entityPos.getX(),
+                (int) Math.floor(player.getBoundingBox().minY - 0.4),
+                entityPos.getZ()
+        );
+
+        boolean hasLavaBelow = player.level().getFluidState(lavaCheckPos).is(Fluids.LAVA);
+
+        if (hasLavaBelow) {
+            // 获取岩浆表面高度
+            double lavaHeight = lavaCheckPos.getY() + 1.0;
+
+            // 如果玩家在岩浆面上方，调整到岩浆表面高度
+            if (player.getY() > lavaHeight) {
+                player.setPos(player.getX(), lavaHeight, player.getZ());
+            }
+
+            // 设置垂直速度为 0
+            player.setDeltaMovement(player.getDeltaMovement().x, 0, player.getDeltaMovement().z);
+            // 重置掉落距离
+            player.fallDistance = 0;
+            // 标记为在地面上
+            player.setOnGround(true);
+        }
     }
 
     private ArmorFootTickEvents() {

@@ -85,6 +85,9 @@ public final class ModEnchantmentEffectComponents {
     /** 经验修剪（experience_shear）：每份掉落转化为经验球的经验上限倍数（每级） */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> EXPERIENCE_SHEAR_EXP_PER_LEVEL =
             value("experience_shear_exp_per_level");
+    /** 踏焰者（flame_walker）：可在岩浆表面行走 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> FLAME_WALKER =
+            unit("flame_walker");
     /** 收获回响（harvest_echo）：剪刀右键时获得生命恢复 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> HARVEST_ECHO =
             unit("harvest_echo");
