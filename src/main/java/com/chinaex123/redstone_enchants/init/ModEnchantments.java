@@ -21,6 +21,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> BERSERK = key("berserk");
     public static final ResourceKey<Enchantment> BOONS = key("boons");
     public static final ResourceKey<Enchantment> BOLTBRINGER = key("boltbringer");
+    public static final ResourceKey<Enchantment> BULLETPROOF = key("bulletproof");
     public static final ResourceKey<Enchantment> BUTCHER = key("butcher");
     public static final ResourceKey<Enchantment> CALAMITY = key("calamity");
     public static final ResourceKey<Enchantment> CHAIN_HASTE = key("chain_haste");

@@ -1,4 +1,4 @@
-// 1.21.1	2026-09-04T20:07:49.0262112	Registries
+// 1.21.1	2026-09-04T20:08:30.3987081	Registries
 913d5e1b80904ec058aa8021a1962c3c080f3440 data/redstone_enchants/enchantment/adaptive.json
 29ad3becde1b6c0ff60e89178f426269d2b93321 data/redstone_enchants/enchantment/advanced_unbreaking.json
 b0a37f51f24776b5d9c3d679639ff238bf5c5e29 data/redstone_enchants/enchantment/against_all_odds.json
@@ -10,6 +10,7 @@ e7fbadf4574badbf688a04ccb6e4992e38152308 data/redstone_enchants/enchantment/ambu
 6a15c64f95a81df315bc24a66f80b241cffd615d data/redstone_enchants/enchantment/berserk.json
 2a49860905f39a18ce6ba19e03e78ef1501747e9 data/redstone_enchants/enchantment/boltbringer.json
 4dbea2b2de2a40cd14db8e901a58399bf0e64586 data/redstone_enchants/enchantment/boons.json
+70b6b8103123fd01d3ef3a848a383f7a661ce48e data/redstone_enchants/enchantment/bulletproof.json
 16afe34c65517579c337400e981df9353ed1302d data/redstone_enchants/enchantment/butcher.json
 0f22ea9b4b68d7d4c7d2e52b8f560d7070f16c7f data/redstone_enchants/enchantment/calamity.json
 ec29f4bb2eed83b3109ab356292212c35b7d3930 data/redstone_enchants/enchantment/chain_haste.json

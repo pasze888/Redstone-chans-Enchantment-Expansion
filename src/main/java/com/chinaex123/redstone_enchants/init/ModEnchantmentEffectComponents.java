@@ -145,6 +145,9 @@ public final class ModEnchantmentEffectComponents {
     /** 闪电使者（boltbringer）：高处攻击时召唤闪电 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> BOLTBRINGER =
             unit("boltbringer");
+    /** 防弹（bulletproof）：免疫潜影子弹伤害的概率（含 1 级基础） */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> BULLETPROOF_IMMUNITY_CHANCE =
+            value("bulletproof_immunity_chance");
     /** 海风（sea_breeze）：三叉戟命中后造成风压爆炸 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> SEA_BREEZE =
             unit("sea_breeze");

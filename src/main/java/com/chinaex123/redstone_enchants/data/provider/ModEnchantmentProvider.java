@@ -113,6 +113,13 @@ public final class ModEnchantmentProvider {
                 .withEffect(ModEnchantmentEffectComponents.BERSERK_DAMAGE_BONUS.get(),
                         new SetValue(LevelBasedValue.perLevel(0.03F))));
 
+        register(context, ModEnchantments.BULLETPROOF, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_CHEST), items.getOrThrow(ARMORS_CHEST), 3, 3,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.CHEST),
+                0xFF55FF)
+                .withEffect(ModEnchantmentEffectComponents.BULLETPROOF_IMMUNITY_CHANCE.get(),
+                        new SetValue(LevelBasedValue.perLevel(0.5F, 0.25F))));
+
         register(context, ModEnchantments.BUTCHER, colored(
                 Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 4, 5,
                         Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.MAINHAND),
