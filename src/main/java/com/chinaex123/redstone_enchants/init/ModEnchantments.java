@@ -10,6 +10,7 @@ import net.neoforged.bus.api.IEventBus;
  * 模组附魔的 ResourceKey 常量表。附魔本体是数据包条目，由 {@code data/ModEnchantmentProvider} 生成。
  */
 public final class ModEnchantments {
+    public static final ResourceKey<Enchantment> ADAPTIVE = key("adaptive");
     public static final ResourceKey<Enchantment> ADVANCED_UNBREAKING = key("advanced_unbreaking");
     public static final ResourceKey<Enchantment> ANGLER = key("angler");
     public static final ResourceKey<Enchantment> AMBUSH = key("ambush");

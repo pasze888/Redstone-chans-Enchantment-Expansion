@@ -25,9 +25,15 @@ public final class ModEnchantmentEffectComponents {
     public static final DeferredRegister.DataComponents TYPES =
             DeferredRegister.createDataComponents(Registries.ENCHANTMENT_EFFECT_COMPONENT_TYPE, RedstoneEnchants.MOD_ID);
 
+    /** 矿工（adaptive）：头盔低于 Y0 时获得夜视 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> ADAPTIVE =
+            unit("adaptive");
     /** 区域挖掘（excavator）：垂直于挖掘面的半径（1 级 = 3x3） */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> AREA_BREAK_RADIUS =
             value("area_break_radius");
+    /** 以寡敌众（against_all_odds）：每级每敌人的伤害/护甲加成 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> AGAINST_ALL_ODDS_BONUS_PER_ENEMY =
+            value("against_all_odds_bonus_per_enemy");
     /** 渔夫（angler）：钓鱼收获鱼类翻倍的概率（每级） */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> ANGLER_DOUBLE_CHANCE =
             value("angler_double_chance");
