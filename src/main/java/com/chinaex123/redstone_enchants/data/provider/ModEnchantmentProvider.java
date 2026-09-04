@@ -156,6 +156,8 @@ public final class ModEnchantmentProvider {
             TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/head_lucky"));
     private static final TagKey<Enchantment> WALKER_EXCLUSIVE =
             TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/walker"));
+    private static final TagKey<Enchantment> SHIELD_EXCLUSIVE =
+            TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/shield"));
     private static final TagKey<Enchantment> BANE_EXCLUSIVE =
             TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/bane"));
     private static final TagKey<Enchantment> TOUCH_EXCLUSIVE =
@@ -254,6 +256,18 @@ public final class ModEnchantmentProvider {
                 0xFFAA00)
                 .withEffect(ModEnchantmentEffectComponents.AGAINST_ALL_ODDS_BONUS_PER_ENEMY.get(),
                         new SetValue(LevelBasedValue.perLevel(0.02F))));
+
+        register(context, ModEnchantments.ABSORBENT_SHIELD, colored(
+                Enchantment.definition(items.getOrThrow(SHIELD_ITEMS), items.getOrThrow(SHIELD_ITEMS), 3, 2,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.OFFHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.TICK,
+                        new ApplyMobEffect(HolderSet.direct(MobEffects.ABSORPTION),
+                                LevelBasedValue.constant(11.0F), LevelBasedValue.constant(11.0F),
+                                LevelBasedValue.perLevel(0.0F, 1.0F), LevelBasedValue.perLevel(0.0F, 1.0F)),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().periodicTick(200)))
+                .exclusiveWith(enchantments.getOrThrow(SHIELD_EXCLUSIVE)));
 
         register(context, ModEnchantments.AMBUSH, colored(
                 Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 3, 5,
@@ -514,6 +528,29 @@ public final class ModEnchantmentProvider {
                 .exclusiveWith(enchantments.getOrThrow(INDESTRUCTIBLE_EXCLUSIVE))
                 .withEffect(ModEnchantmentEffectComponents.INDESTRUCTIBLE.get()));
 
+        register(context, ModEnchantments.STABLE_SHIELD, colored(
+                Enchantment.definition(items.getOrThrow(SHIELD_ITEMS), items.getOrThrow(SHIELD_ITEMS), 2, 2,
+                        Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.OFFHAND),
+                0xFFAA00)
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.stalwart_1"),
+                        Attributes.KNOCKBACK_RESISTANCE,
+                        LevelBasedValue.constant(1.0F),
+                        AttributeModifier.Operation.ADD_VALUE))
+                .exclusiveWith(enchantments.getOrThrow(SHIELD_EXCLUSIVE)));
+
+        register(context, ModEnchantments.STRENGTH_SHIELD, colored(
+                Enchantment.definition(items.getOrThrow(SHIELD_ITEMS), items.getOrThrow(SHIELD_ITEMS), 3, 3,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.OFFHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.VICTIM, EnchantmentTarget.VICTIM,
+                        new ApplyMobEffect(HolderSet.direct(MobEffects.DAMAGE_BOOST),
+                                LevelBasedValue.perLevel(2.0F, 1.0F), LevelBasedValue.perLevel(4.0F, 3.0F),
+                                LevelBasedValue.perLevel(0.0F, 1.0F), LevelBasedValue.perLevel(0.0F, 1.0F)),
+                        LootItemRandomChanceCondition.randomChance(
+                                new EnchantmentLevelProvider(LevelBasedValue.perLevel(0.1F, 0.2F))))
+                .exclusiveWith(enchantments.getOrThrow(SHIELD_EXCLUSIVE)));
+
         register(context, ModEnchantments.STRIDING, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS_LEG), items.getOrThrow(ARMORS_LEG), 3, 3,
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.LEGS),
@@ -575,6 +612,29 @@ public final class ModEnchantmentProvider {
                 0xFF55FF)
                 .exclusiveWith(enchantments.getOrThrow(MACE_EXCLUSIVE))
                 .withEffect(ModEnchantmentEffectComponents.BOLTBRINGER.get()));
+
+        register(context, ModEnchantments.DIVE_BOMB, colored(
+                Enchantment.definition(items.getOrThrow(MACE_ITEMS), items.getOrThrow(MACE_ITEMS), 3, 3,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new ExplodeEffect(false, Optional.of(damageTypes.getOrThrow(DamageTypes.EXPLOSION)),
+                                Optional.empty(), Optional.empty(), Vec3.ZERO,
+                                LevelBasedValue.perLevel(2.0F, 1.0F), true, Level.ExplosionInteraction.MOB,
+                                ParticleTypes.EXPLOSION_EMITTER, ParticleTypes.EXPLOSION,
+                                SoundEvents.GENERIC_EXPLODE),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.ATTACKER,
+                                EntityPredicate.Builder.entity().flags(EntityFlagsPredicate.Builder.flags().setIsFlying(false))
+                                        .moving(new MovementPredicate(
+                                                MinMaxBounds.Doubles.ANY, MinMaxBounds.Doubles.ANY, MinMaxBounds.Doubles.ANY,
+                                                MinMaxBounds.Doubles.ANY, MinMaxBounds.Doubles.ANY, MinMaxBounds.Doubles.ANY,
+                                                MinMaxBounds.Doubles.atLeast(4.0)))))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.jump_strength_1"),
+                        Attributes.JUMP_STRENGTH,
+                        LevelBasedValue.perLevel(0.2F, 0.2F),
+                        AttributeModifier.Operation.ADD_VALUE))
+                .exclusiveWith(enchantments.getOrThrow(MACE_EXCLUSIVE)));
 
         register(context, ModEnchantments.DANGEROUS_EDGE, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS), items.getOrThrow(ARMORS), 3, 3,
@@ -1970,6 +2030,27 @@ public final class ModEnchantmentProvider {
                 0xFF55FF)
                 .withEffect(ModEnchantmentEffectComponents.SHEPHERD_EXTRA_CHANCE.get(), new AddValue(LevelBasedValue.perLevel(0.2F))));
 
+        register(context, ModEnchantments.SHIELD_ARMOR, colored(
+                Enchantment.definition(items.getOrThrow(SHIELD_ITEMS), items.getOrThrow(SHIELD_ITEMS), 3, 5,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.OFFHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.hardened_1"),
+                        Attributes.ARMOR,
+                        LevelBasedValue.perLevel(2.5F, 1.5F),
+                        AttributeModifier.Operation.ADD_VALUE)));
+
+        register(context, ModEnchantments.SLUGGER, colored(
+                Enchantment.definition(items.getOrThrow(MACE_ITEMS), items.getOrThrow(MACE_ITEMS), 3, 3,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new AllOf.EntityEffects(List.of(new ApplyMobEffect(HolderSet.direct(MobEffects.MOVEMENT_SLOWDOWN),
+                                LevelBasedValue.constant(3.0F), LevelBasedValue.constant(3.0F),
+                                LevelBasedValue.constant(5.0F), LevelBasedValue.constant(5.0F)))),
+                        LootItemRandomChanceCondition.randomChance(
+                                new EnchantmentLevelProvider(LevelBasedValue.perLevel(0.2F, 0.1F)))));
+
         register(context, ModEnchantments.SWIFT_SHADOWCUTTER, colored(
                 Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 3, 3,
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
@@ -2303,6 +2384,21 @@ public final class ModEnchantmentProvider {
                                 LevelBasedValue.perLevel(0.0F, 1.0F), LevelBasedValue.perLevel(0.0F, 1.0F)))
                 .exclusiveWith(enchantments.getOrThrow(HEAD_LUCKY_EXCLUSIVE)));
 
+        register(context, ModEnchantments.LIGHTNESS_HEAVY_DUALISM, colored(
+                Enchantment.definition(items.getOrThrow(MACE_ITEMS), items.getOrThrow(MACE_ITEMS), 3, 5,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.lightness-heavy_dualism_1"),
+                        Attributes.GRAVITY,
+                        LevelBasedValue.perLevel(-0.12F, -0.02F),
+                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.lightness-heavy_dualism_2"),
+                        Attributes.ENTITY_INTERACTION_RANGE,
+                        LevelBasedValue.perLevel(0.8F, 0.05F),
+                        AttributeModifier.Operation.ADD_VALUE)));
+
         register(context, ModEnchantments.MAGNET, colored(
                 Enchantment.definition(items.getOrThrow(ItemTags.PICKAXES), 3, 4,
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
@@ -2419,6 +2515,24 @@ public final class ModEnchantmentProvider {
                 Enchantment.definition(items.getOrThrow(ItemTags.AXES), 4, 1,
                         Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.MAINHAND),
                 0x55FFFF));
+
+        register(context, ModEnchantments.WIND_PROPULSION, colored(
+                Enchantment.definition(items.getOrThrow(MACE_ITEMS), items.getOrThrow(MACE_ITEMS), 3, 3,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
+                        new ExplodeEffect(false, Optional.empty(),
+                                Optional.of(new LevelBasedValue.Lookup(List.of(1.25F, 1.65F, 2.25F),
+                                        LevelBasedValue.perLevel(1.25F, 0.35F))),
+                                Optional.of(BuiltInRegistries.BLOCK.getOrCreateTag(BlockTags.BLOCKS_WIND_CHARGE_EXPLOSIONS)),
+                                new Vec3(0, 0.5, 0), LevelBasedValue.constant(3.5F), false,
+                                Level.ExplosionInteraction.TRIGGER, ParticleTypes.GUST_EMITTER_SMALL,
+                                ParticleTypes.GUST_EMITTER_LARGE,
+                                BuiltInRegistries.SOUND_EVENT.getHolderOrThrow(ResourceKey.create(
+                                        Registries.SOUND_EVENT,
+                                        ResourceLocation.withDefaultNamespace("entity.wind_charge.wind_burst")))),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().flags(EntityFlagsPredicate.Builder.flags().setOnGround(true)))));
 
         register(context, ModEnchantments.WEAK_ARMOR, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS), items.getOrThrow(ARMORS), 3, 4,

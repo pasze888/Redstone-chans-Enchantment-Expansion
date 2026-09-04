@@ -15,6 +15,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> ADVANCED_UNBREAKING = key("advanced_unbreaking");
     public static final ResourceKey<Enchantment> AGAINST_ALL_ODDS = key("against_all_odds");
     public static final ResourceKey<Enchantment> ANGLER = key("angler");
+    public static final ResourceKey<Enchantment> ABSORBENT_SHIELD = key("absorbent_shield");
     public static final ResourceKey<Enchantment> AMBUSH = key("ambush");
     public static final ResourceKey<Enchantment> ANTI_CAMOUFLAGE = key("anti_camouflage");
     public static final ResourceKey<Enchantment> AURA_BURNING = key("aura_burning");
@@ -69,6 +70,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> DECAPITATION = key("decapitation");
     public static final ResourceKey<Enchantment> DESPERATE_COUNTER = key("desperate_counter");
     public static final ResourceKey<Enchantment> DEVOURING = key("devouring");
+    public static final ResourceKey<Enchantment> DIVE_BOMB = key("dive_bomb");
     public static final ResourceKey<Enchantment> DANGEROUS_EDGE = key("dangerous_edge");
     public static final ResourceKey<Enchantment> DUAL_CRITICAL_BOOST = key("dual_critical_boost");
     public static final ResourceKey<Enchantment> DYNAMO = key("dynamo");
@@ -105,6 +107,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> LIFE_STEAL = key("life_steal");
     public static final ResourceKey<Enchantment> LUCKY_BOOST = key("lucky_boost");
     public static final ResourceKey<Enchantment> LUCKY_LIGHT = key("lucky_light");
+    public static final ResourceKey<Enchantment> LIGHTNESS_HEAVY_DUALISM = key("lightness-heavy_dualism");
     public static final ResourceKey<Enchantment> MAGNET = key("magnet");
     public static final ResourceKey<Enchantment> MASTER_GATHERER = key("master_gatherer");
     public static final ResourceKey<Enchantment> MAXIMIZATION = key("maximization");
@@ -150,10 +153,14 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> SPLASH_WIND_CHARGED = key("splash_wind_charged");
     public static final ResourceKey<Enchantment> SPLASH_WITHER = key("splash_wither");
     public static final ResourceKey<Enchantment> SHEPHERD = key("shepherd");
+    public static final ResourceKey<Enchantment> SHIELD_ARMOR = key("shield_armor");
+    public static final ResourceKey<Enchantment> SLUGGER = key("slugger");
     public static final ResourceKey<Enchantment> SWIFT_SHADOWCUTTER = key("swift_shadowcutter");
     public static final ResourceKey<Enchantment> SNIPE = key("snipe");
     public static final ResourceKey<Enchantment> SNOWBALL = key("snowball");
     public static final ResourceKey<Enchantment> SPIRIT = key("spirit");
+    public static final ResourceKey<Enchantment> STABLE_SHIELD = key("stable_shield");
+    public static final ResourceKey<Enchantment> STRENGTH_SHIELD = key("strength_shield");
     public static final ResourceKey<Enchantment> STRIDING = key("striding");
     public static final ResourceKey<Enchantment> STURDY = key("sturdy");
     public static final ResourceKey<Enchantment> TACTICAL_KNEE = key("tactical_knee");
@@ -184,6 +191,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> WAVE_WALKER = key("wave_walker");
     public static final ResourceKey<Enchantment> WEAK_ARMOR = key("weak_armor");
     public static final ResourceKey<Enchantment> WEIGHTED = key("weighted");
+    public static final ResourceKey<Enchantment> WIND_PROPULSION = key("wind_propulsion");
     public static final ResourceKey<Enchantment> XP_REAPER_MOBS = key("xp_reaper_mobs");
 
     public static ResourceKey<Enchantment> key(String path) {
