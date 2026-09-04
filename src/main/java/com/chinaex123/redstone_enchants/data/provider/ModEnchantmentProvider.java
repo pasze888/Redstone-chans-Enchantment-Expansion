@@ -70,6 +70,7 @@ import net.minecraft.world.item.enchantment.effects.RemoveBinomial;
 import net.minecraft.world.item.enchantment.effects.ReplaceBlock;
 import net.minecraft.world.item.enchantment.effects.ReplaceDisk;
 import net.minecraft.world.item.enchantment.effects.RunFunction;
+import net.minecraft.world.item.enchantment.effects.SummonEntityEffect;
 import net.minecraft.world.item.enchantment.effects.SetValue;
 import net.minecraft.world.item.enchantment.effects.SpawnParticlesEffect;
 import net.minecraft.world.level.Level;
@@ -92,9 +93,11 @@ import net.minecraft.world.level.storage.loot.predicates.EnchantmentActiveCheck;
 import net.minecraft.world.level.storage.loot.predicates.InvertedLootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LocationCheck;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.predicates.TimeCheck;
+import net.minecraft.world.level.storage.loot.predicates.WeatherCheck;
 import net.minecraft.world.level.storage.loot.predicates.ValueCheckCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.EnchantmentLevelProvider;
@@ -112,6 +115,7 @@ public final class ModEnchantmentProvider {
     private static final TagKey<Item> SWORDS = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("swords"));
     private static final TagKey<Item> SWORDS_AND_AXES = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("swords_and_axes"));
     private static final TagKey<Item> SWORDS_AND_BOW = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("swords_and_bow"));
+    private static final TagKey<Item> TRIDENT_AND_BOW = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("trident_and_bow"));
     private static final TagKey<Item> MACE_ITEMS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "tools/mace"));
     private static final TagKey<Item> SHIELD_ITEMS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "tools/shield"));
     private static final TagKey<Item> ALL_FLINT_AND_STEEL = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("all_flint_and_steel"));
@@ -174,6 +178,8 @@ public final class ModEnchantmentProvider {
             TagKey.create(Registries.ENTITY_TYPE, RedstoneEnchants.asResource("entity_water"));
     private static final TagKey<EntityType<?>> BLACK_ENTITY =
             TagKey.create(Registries.ENTITY_TYPE, RedstoneEnchants.asResource("black_entity"));
+    private static final TagKey<EntityType<?>> PROJECTILES =
+            TagKey.create(Registries.ENTITY_TYPE, RedstoneEnchants.asResource("projectiles"));
     private static final TagKey<Block> GLASS_BLOCKS =
             TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "glass_blocks"));
 
@@ -1330,6 +1336,35 @@ public final class ModEnchantmentProvider {
                 .withEffect(ModEnchantmentEffectComponents.SPIRIT_SPEED_BONUS.get(),
                         new SetValue(LevelBasedValue.perLevel(0.25F))));
 
+        register(context, ModEnchantments.THROWING_ENHANCEMENT, colored(
+                Enchantment.definition(
+                        items.getOrThrow(TagKey.create(Registries.ITEM, ResourceLocation.withDefaultNamespace("enchantable/trident"))), items.getOrThrow(TagKey.create(Registries.ITEM, ResourceLocation.withDefaultNamespace("enchantable/trident"))), 3, 5,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8,
+                        EquipmentSlotGroup.HAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.DAMAGE,
+                        new AddValue(LevelBasedValue.perLevel(3.0F, 1.5F)),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
+                                EntityPredicate.Builder.entity().of(EntityType.TRIDENT))));
+
+        register(context, ModEnchantments.THUNDERING, colored(
+                Enchantment.definition(
+                        items.getOrThrow(TagKey.create(Registries.ITEM, ResourceLocation.withDefaultNamespace("enchantable/trident"))), items.getOrThrow(TagKey.create(Registries.ITEM, ResourceLocation.withDefaultNamespace("enchantable/trident"))), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8,
+                        EquipmentSlotGroup.HAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
+                        new AllOf.EntityEffects(List.of(
+                                new SummonEntityEffect(HolderSet.direct(EntityType.LIGHTNING_BOLT.builtInRegistryHolder()), false),
+                                new PlaySoundEffect(SoundEvents.TRIDENT_THUNDER,
+                                        ConstantFloat.of(5.0F), ConstantFloat.of(1.0F)),
+                                new RunFunction(RedstoneEnchants.asResource("enchantment/thundering")))),
+                        AllOfCondition.allOf(
+                                WeatherCheck.weather().setRaining(true),
+                                LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                        EntityPredicate.Builder.entity().of(EntityType.TRIDENT)),
+                                LocationCheck.checkLocation(LocationPredicate.Builder.location().setCanSeeSky(true)),
+                                LootItemBlockStatePropertyCondition.hasBlockStateProperties(Blocks.LIGHTNING_ROD))));
         register(context, ModEnchantments.TOUCH_BLEEDING, colored(
                 Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 3, 3,
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
@@ -1425,6 +1460,23 @@ public final class ModEnchantmentProvider {
                         LevelBasedValue.perLevel(2.0F, 1.5F),
                         AttributeModifier.Operation.ADD_VALUE))
                 .exclusiveWith(enchantments.getOrThrow(DAMAGE_EXCLUSIVE)));
+
+        register(context, ModEnchantments.UNDERWATER_BLASTING, colored(
+                Enchantment.definition(
+                        items.getOrThrow(TagKey.create(Registries.ITEM, ResourceLocation.withDefaultNamespace("enchantable/trident"))), items.getOrThrow(TagKey.create(Registries.ITEM, ResourceLocation.withDefaultNamespace("enchantable/trident"))), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8,
+                        EquipmentSlotGroup.ANY),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new SummonEntityEffect(HolderSet.direct(EntityType.TNT.builtInRegistryHolder()), false),
+                        AllOfCondition.allOf(
+                                LootItemRandomChanceCondition.randomChance(0.5F),
+                                LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                        EntityPredicate.Builder.entity().located(
+                                                LocationPredicate.Builder.location().setBlock(
+                                                        net.minecraft.advancements.critereon.BlockPredicate.Builder.block()
+                                                                .of(Blocks.WATER))))))
+                .exclusiveWith(enchantments.getOrThrow(NO_SEA_BREEZE_EXCLUSIVE)));
 
         register(context, ModEnchantments.UNDER_PRESSURE, colored(
                 Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 2, 3,
@@ -1785,6 +1837,23 @@ public final class ModEnchantmentProvider {
                 .withEffect(ModEnchantmentEffectComponents.CROP_DANCE_GROWTH_CHANCE.get(),
                         new SetValue(LevelBasedValue.perLevel(0.2F, 0.1F))));
 
+        register(context, ModEnchantments.TELEPORT, colored(
+                Enchantment.definition(items.getOrThrow(TRIDENT_AND_BOW), items.getOrThrow(TRIDENT_AND_BOW), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.ANY),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/teleport/hostile_int")),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
+                                EntityPredicate.Builder.entity().of(PROJECTILES)))
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.ATTACKER,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/teleport/player_int")),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
+                                EntityPredicate.Builder.entity().of(PROJECTILES)))
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/teleport/hostile_tp")),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.DIRECT_ATTACKER,
+                                EntityPredicate.Builder.entity().of(PROJECTILES))));
+
         register(context, ModEnchantments.TIDE_SENSE, colored(
                 Enchantment.definition(items.getOrThrow(ALL_FISHING), items.getOrThrow(ALL_FISHING), 3, 3,
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
@@ -2090,6 +2159,37 @@ public final class ModEnchantmentProvider {
                 0xFF55FF)
                 .withEffect(ModEnchantmentEffectComponents.CARRION_EATER_HEAL.get(),
                         new SetValue(LevelBasedValue.perLevel(0.25F))));
+
+        register(context, ModEnchantments.ETERNAL_FROST, colored(
+                Enchantment.definition(items.getOrThrow(TRIDENT_AND_BOW), items.getOrThrow(TRIDENT_AND_BOW), 2, 3,
+                        Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.HAND),
+                0xFFAA00)
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/eternal_frost")))
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new ApplyMobEffect(HolderSet.direct(MobEffects.MOVEMENT_SLOWDOWN),
+                                LevelBasedValue.perLevel(1.0F, 1.0F), LevelBasedValue.perLevel(3.0F, 1.0F),
+                                LevelBasedValue.perLevel(0.0F, 1.0F), LevelBasedValue.perLevel(1.0F, 1.0F)))
+                .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
+                        new ReplaceDisk(
+                                LevelBasedValue.perLevel(3.0F, 2.0F),
+                                LevelBasedValue.constant(1.0F), Vec3i.ZERO,
+                                Optional.of(BlockPredicate.allOf(
+                                        BlockPredicate.matchesBlocks(new Vec3i(0, 1, 0), Blocks.AIR),
+                                        BlockPredicate.matchesBlocks(Blocks.WATER))),
+                                BlockStateProvider.simple(Blocks.FROSTED_ICE),
+                                Optional.empty()),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().of(PROJECTILES)))
+                .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/eternal_frost")),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().of(PROJECTILES)))
+                .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
+                        new RunFunction(RedstoneEnchants.asResource("libs/kill_arrow")),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().of(PROJECTILES)))
+                .exclusiveWith(enchantments.getOrThrow(SPLASH_EXCLUSIVE)));
 
         register(context, ModEnchantments.EXOSKELETON, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS), items.getOrThrow(ARMORS), 3, 4,

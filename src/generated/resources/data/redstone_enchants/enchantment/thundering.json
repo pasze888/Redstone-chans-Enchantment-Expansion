@@ -1,25 +1,9 @@
 {
+  "anvil_cost": 8,
   "description": {
     "color": "#FF55FF",
     "translate": "enchantment.redstone_enchants.thundering"
   },
-  "supported_items": "#minecraft:enchantable/trident",
-  "primary_items": "#minecraft:enchantable/trident",
-  "weight": 3,
-  "max_level": 1,
-  "min_cost": {
-    "base": 12,
-    "per_level_above_first": 6
-  },
-  "max_cost": {
-    "base": 24,
-    "per_level_above_first": 12
-  },
-  "anvil_cost": 8,
-  "slots": [
-    "mainhand",
-    "offhand"
-  ],
   "effects": {
     "minecraft:hit_block": [
       {
@@ -37,7 +21,7 @@
               "volume": 5.0
             },
             {
-              "type": "run_function",
+              "type": "minecraft:run_function",
               "function": "redstone_enchants:enchantment/thundering"
             }
           ]
@@ -70,5 +54,20 @@
         }
       }
     ]
-  }
+  },
+  "max_cost": {
+    "base": 24,
+    "per_level_above_first": 12
+  },
+  "max_level": 1,
+  "min_cost": {
+    "base": 12,
+    "per_level_above_first": 6
+  },
+  "primary_items": "#minecraft:enchantable/trident",
+  "slots": [
+    "hand"
+  ],
+  "supported_items": "#minecraft:enchantable/trident",
+  "weight": 3
 }

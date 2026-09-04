@@ -76,6 +76,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> DYNAMO = key("dynamo");
     public static final ResourceKey<Enchantment> ECHOES_BATTLE = key("echoes_battle");
     public static final ResourceKey<Enchantment> ENDLESS_WOOL = key("endless_wool");
+    public static final ResourceKey<Enchantment> ETERNAL_FROST = key("eternal_frost");
     public static final ResourceKey<Enchantment> EXOSKELETON = key("exoskeleton");
     public static final ResourceKey<Enchantment> EQUALIZER = key("equalizer");
     public static final ResourceKey<Enchantment> EXCAVATOR = key("excavator");
@@ -164,14 +165,18 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> STRIDING = key("striding");
     public static final ResourceKey<Enchantment> STURDY = key("sturdy");
     public static final ResourceKey<Enchantment> TACTICAL_KNEE = key("tactical_knee");
+    public static final ResourceKey<Enchantment> TELEPORT = key("teleport");
     public static final ResourceKey<Enchantment> TIDE_SENSE = key("tide_sense");
     public static final ResourceKey<Enchantment> TIMBER = key("timber");
+    public static final ResourceKey<Enchantment> THROWING_ENHANCEMENT = key("throwing_enhancement");
+    public static final ResourceKey<Enchantment> THUNDERING = key("thundering");
     public static final ResourceKey<Enchantment> TOUCH_BLEEDING = key("touch_bleeding");
     public static final ResourceKey<Enchantment> TOUCH_POISON = key("touch_poison");
     public static final ResourceKey<Enchantment> TOUCH_WITHER = key("touch_wither");
     public static final ResourceKey<Enchantment> TRACKER = key("tracker");
     public static final ResourceKey<Enchantment> UNDERCURRENT = key("undercurrent");
     public static final ResourceKey<Enchantment> UNDER_PRESSURE = key("under_pressure");
+    public static final ResourceKey<Enchantment> UNDERWATER_BLASTING = key("underwater_blasting");
     public static final ResourceKey<Enchantment> UNLEASH_POTENTIAL = key("unleash_potential");
     public static final ResourceKey<Enchantment> TRAIL_CHERRY_LEAVES = key("trail_cherry_leaves");
     public static final ResourceKey<Enchantment> TRAIL_DRAGON_BREATH = key("trail_dragon_breath");

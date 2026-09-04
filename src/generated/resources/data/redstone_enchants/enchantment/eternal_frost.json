@@ -1,65 +1,10 @@
 {
+  "anvil_cost": 12,
   "description": {
     "color": "#FFAA00",
     "translate": "enchantment.redstone_enchants.eternal_frost"
   },
-  "supported_items": "#redstone_enchants:trident_and_bow",
-  "primary_items": "#redstone_enchants:trident_and_bow",
-  "weight": 2,
-  "max_level": 3,
-  "min_cost": {
-    "base": 16,
-    "per_level_above_first": 8
-  },
-  "max_cost": {
-    "base": 32,
-    "per_level_above_first": 16
-  },
-  "anvil_cost": 12,
-  "slots": [
-    "mainhand",
-    "offhand"
-  ],
-  "exclusive_set": "#redstone_enchants:exclusive_set/splash",
   "effects": {
-    "minecraft:post_attack": [
-      {
-        "enchanted": "attacker",
-        "affected": "victim",
-        "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/eternal_frost"
-        }
-      },
-      {
-        "enchanted": "attacker",
-        "affected": "victim",
-        "effect": {
-          "type": "minecraft:apply_mob_effect",
-          "to_apply": "minecraft:slowness",
-          "min_duration": {
-            "type": "minecraft:linear",
-            "base": 1,
-            "per_level_above_first": 1
-          },
-          "max_duration": {
-            "type": "minecraft:linear",
-            "base": 3,
-            "per_level_above_first": 1
-          },
-          "min_amplifier": {
-            "type": "minecraft:linear",
-            "base": 0,
-            "per_level_above_first": 1
-          },
-          "max_amplifier": {
-            "type": "minecraft:linear",
-            "base": 1,
-            "per_level_above_first": 1
-          }
-        }
-      }
-    ],
     "minecraft:hit_block": [
       {
         "effect": {
@@ -73,6 +18,7 @@
               }
             }
           },
+          "height": 1.0,
           "predicate": {
             "type": "minecraft:all_of",
             "predicates": [
@@ -91,16 +37,10 @@
               }
             ]
           },
-          "offset": [
-            0,
-            0,
-            0
-          ],
-          "height": 1,
           "radius": {
             "type": "minecraft:linear",
-            "base": 3,
-            "per_level_above_first": 2
+            "base": 3.0,
+            "per_level_above_first": 2.0
           }
         },
         "requirements": {
@@ -124,11 +64,11 @@
           }
         }
       },
-			{
-				"effect": {
-					"type": "minecraft:run_function",
-					"function": "redstone_enchants:libs/kill_arrow"
-				},
+      {
+        "effect": {
+          "type": "minecraft:run_function",
+          "function": "redstone_enchants:libs/kill_arrow"
+        },
         "requirements": {
           "condition": "minecraft:entity_properties",
           "entity": "this",
@@ -136,7 +76,61 @@
             "type": "#redstone_enchants:projectiles"
           }
         }
-			}
+      }
+    ],
+    "minecraft:post_attack": [
+      {
+        "affected": "victim",
+        "effect": {
+          "type": "minecraft:run_function",
+          "function": "redstone_enchants:enchantment/eternal_frost"
+        },
+        "enchanted": "attacker"
+      },
+      {
+        "affected": "victim",
+        "effect": {
+          "type": "minecraft:apply_mob_effect",
+          "max_amplifier": {
+            "type": "minecraft:linear",
+            "base": 1.0,
+            "per_level_above_first": 1.0
+          },
+          "max_duration": {
+            "type": "minecraft:linear",
+            "base": 3.0,
+            "per_level_above_first": 1.0
+          },
+          "min_amplifier": {
+            "type": "minecraft:linear",
+            "base": 0.0,
+            "per_level_above_first": 1.0
+          },
+          "min_duration": {
+            "type": "minecraft:linear",
+            "base": 1.0,
+            "per_level_above_first": 1.0
+          },
+          "to_apply": "minecraft:slowness"
+        },
+        "enchanted": "attacker"
+      }
     ]
-  }
+  },
+  "exclusive_set": "#redstone_enchants:exclusive_set/splash",
+  "max_cost": {
+    "base": 32,
+    "per_level_above_first": 16
+  },
+  "max_level": 3,
+  "min_cost": {
+    "base": 16,
+    "per_level_above_first": 8
+  },
+  "primary_items": "#redstone_enchants:trident_and_bow",
+  "slots": [
+    "hand"
+  ],
+  "supported_items": "#redstone_enchants:trident_and_bow",
+  "weight": 2
 }
