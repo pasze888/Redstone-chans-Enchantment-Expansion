@@ -10,6 +10,10 @@ import com.chinaex123.redstone_enchants.init.ModEnchantments;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.DamageSourcePredicate;
+import net.minecraft.advancements.critereon.EntityEquipmentPredicate;
+import net.minecraft.advancements.critereon.EntityFlagsPredicate;
+import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderOwner;
@@ -60,6 +64,8 @@ import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.AllOfCondition;
+import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
+import net.minecraft.world.level.storage.loot.predicates.DamageSourceCondition;
 import net.minecraft.world.level.storage.loot.predicates.InvertedLootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
@@ -114,6 +120,20 @@ public final class ModEnchantmentProvider {
             TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/bow_spread"));
     private static final TagKey<Enchantment> NO_SHOTGUN_EXCLUSIVE =
             TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/no_shotgun"));
+    private static final TagKey<Enchantment> BANE_EXCLUSIVE =
+            TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/bane"));
+    private static final TagKey<Enchantment> TOUCH_EXCLUSIVE =
+            TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/touch"));
+    private static final TagKey<EntityType<?>> ENTITY_BOSS =
+            TagKey.create(Registries.ENTITY_TYPE, RedstoneEnchants.asResource("entity_boss"));
+    private static final TagKey<EntityType<?>> ENTITY_END =
+            TagKey.create(Registries.ENTITY_TYPE, RedstoneEnchants.asResource("entity_end"));
+    private static final TagKey<EntityType<?>> ENTITY_ILLAGER =
+            TagKey.create(Registries.ENTITY_TYPE, RedstoneEnchants.asResource("entity_illager"));
+    private static final TagKey<EntityType<?>> ENTITY_NETHER =
+            TagKey.create(Registries.ENTITY_TYPE, RedstoneEnchants.asResource("entity_nether"));
+    private static final TagKey<EntityType<?>> ENTITY_WATER =
+            TagKey.create(Registries.ENTITY_TYPE, RedstoneEnchants.asResource("entity_water"));
     private static final TagKey<EntityType<?>> BLACK_ENTITY =
             TagKey.create(Registries.ENTITY_TYPE, RedstoneEnchants.asResource("black_entity"));
     private static final TagKey<Block> GLASS_BLOCKS =
@@ -211,6 +231,122 @@ public final class ModEnchantmentProvider {
                 0xFFAA00)
                 .withEffect(ModEnchantmentEffectComponents.BACKSTAB_BEHIND_BONUS.get(), new AddValue(LevelBasedValue.perLevel(0.3F)))
                 .withEffect(ModEnchantmentEffectComponents.BACKSTAB_FRONT_PENALTY.get(), new AddValue(LevelBasedValue.perLevel(0.15F))));
+
+        register(context, ModEnchantments.BANE_BADY, colored(
+                Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 3, 5,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.DAMAGE,
+                        new MultiplyValue(LevelBasedValue.perLevel(2.0F, 2.0F)),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().flags(EntityFlagsPredicate.Builder.flags().setIsBaby(true))))
+                .exclusiveWith(enchantments.getOrThrow(BANE_EXCLUSIVE)));
+
+        register(context, ModEnchantments.BANE_BOSS, colored(
+                Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 3, 5,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.DAMAGE,
+                        new AddValue(LevelBasedValue.perLevel(2.5F, 2.5F)),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().of(ENTITY_BOSS)))
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new ApplyMobEffect(HolderSet.direct(MobEffects.MOVEMENT_SLOWDOWN),
+                                LevelBasedValue.constant(1.5F), LevelBasedValue.perLevel(1.5F, 0.5F),
+                                LevelBasedValue.constant(3.0F), LevelBasedValue.constant(3.0F)),
+                        AllOfCondition.allOf(
+                                LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                        EntityPredicate.Builder.entity().of(ENTITY_BOSS)),
+                                DamageSourceCondition.hasDamageSource(DamageSourcePredicate.Builder.damageType().isDirect(true))))
+                .exclusiveWith(enchantments.getOrThrow(BANE_EXCLUSIVE)));
+
+        register(context, ModEnchantments.BANE_END, colored(
+                Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 3, 5,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.DAMAGE,
+                        new AddValue(LevelBasedValue.perLevel(2.5F, 2.5F)),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().of(ENTITY_END)))
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new ApplyMobEffect(HolderSet.direct(MobEffects.MOVEMENT_SLOWDOWN),
+                                LevelBasedValue.constant(1.5F), LevelBasedValue.perLevel(1.5F, 0.5F),
+                                LevelBasedValue.constant(3.0F), LevelBasedValue.constant(3.0F)),
+                        AllOfCondition.allOf(
+                                LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                        EntityPredicate.Builder.entity().of(ENTITY_END)),
+                                DamageSourceCondition.hasDamageSource(DamageSourcePredicate.Builder.damageType().isDirect(true))))
+                .exclusiveWith(enchantments.getOrThrow(BANE_EXCLUSIVE)));
+
+        register(context, ModEnchantments.BANE_ILLAGER, colored(
+                Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 3, 5,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.DAMAGE,
+                        new AddValue(LevelBasedValue.perLevel(2.5F, 2.5F)),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().of(ENTITY_ILLAGER)))
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new ApplyMobEffect(HolderSet.direct(MobEffects.MOVEMENT_SLOWDOWN),
+                                LevelBasedValue.constant(1.5F), LevelBasedValue.perLevel(1.5F, 0.5F),
+                                LevelBasedValue.constant(3.0F), LevelBasedValue.constant(3.0F)),
+                        AllOfCondition.allOf(
+                                LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                        EntityPredicate.Builder.entity().of(ENTITY_ILLAGER)),
+                                DamageSourceCondition.hasDamageSource(DamageSourcePredicate.Builder.damageType().isDirect(true))))
+                .exclusiveWith(enchantments.getOrThrow(BANE_EXCLUSIVE)));
+
+        register(context, ModEnchantments.BANE_NETHER, colored(
+                Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 3, 5,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.DAMAGE,
+                        new AddValue(LevelBasedValue.perLevel(2.5F, 2.5F)),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().of(ENTITY_NETHER)))
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new ApplyMobEffect(HolderSet.direct(MobEffects.MOVEMENT_SLOWDOWN),
+                                LevelBasedValue.constant(1.5F), LevelBasedValue.perLevel(1.5F, 0.5F),
+                                LevelBasedValue.constant(3.0F), LevelBasedValue.constant(3.0F)),
+                        AllOfCondition.allOf(
+                                LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                        EntityPredicate.Builder.entity().of(ENTITY_NETHER)),
+                                DamageSourceCondition.hasDamageSource(DamageSourcePredicate.Builder.damageType().isDirect(true))))
+                .exclusiveWith(enchantments.getOrThrow(BANE_EXCLUSIVE)));
+
+        register(context, ModEnchantments.BANE_PHANTOM, colored(
+                Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 3, 5,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.DAMAGE,
+                        new AddValue(LevelBasedValue.perLevel(2.5F, 2.5F)),
+                        AllOfCondition.allOf(
+                                AnyOfCondition.anyOf(LootItemEntityPropertyCondition.hasProperties(
+                                        LootContext.EntityTarget.DIRECT_ATTACKER,
+                                        EntityPredicate.Builder.entity().of(EntityTypeTags.ARROWS))),
+                                LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                        EntityPredicate.Builder.entity().of(EntityType.PHANTOM)
+                                                .flags(EntityFlagsPredicate.Builder.flags().setOnGround(false)))))
+                .exclusiveWith(enchantments.getOrThrow(BANE_EXCLUSIVE)));
+
+        register(context, ModEnchantments.BANE_WATER, colored(
+                Enchantment.definition(items.getOrThrow(ItemTags.TRIDENT_ENCHANTABLE), items.getOrThrow(ItemTags.TRIDENT_ENCHANTABLE), 3, 5,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8,
+                        EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.DAMAGE,
+                        new AddValue(LevelBasedValue.perLevel(2.5F, 2.5F)),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().of(ENTITY_WATER)))
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new ApplyMobEffect(HolderSet.direct(MobEffects.MOVEMENT_SLOWDOWN),
+                                LevelBasedValue.constant(1.5F), LevelBasedValue.perLevel(1.5F, 0.5F),
+                                LevelBasedValue.constant(3.0F), LevelBasedValue.constant(3.0F)),
+                        AllOfCondition.allOf(
+                                LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                        EntityPredicate.Builder.entity().of(ENTITY_WATER)),
+                                DamageSourceCondition.hasDamageSource(DamageSourcePredicate.Builder.damageType().isDirect(true))))
+                .exclusiveWith(enchantments.getOrThrow(BANE_EXCLUSIVE)));
 
         register(context, ModEnchantments.BERSERK, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS_CHEST), items.getOrThrow(ARMORS_CHEST), 2, 5,
@@ -798,6 +934,47 @@ public final class ModEnchantmentProvider {
                 0xFF55FF)
                 .withEffect(ModEnchantmentEffectComponents.SPIRIT_SPEED_BONUS.get(),
                         new SetValue(LevelBasedValue.perLevel(0.25F))));
+
+        register(context, ModEnchantments.TOUCH_BLEEDING, colored(
+                Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 3, 3,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new AllOf.EntityEffects(List.of(new ApplyMobEffect(
+                                foreignId(ResourceKey.create(Registries.MOB_EFFECT,
+                                        ResourceLocation.fromNamespaceAndPath("apothic_attributes", "bleeding"))),
+                                LevelBasedValue.constant(4.0F), LevelBasedValue.constant(6.0F),
+                                LevelBasedValue.constant(0.0F), LevelBasedValue.perLevel(0.0F, 1.0F)))),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
+                                        .mainhand(ItemPredicate.Builder.item().of(SWORDS_AND_AXES)))))
+                .exclusiveWith(enchantments.getOrThrow(TOUCH_EXCLUSIVE)));
+
+        register(context, ModEnchantments.TOUCH_POISON, colored(
+                Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 3, 3,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new AllOf.EntityEffects(List.of(new ApplyMobEffect(HolderSet.direct(MobEffects.POISON),
+                                LevelBasedValue.constant(4.0F), LevelBasedValue.constant(6.0F),
+                                LevelBasedValue.constant(0.0F), LevelBasedValue.perLevel(0.0F, 1.0F)))),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
+                                        .mainhand(ItemPredicate.Builder.item().of(SWORDS_AND_AXES)))))
+                .exclusiveWith(enchantments.getOrThrow(TOUCH_EXCLUSIVE)));
+
+        register(context, ModEnchantments.TOUCH_WITHER, colored(
+                Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 3, 3,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new AllOf.EntityEffects(List.of(new ApplyMobEffect(HolderSet.direct(MobEffects.WITHER),
+                                LevelBasedValue.constant(4.0F), LevelBasedValue.constant(6.0F),
+                                LevelBasedValue.constant(0.0F), LevelBasedValue.perLevel(0.0F, 1.0F)))),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
+                                        .mainhand(ItemPredicate.Builder.item().of(SWORDS_AND_AXES)))))
+                .exclusiveWith(enchantments.getOrThrow(TOUCH_EXCLUSIVE)));
 
         register(context, ModEnchantments.TRACKER, colored(
                 Enchantment.definition(items.getOrThrow(WOLF_ARMOR), items.getOrThrow(WOLF_ARMOR), 4, 1,

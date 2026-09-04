@@ -32,6 +32,13 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> AURA_WITHER = key("aura_wither");
     public static final ResourceKey<Enchantment> AUTO_SMELT = key("auto_smelt");
     public static final ResourceKey<Enchantment> BACKSTAB = key("backstab");
+    public static final ResourceKey<Enchantment> BANE_BADY = key("bane_bady");
+    public static final ResourceKey<Enchantment> BANE_BOSS = key("bane_boss");
+    public static final ResourceKey<Enchantment> BANE_END = key("bane_end");
+    public static final ResourceKey<Enchantment> BANE_ILLAGER = key("bane_illager");
+    public static final ResourceKey<Enchantment> BANE_NETHER = key("bane_nether");
+    public static final ResourceKey<Enchantment> BANE_PHANTOM = key("bane_phantom");
+    public static final ResourceKey<Enchantment> BANE_WATER = key("bane_water");
     public static final ResourceKey<Enchantment> BERSERK = key("berserk");
     public static final ResourceKey<Enchantment> BOONS = key("boons");
     public static final ResourceKey<Enchantment> BOLTBRINGER = key("boltbringer");
@@ -111,6 +118,9 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> TACTICAL_KNEE = key("tactical_knee");
     public static final ResourceKey<Enchantment> TIDE_SENSE = key("tide_sense");
     public static final ResourceKey<Enchantment> TIMBER = key("timber");
+    public static final ResourceKey<Enchantment> TOUCH_BLEEDING = key("touch_bleeding");
+    public static final ResourceKey<Enchantment> TOUCH_POISON = key("touch_poison");
+    public static final ResourceKey<Enchantment> TOUCH_WITHER = key("touch_wither");
     public static final ResourceKey<Enchantment> TRACKER = key("tracker");
     public static final ResourceKey<Enchantment> TRAIL_CHERRY_LEAVES = key("trail_cherry_leaves");
     public static final ResourceKey<Enchantment> TRAIL_DRAGON_BREATH = key("trail_dragon_breath");

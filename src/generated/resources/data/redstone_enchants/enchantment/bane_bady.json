@@ -1,25 +1,9 @@
 {
+  "anvil_cost": 8,
   "description": {
     "color": "#FF55FF",
     "translate": "enchantment.redstone_enchants.bane_bady"
   },
-  "supported_items": "#redstone_enchants:swords_and_axes",
-  "primary_items": "#redstone_enchants:swords",
-  "weight": 3,
-  "max_level": 5,
-  "min_cost": {
-    "base": 12,
-    "per_level_above_first": 6
-  },
-  "max_cost": {
-    "base": 24,
-    "per_level_above_first": 12
-  },
-  "anvil_cost": 8,
-  "slots": [
-    "mainhand"
-  ],
-  "exclusive_set": "#redstone_enchants:exclusive_set/bane",
   "effects": {
     "minecraft:damage": [
       {
@@ -42,5 +26,21 @@
         }
       }
     ]
-  }
+  },
+  "exclusive_set": "#redstone_enchants:exclusive_set/bane",
+  "max_cost": {
+    "base": 24,
+    "per_level_above_first": 12
+  },
+  "max_level": 5,
+  "min_cost": {
+    "base": 12,
+    "per_level_above_first": 6
+  },
+  "primary_items": "#redstone_enchants:swords",
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#redstone_enchants:swords_and_axes",
+  "weight": 3
 }
