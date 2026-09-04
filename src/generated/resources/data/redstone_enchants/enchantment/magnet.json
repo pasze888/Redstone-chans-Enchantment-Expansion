@@ -1,0 +1,35 @@
+{
+  "anvil_cost": 8,
+  "description": {
+    "color": "#FF55FF",
+    "translate": "enchantment.redstone_enchants.magnet"
+  },
+  "effects": {
+    "redstone_enchants:magnet_range": [
+      {
+        "effect": {
+          "type": "minecraft:add",
+          "value": {
+            "type": "minecraft:linear",
+            "base": 4.0,
+            "per_level_above_first": 4.0
+          }
+        }
+      }
+    ]
+  },
+  "max_cost": {
+    "base": 24,
+    "per_level_above_first": 12
+  },
+  "max_level": 4,
+  "min_cost": {
+    "base": 12,
+    "per_level_above_first": 6
+  },
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#minecraft:pickaxes",
+  "weight": 3
+}

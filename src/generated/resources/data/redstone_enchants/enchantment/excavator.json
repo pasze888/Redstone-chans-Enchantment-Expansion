@@ -1,0 +1,35 @@
+{
+  "anvil_cost": 8,
+  "description": {
+    "color": "#FF55FF",
+    "translate": "enchantment.redstone_enchants.excavator"
+  },
+  "effects": {
+    "redstone_enchants:area_break_radius": [
+      {
+        "effect": {
+          "type": "minecraft:add",
+          "value": {
+            "type": "minecraft:linear",
+            "base": 1.0,
+            "per_level_above_first": 1.0
+          }
+        }
+      }
+    ]
+  },
+  "max_cost": {
+    "base": 24,
+    "per_level_above_first": 12
+  },
+  "max_level": 3,
+  "min_cost": {
+    "base": 12,
+    "per_level_above_first": 6
+  },
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#redstone_enchants:tools",
+  "weight": 3
+}

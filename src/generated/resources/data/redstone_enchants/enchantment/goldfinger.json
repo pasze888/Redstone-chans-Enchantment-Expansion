@@ -1,0 +1,36 @@
+{
+  "anvil_cost": 8,
+  "description": {
+    "color": "#FF55FF",
+    "translate": "enchantment.redstone_enchants.goldfinger"
+  },
+  "effects": {
+    "redstone_enchants:stone_to_gold_chance": [
+      {
+        "effect": {
+          "type": "minecraft:add",
+          "value": {
+            "type": "minecraft:linear",
+            "base": 0.025,
+            "per_level_above_first": 0.025
+          }
+        }
+      }
+    ]
+  },
+  "exclusive_set": "#redstone_enchants:exclusive_set/stone_transmutation",
+  "max_cost": {
+    "base": 24,
+    "per_level_above_first": 12
+  },
+  "max_level": 4,
+  "min_cost": {
+    "base": 12,
+    "per_level_above_first": 6
+  },
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#minecraft:pickaxes",
+  "weight": 3
+}
