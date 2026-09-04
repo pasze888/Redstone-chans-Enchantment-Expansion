@@ -52,6 +52,9 @@ public final class ModEnchantmentEffectComponents {
     /** 处决（execution）：目标当前生命占比低于 25% 时直接击杀 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> EXECUTION =
             unit("execution");
+    /** 生命吸取（life_steal）：按本次实际造成伤害恢复的比例 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> LIFE_STEAL_RATIO =
+            value("life_steal_ratio");
 
     /** 攻击附加掉落（模板）：在受害实体位置生成物品堆，供 swords 类附魔通过 post_attack 声明 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<TargetedConditionalEffect<EnchantmentEntityEffect>>>> POST_ATTACK_SUMMON =

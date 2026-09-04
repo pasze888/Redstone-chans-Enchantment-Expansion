@@ -1,0 +1,32 @@
+{
+  "anvil_cost": 12,
+  "description": {
+    "color": "#FFAA00",
+    "translate": "enchantment.redstone_enchants.life_steal"
+  },
+  "effects": {
+    "redstone_enchants:life_steal_ratio": [
+      {
+        "effect": {
+          "type": "minecraft:set",
+          "value": 0.1
+        }
+      }
+    ]
+  },
+  "max_cost": {
+    "base": 32,
+    "per_level_above_first": 16
+  },
+  "max_level": 5,
+  "min_cost": {
+    "base": 16,
+    "per_level_above_first": 8
+  },
+  "primary_items": "#redstone_enchants:swords",
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#redstone_enchants:swords_and_axes",
+  "weight": 2
+}

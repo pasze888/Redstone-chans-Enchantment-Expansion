@@ -5,6 +5,7 @@ import com.chinaex123.redstone_enchants.enchantment.component.GamblerData;
 import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
 import com.chinaex123.redstone_enchants.util.EnchantmentUtil;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -32,6 +33,15 @@ public final class SwordLivingDamageEvents {
         }
         gamblerRoll(event, attacker);
         executionKill(event, attacker);
+    }
+
+    @SubscribeEvent
+    public static void onLivingDamagePost(LivingDamageEvent.Post event) {
+        LivingEntity attacker = event.getSource().getEntity() instanceof LivingEntity living ? living : null;
+        if (attacker == null) {
+            return;
+        }
+        lifeSteal(event, attacker);
     }
 
     // ---- 赌徒 ----
@@ -66,6 +76,26 @@ public final class SwordLivingDamageEvents {
         if (healthPercent < 0.25F) {
             event.setNewDamage(target.getHealth());
         }
+    }
+
+    // ---- 生命吸取 ----
+
+    /**
+     * 生命吸取：按本次实际造成的伤害（Post 阶段最终扣血量）× 组件比例治疗攻击者。
+     * <p>⚠️ 修复旧实现 bug：旧 handler 引用了不存在的附魔 ID {@code leeching}
+     * （真 ID 是 {@code life_steal}），{@code getHolder} 永远为 null，该附魔此前从未生效；
+     * 数值基准同时从 original 伤害改为实际伤害（Post 的 {@code getNewDamage}）。
+     */
+    private static void lifeSteal(LivingDamageEvent.Post event, LivingEntity attacker) {
+        if (!(attacker.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        ItemStack weapon = attacker.getMainHandItem();
+        float ratio = EnchantmentUtil.itemValue(serverLevel, weapon, ModEnchantmentEffectComponents.LIFE_STEAL_RATIO.get());
+        if (ratio <= 0) {
+            return;
+        }
+        attacker.heal(event.getNewDamage() * ratio);
     }
 
     /** 在主手/副手查找携带指定单值组件的物品（旧版赌徒逐槽检查到第一个即止）。 */

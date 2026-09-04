@@ -24,6 +24,7 @@ import net.minecraft.world.item.enchantment.effects.EnchantmentAttributeEffect;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.item.enchantment.effects.AddValue;
+import net.minecraft.world.item.enchantment.effects.SetValue;
 
 /**
  * 已迁移附魔的注册表 bootstrap（runData 生成 {@code data/redstone_enchants/enchantment/*.json}）。
@@ -79,6 +80,13 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.MAINHAND),
                 0xFFAA00)
                 .withEffect(ModEnchantmentEffectComponents.EXECUTION.get()));
+
+        register(context, ModEnchantments.LIFE_STEAL, colored(
+                Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 2, 5,
+                        Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.MAINHAND),
+                0xFFAA00)
+                .withEffect(ModEnchantmentEffectComponents.LIFE_STEAL_RATIO.get(),
+                        new SetValue(LevelBasedValue.constant(0.1F))));
 
         register(context, ModEnchantments.CHAIN_HASTE, colored(
                 Enchantment.definition(items.getOrThrow(TOOLS), 3, 3,
