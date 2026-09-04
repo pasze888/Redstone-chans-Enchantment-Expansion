@@ -26,6 +26,12 @@ repositories {
             includeGroup "curse.maven"
         }
     }
+    maven {
+        url "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
 }
 
 base {
@@ -145,6 +151,8 @@ dependencies {
     localRuntime "curse.maven:kubejs-238086:7278501" // KubeJS
     localRuntime "curse.maven:appleskin-248787:7854442" // 苹果皮
 
+    // 拼音搜索（客户端专用，仅 Modrinth 发布）
+    localRuntime "maven.modrinth:justenoughcharacters:4.5.29"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
