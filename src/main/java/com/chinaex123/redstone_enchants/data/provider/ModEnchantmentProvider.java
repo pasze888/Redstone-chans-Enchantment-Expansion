@@ -227,6 +227,13 @@ public final class ModEnchantmentProvider {
                 0xFF55FF)
                 .withEffect(ModEnchantmentEffectComponents.ENDLESS_WOOL_REGROW_CHANCE.get(), new AddValue(LevelBasedValue.perLevel(0.10F))));
 
+        register(context, ModEnchantments.EXPERIENCE_SHEAR, colored(
+                Enchantment.definition(items.getOrThrow(ALL_SHEAR), items.getOrThrow(ALL_SHEAR), 3, 3,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
+                0xFF55FF)
+                .withEffect(ModEnchantmentEffectComponents.EXPERIENCE_SHEAR_EXP_PER_LEVEL.get(),
+                        new SetValue(LevelBasedValue.perLevel(3.0F))));
+
         register(context, ModEnchantments.BOONS, colored(
                 Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 2, 5,
                         Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.MAINHAND),

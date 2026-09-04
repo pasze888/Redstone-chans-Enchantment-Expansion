@@ -30,9 +30,11 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> EQUALIZER = key("equalizer");
     public static final ResourceKey<Enchantment> EXCAVATOR = key("excavator");
     public static final ResourceKey<Enchantment> EXECUTION = key("execution");
+    public static final ResourceKey<Enchantment> EXPERIENCE_SHEAR = key("experience_shear");
     public static final ResourceKey<Enchantment> GAMBLER = key("gambler");
     public static final ResourceKey<Enchantment> GEOLOGY = key("geology");
     public static final ResourceKey<Enchantment> GOLDFINGER = key("goldfinger");
+    public static final ResourceKey<Enchantment> HARVEST_ECHO = key("harvest_echo");
     public static final ResourceKey<Enchantment> HASTE = key("haste");
     public static final ResourceKey<Enchantment> INDESTRUCTIBLE = key("indestructible");
     public static final ResourceKey<Enchantment> LIFE_STEAL = key("life_steal");

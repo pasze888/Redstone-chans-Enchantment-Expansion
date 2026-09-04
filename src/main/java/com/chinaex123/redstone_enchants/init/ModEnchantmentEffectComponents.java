@@ -67,6 +67,9 @@ public final class ModEnchantmentEffectComponents {
     /** 绵延不绝（endless_wool）：剪羊毛后羊立即重新长毛的概率（每级） */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> ENDLESS_WOOL_REGROW_CHANCE =
             value("endless_wool_regrow_chance");
+    /** 经验修剪（experience_shear）：每份掉落转化为经验球的经验上限倍数（每级） */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> EXPERIENCE_SHEAR_EXP_PER_LEVEL =
+            value("experience_shear_exp_per_level");
     /** 生命吸取（life_steal）：按本次实际造成伤害恢复的比例 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> LIFE_STEAL_RATIO =
             value("life_steal_ratio");
