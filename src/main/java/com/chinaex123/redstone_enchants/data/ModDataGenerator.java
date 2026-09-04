@@ -36,6 +36,10 @@ public final class ModDataGenerator {
                             new ModLoadedCondition("apothic_attributes"));
                     conditions.accept(ModEnchantments.DUAL_CRITICAL_BOOST,
                             new ModLoadedCondition("apothic_attributes"));
+                    conditions.accept(ModEnchantments.SPELL_MAGIC_RESIST,
+                            new ModLoadedCondition("irons_spellbooks"));
+                    conditions.accept(ModEnchantments.SPELL_POWER,
+                            new ModLoadedCondition("irons_spellbooks"));
                     conditions.accept(ModEnchantments.TOUCH_BLEEDING,
                             new ModLoadedCondition("apothic_attributes"));
                     conditions.accept(ModEnchantments.UNDERCURRENT,

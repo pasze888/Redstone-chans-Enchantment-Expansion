@@ -1,26 +1,9 @@
 {
+  "anvil_cost": 12,
   "description": {
     "color": "#FFAA00",
     "translate": "enchantment.redstone_enchants.committed"
   },
-  "supported_items": "#redstone_enchants:weapon",
-  "primary_items": "#redstone_enchants:weapon",
-  "weight": 2,
-  "max_level": 3,
-  "min_cost": {
-    "base": 16,
-    "per_level_above_first": 8
-  },
-  "max_cost": {
-    "base": 32,
-    "per_level_above_first": 16
-  },
-  "anvil_cost": 12,
-  "slots": [
-    "mainhand",
-    "offhand"
-  ],
-  "exclusive_set": "#redstone_enchants:exclusive_set/damage",
   "effects": {
     "minecraft:damage": [
       {
@@ -43,12 +26,12 @@
     ],
     "minecraft:post_attack": [
       {
-        "enchanted": "attacker",
         "affected": "victim",
         "effect": {
           "type": "minecraft:run_function",
           "function": "redstone_enchants:enchantment/committed"
         },
+        "enchanted": "attacker",
         "requirements": {
           "condition": "minecraft:all_of",
           "terms": [
@@ -76,5 +59,21 @@
         }
       }
     ]
-  }
+  },
+  "exclusive_set": "#redstone_enchants:exclusive_set/damage",
+  "max_cost": {
+    "base": 32,
+    "per_level_above_first": 16
+  },
+  "max_level": 3,
+  "min_cost": {
+    "base": 16,
+    "per_level_above_first": 8
+  },
+  "primary_items": "#redstone_enchants:weapon",
+  "slots": [
+    "hand"
+  ],
+  "supported_items": "#redstone_enchants:weapon",
+  "weight": 2
 }

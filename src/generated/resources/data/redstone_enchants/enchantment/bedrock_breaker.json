@@ -1,33 +1,17 @@
 {
+  "anvil_cost": 200,
   "description": {
     "color": "#FF00BB",
     "translate": "enchantment.redstone_enchants.bedrock_breaker"
   },
-  "supported_items": "#minecraft:pickaxes",
-  "primary_items": "#minecraft:pickaxes",
-  "weight": 1,
-  "max_level": 1,
-  "min_cost": {
-    "base": 80,
-    "per_level_above_first": 50
-  },
-  "max_cost": {
-    "base": 100,
-    "per_level_above_first": 50
-  },
-  "anvil_cost": 200,
-  "slots": [
-    "mainhand"
-  ],
-  "exclusive_set": "#redstone_enchants:exclusive_set/bedrock",
   "effects": {
     "minecraft:hit_block": [
       {
         "effect": {
-          "type": "play_sound",
-          "volume": 1,
-          "pitch": 2,
-          "sound": "minecraft:entity.generic.explode"
+          "type": "minecraft:play_sound",
+          "pitch": 2.0,
+          "sound": "minecraft:entity.generic.explode",
+          "volume": 1.0
         }
       },
       {
@@ -36,30 +20,29 @@
           "effects": [
             {
               "type": "minecraft:spawn_particles",
-              "particle": {
-                "type": "minecraft:explosion_emitter"
-              },
               "horizontal_position": {
-                "type": "in_bounding_box"
-              },
-              "vertical_position": {
                 "type": "in_bounding_box"
               },
               "horizontal_velocity": {
                 "base": 0.1,
                 "movement_scale": 0.1
               },
+              "particle": {
+                "type": "minecraft:explosion_emitter"
+              },
+              "vertical_position": {
+                "type": "in_bounding_box"
+              },
               "vertical_velocity": {
                 "base": 0.1,
                 "movement_scale": 0.1
-              },
-              "speed": 0
+              }
             },
             {
               "type": "minecraft:play_sound",
+              "pitch": 0.75,
               "sound": "minecraft:entity.breeze.death",
-              "volume": 0.1,
-              "pitch": 0.75
+              "volume": 0.1
             },
             {
               "type": "minecraft:replace_block",
@@ -73,21 +56,35 @@
             },
             {
               "type": "minecraft:damage_item",
-              "amount": 1000
+              "amount": 1000.0
             }
           ]
         },
-        "requirements": [
-          {
-            "condition": "minecraft:location_check",
-            "predicate": {
-              "block": {
-                "blocks": "#redstone_enchants:bedrock_breaker"
-              }
+        "requirements": {
+          "condition": "minecraft:location_check",
+          "predicate": {
+            "block": {
+              "blocks": "#redstone_enchants:bedrock_breaker"
             }
           }
-        ]
+        }
       }
     ]
-  }
+  },
+  "exclusive_set": "#redstone_enchants:exclusive_set/bedrock",
+  "max_cost": {
+    "base": 100,
+    "per_level_above_first": 50
+  },
+  "max_level": 1,
+  "min_cost": {
+    "base": 80,
+    "per_level_above_first": 50
+  },
+  "primary_items": "#minecraft:pickaxes",
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#minecraft:pickaxes",
+  "weight": 1
 }
