@@ -1,4 +1,4 @@
-// 1.21.1	2026-09-04T19:50:56.3010893	Registries
+// 1.21.1	2026-09-04T19:52:00.8816672	Registries
 29ad3becde1b6c0ff60e89178f426269d2b93321 data/redstone_enchants/enchantment/advanced_unbreaking.json
 e7fbadf4574badbf688a04ccb6e4992e38152308 data/redstone_enchants/enchantment/ambush.json
 8116d4cab23f5d8e00de0ffb4de6585c63ab9053 data/redstone_enchants/enchantment/angler.json
@@ -9,6 +9,7 @@ e7fbadf4574badbf688a04ccb6e4992e38152308 data/redstone_enchants/enchantment/ambu
 16afe34c65517579c337400e981df9353ed1302d data/redstone_enchants/enchantment/butcher.json
 0f22ea9b4b68d7d4c7d2e52b8f560d7070f16c7f data/redstone_enchants/enchantment/calamity.json
 ec29f4bb2eed83b3109ab356292212c35b7d3930 data/redstone_enchants/enchantment/chain_haste.json
+51c49e202efa18c9e4aad520a815f0a7815703cc data/redstone_enchants/enchantment/conductive_line.json
 11448bd315dacf8d4d5672c1235f98a5bb216cf2 data/redstone_enchants/enchantment/curse_of_rust.json
 1a40505660a161fc0b3b745d62ef406efbf3ece3 data/redstone_enchants/enchantment/curse_of_water_source.json
 2a2ab2e97dd68468a0122a9bcb685762a4d722ec data/redstone_enchants/enchantment/daynight_cycle.json

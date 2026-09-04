@@ -20,6 +20,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> BUTCHER = key("butcher");
     public static final ResourceKey<Enchantment> CALAMITY = key("calamity");
     public static final ResourceKey<Enchantment> CHAIN_HASTE = key("chain_haste");
+    public static final ResourceKey<Enchantment> CONDUCTIVE_LINE = key("conductive_line");
     public static final ResourceKey<Enchantment> CURSE_OF_RUST = key("curse_of_rust");
     public static final ResourceKey<Enchantment> CURSE_OF_WATER_SOURCE = key("curse_of_water_source");
     public static final ResourceKey<Enchantment> DAYNIGHT_CYCLE = key("daynight_cycle");

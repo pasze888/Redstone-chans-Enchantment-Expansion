@@ -31,6 +31,9 @@ public final class ModEnchantmentEffectComponents {
     /** 渔夫（angler）：钓鱼收获鱼类翻倍的概率（每级） */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> ANGLER_DOUBLE_CHANCE =
             value("angler_double_chance");
+    /** 导电鱼线（conductive_line）：雷雨天勾住生物召唤闪电 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> CONDUCTIVE_LINE =
+            unit("conductive_line");
     /** 地质学（geology）：挖石头时掉落随机矿石的概率 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> STONE_TO_ORE_CHANCE =
             value("stone_to_ore_chance");
