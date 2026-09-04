@@ -8,31 +8,39 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * 剑类战斗附魔在伤害事件上的统一分发器。
  * <p>行为参数由附魔 JSON 声明（见 {@link ModEnchantmentEffectComponents}），
  * 这里按固定顺序驱动各效果。旧实现是每个附魔一个独立订阅者，
  * 执行顺序取决于注册顺序且互相覆盖（均以原始伤害为基数的附魔只有一个生效），
- * 分发器固定执行顺序：赌徒 → （后续）伏击 → 背刺 → 均衡器 → 处决，沿用各旧公式。
+ * 分发器固定执行顺序：赌徒 → 伏击 → （后续）背刺 → 均衡器 → 处决，生命吸取在 Post 阶段，
+ * 沿用各旧公式与攻击者解析（各段自行按旧版语义判定）。
  */
 @EventBusSubscriber(modid = RedstoneEnchants.MOD_ID)
 public final class SwordLivingDamageEvents {
     private static final EquipmentSlot[] HAND_SLOTS = { EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND };
 
+    /** 伏击每玩家状态（旧 handler 同款 Map）：记录已非潜行攻击过/已吃过潜行首击加成 */
+    private static final Map<UUID, Boolean> AMBUSH_HAS_ATTACKED = new HashMap<>();
+
     @SubscribeEvent
     public static void onLivingDamagePre(LivingDamageEvent.Pre event) {
-        LivingEntity attacker = event.getSource().getEntity() instanceof LivingEntity living ? living : null;
-        if (attacker == null) {
-            return;
-        }
-        gamblerRoll(event, attacker);
-        executionKill(event, attacker);
+        // 固定顺序：赌徒 → 伏击 → 背刺 → 均衡器 → 处决（各段按旧版语义自行解析攻击者）
+        gamblerRoll(event);
+        ambushStrike(event);
+        executionKill(event);
     }
 
     @SubscribeEvent
@@ -44,9 +52,22 @@ public final class SwordLivingDamageEvents {
         lifeSteal(event, attacker);
     }
 
+    @SubscribeEvent
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
+        // 如果玩家停止潜行，重置伏击标记（旧 handler 同款，双侧 tick 均执行）
+        Player player = event.getEntity();
+        if (!player.isCrouching()) {
+            AMBUSH_HAS_ATTACKED.remove(player.getUUID());
+        }
+    }
+
     // ---- 赌徒 ----
 
-    private static void gamblerRoll(LivingDamageEvent.Pre event, LivingEntity attacker) {
+    private static void gamblerRoll(LivingDamageEvent.Pre event) {
+        LivingEntity attacker = event.getSource().getEntity() instanceof LivingEntity living ? living : null;
+        if (attacker == null) {
+            return;
+        }
         ItemStack tool = findHandStackWith(attacker, ModEnchantmentEffectComponents.GAMBLER_DATA.get());
         if (tool == null) {
             return;
@@ -63,9 +84,52 @@ public final class SwordLivingDamageEvents {
         }
     }
 
+    // ---- 伏击 ----
+
+    private static void ambushStrike(LivingDamageEvent.Pre event) {
+        // 旧版用 getDirectEntity + Player 判定攻击者（弓箭等投射物不触发）
+        if (!(event.getSource().getDirectEntity() instanceof Player attacker)) {
+            return;
+        }
+        if (!(attacker.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        ItemStack weapon = attacker.getMainHandItem();
+        if (weapon.isEmpty()) {
+            return;
+        }
+        if (!EnchantmentHelper.has(weapon, ModEnchantmentEffectComponents.AMBUSH_BONUS.get())) {
+            return;
+        }
+        UUID playerId = attacker.getUUID();
+
+        // 检查是否在潜行
+        if (!attacker.isCrouching()) {
+            // 不在潜行，标记为已攻击过
+            AMBUSH_HAS_ATTACKED.put(playerId, true);
+            return;
+        }
+
+        // 检查是否是潜行后的首次攻击
+        if (AMBUSH_HAS_ATTACKED.getOrDefault(playerId, false)) {
+            return;
+        }
+
+        // 潜行时的首次攻击，增加伤害（每级+20%，公式原样）
+        float bonus = EnchantmentUtil.itemValue(serverLevel, weapon, ModEnchantmentEffectComponents.AMBUSH_BONUS.get());
+        event.setNewDamage(event.getOriginalDamage() * (1 + bonus));
+
+        // 标记为已攻击
+        AMBUSH_HAS_ATTACKED.put(playerId, true);
+    }
+
     // ---- 处决 ----
 
-    private static void executionKill(LivingDamageEvent.Pre event, LivingEntity attacker) {
+    private static void executionKill(LivingDamageEvent.Pre event) {
+        LivingEntity attacker = event.getSource().getEntity() instanceof LivingEntity living ? living : null;
+        if (attacker == null) {
+            return;
+        }
         ItemStack weapon = attacker.getMainHandItem();
         if (!EnchantmentHelper.has(weapon, ModEnchantmentEffectComponents.EXECUTION.get())) {
             return;

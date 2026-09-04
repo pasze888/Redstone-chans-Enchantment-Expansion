@@ -55,6 +55,9 @@ public final class ModEnchantmentEffectComponents {
     /** 生命吸取（life_steal）：按本次实际造成伤害恢复的比例 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> LIFE_STEAL_RATIO =
             value("life_steal_ratio");
+    /** 伏击（ambush）：潜行首击的加伤比例（每级） */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> AMBUSH_BONUS =
+            value("ambush_bonus");
 
     /** 攻击附加掉落（模板）：在受害实体位置生成物品堆，供 swords 类附魔通过 post_attack 声明 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<TargetedConditionalEffect<EnchantmentEntityEffect>>>> POST_ATTACK_SUMMON =
