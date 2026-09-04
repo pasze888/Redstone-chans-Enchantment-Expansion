@@ -70,6 +70,9 @@ public final class ModEnchantmentEffectComponents {
     /** 屠夫（butcher）：击杀动物时额外掉落的比例（每级） */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> BUTCHER_EXTRA_DROP =
             value("butcher_extra_drop");
+    /** 斩首（decapitation）：击杀有头颅生物时掉落头颅的概率（每级） */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> DECAPITATION_CHANCE =
+            value("decapitation_chance");
 
     /** 攻击附加掉落（模板）：在受害实体位置生成物品堆，供 swords 类附魔通过 post_attack 声明 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<TargetedConditionalEffect<EnchantmentEntityEffect>>>> POST_ATTACK_SUMMON =
