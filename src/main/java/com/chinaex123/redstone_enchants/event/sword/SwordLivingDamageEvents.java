@@ -6,6 +6,7 @@ import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
 import com.chinaex123.redstone_enchants.util.EnchantmentUtil;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -40,6 +41,7 @@ public final class SwordLivingDamageEvents {
         // 固定顺序：赌徒 → 伏击 → 背刺 → 均衡器 → 处决（各段按旧版语义自行解析攻击者）
         gamblerRoll(event);
         ambushStrike(event);
+        backstab(event);
         executionKill(event);
     }
 
@@ -121,6 +123,44 @@ public final class SwordLivingDamageEvents {
 
         // 标记为已攻击
         AMBUSH_HAS_ATTACKED.put(playerId, true);
+    }
+
+    // ---- 背刺 ----
+
+    private static void backstab(LivingDamageEvent.Pre event) {
+        LivingEntity attacker = event.getSource().getEntity() instanceof LivingEntity living ? living : null;
+        if (attacker == null) {
+            return;
+        }
+        if (!(attacker.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        ItemStack weapon = attacker.getMainHandItem();
+        if (!EnchantmentHelper.has(weapon, ModEnchantmentEffectComponents.BACKSTAB_BEHIND_BONUS.get())) {
+            return;
+        }
+        LivingEntity target = event.getEntity();
+
+        // 计算攻击者相对于目标的方向向量
+        double dx = target.getX() - attacker.getX();
+        double dz = target.getZ() - attacker.getZ();
+
+        // 计算目标朝向的单位向量
+        float targetYawRad = target.getYRot() * (float) Math.PI / 180.0f;
+        float targetLookX = -Mth.sin(targetYawRad);
+        float targetLookZ = Mth.cos(targetYawRad);
+
+        // 计算点积：>0 表示攻击者在目标背后，<0 表示在正面
+        double dotProduct = dx * targetLookX + dz * targetLookZ;
+
+        // 旧版公式原样：基数是 getNewDamage()（非 original）；背后每级+30%，正面（含正侧方）每级-15%
+        if (dotProduct > 0) {
+            float behind = EnchantmentUtil.itemValue(serverLevel, weapon, ModEnchantmentEffectComponents.BACKSTAB_BEHIND_BONUS.get());
+            event.setNewDamage(event.getNewDamage() * (1 + behind));
+        } else {
+            float front = EnchantmentUtil.itemValue(serverLevel, weapon, ModEnchantmentEffectComponents.BACKSTAB_FRONT_PENALTY.get());
+            event.setNewDamage(event.getNewDamage() * (1 - front));
+        }
     }
 
     // ---- 处决 ----

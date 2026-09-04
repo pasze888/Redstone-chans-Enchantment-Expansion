@@ -12,6 +12,7 @@ import net.neoforged.bus.api.IEventBus;
 public final class ModEnchantments {
     public static final ResourceKey<Enchantment> AMBUSH = key("ambush");
     public static final ResourceKey<Enchantment> AUTO_SMELT = key("auto_smelt");
+    public static final ResourceKey<Enchantment> BACKSTAB = key("backstab");
     public static final ResourceKey<Enchantment> BOONS = key("boons");
     public static final ResourceKey<Enchantment> CALAMITY = key("calamity");
     public static final ResourceKey<Enchantment> CHAIN_HASTE = key("chain_haste");

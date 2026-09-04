@@ -58,6 +58,12 @@ public final class ModEnchantmentEffectComponents {
     /** 伏击（ambush）：潜行首击的加伤比例（每级） */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> AMBUSH_BONUS =
             value("ambush_bonus");
+    /** 背刺（backstab）：从目标背后攻击的加伤比例（每级） */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> BACKSTAB_BEHIND_BONUS =
+            value("backstab_behind_bonus");
+    /** 背刺（backstab）：从目标正面攻击的减伤比例（每级） */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> BACKSTAB_FRONT_PENALTY =
+            value("backstab_front_penalty");
 
     /** 攻击附加掉落（模板）：在受害实体位置生成物品堆，供 swords 类附魔通过 post_attack 声明 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<TargetedConditionalEffect<EnchantmentEntityEffect>>>> POST_ATTACK_SUMMON =
