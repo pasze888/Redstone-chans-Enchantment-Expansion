@@ -139,6 +139,9 @@ public final class ModEnchantmentEffectComponents {
     /** 飞马座（pegasus）：骑乘时给玩家与坐骑缓降 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> PEGASUS =
             unit("pegasus");
+    /** 狼群领袖（pack_leader）：每级每只同伴狼的伤害加成比例 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> PACK_LEADER_DAMAGE_BONUS =
+            value("pack_leader_damage_bonus");
     /** 势能转化（potential_conversion）：下落攻击每格加伤比例（每级） */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> POTENTIAL_CONVERSION_FALL_BONUS =
             value("potential_conversion_fall_bonus");

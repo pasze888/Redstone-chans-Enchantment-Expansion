@@ -1,0 +1,36 @@
+{
+  "anvil_cost": 8,
+  "description": {
+    "color": "#FF55FF",
+    "translate": "enchantment.redstone_enchants.pack_leader"
+  },
+  "effects": {
+    "redstone_enchants:pack_leader_damage_bonus": [
+      {
+        "effect": {
+          "type": "minecraft:set",
+          "value": {
+            "type": "minecraft:linear",
+            "base": 0.5,
+            "per_level_above_first": 0.5
+          }
+        }
+      }
+    ]
+  },
+  "max_cost": {
+    "base": 24,
+    "per_level_above_first": 12
+  },
+  "max_level": 5,
+  "min_cost": {
+    "base": 12,
+    "per_level_above_first": 6
+  },
+  "primary_items": "#redstone_enchants:wolf_armor",
+  "slots": [
+    "body"
+  ],
+  "supported_items": "#redstone_enchants:wolf_armor",
+  "weight": 3
+}

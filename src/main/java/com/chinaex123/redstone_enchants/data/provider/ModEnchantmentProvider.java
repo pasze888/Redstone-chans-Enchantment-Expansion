@@ -168,6 +168,13 @@ public final class ModEnchantmentProvider {
                 0xFF55FF)
                 .withEffect(ModEnchantmentEffectComponents.PEGASUS.get()));
 
+        register(context, ModEnchantments.PACK_LEADER, colored(
+                Enchantment.definition(items.getOrThrow(WOLF_ARMOR), items.getOrThrow(WOLF_ARMOR), 3, 5,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.BODY),
+                0xFF55FF)
+                .withEffect(ModEnchantmentEffectComponents.PACK_LEADER_DAMAGE_BONUS.get(),
+                        new SetValue(LevelBasedValue.perLevel(0.5F))));
+
         register(context, ModEnchantments.PRESERVATION, colored(
                 Enchantment.definition(items.getOrThrow(ENCHANTABLES), items.getOrThrow(ENCHANTABLES), 3, 1,
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.ANY),
