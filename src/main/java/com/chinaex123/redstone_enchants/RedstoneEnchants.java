@@ -2,6 +2,7 @@ package com.chinaex123.redstone_enchants;
 
 import com.chinaex123.redstone_enchants.config.ModConfigData;
 import com.chinaex123.redstone_enchants.init.ModAttachments;
+import com.chinaex123.redstone_enchants.init.ModDataComponents;
 import com.chinaex123.redstone_enchants.init.ModEnchantments;
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
@@ -18,6 +19,7 @@ public class RedstoneEnchants {
     public RedstoneEnchants(IEventBus modEventBus, ModContainer modContainer) {
         ModEnchantments.register(modEventBus);
         ModAttachments.register(modEventBus);
+        ModDataComponents.register(modEventBus);
         ModConfigData.register(modContainer);
     }
 

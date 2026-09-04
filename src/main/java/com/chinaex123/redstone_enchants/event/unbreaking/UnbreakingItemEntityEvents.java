@@ -1,6 +1,7 @@
 package com.chinaex123.redstone_enchants.event.unbreaking;
 
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
+import com.chinaex123.redstone_enchants.init.ModDataComponents;
 import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.Unit;
@@ -33,12 +34,14 @@ public final class UnbreakingItemEntityEvents {
             // 设置防火
             if (!stack.has(DataComponents.FIRE_RESISTANT)) {
                 stack.set(DataComponents.FIRE_RESISTANT, Unit.INSTANCE);
+                stack.set(ModDataComponents.STURDY_APPLIED.get(), Unit.INSTANCE);
             }
         } else {
-            // 移除防火
-            // （旧 handler 同款副作用：会把其它来源设置的 FIRE_RESISTANT 一并剥掉，原样保留）
-            if (stack.has(DataComponents.FIRE_RESISTANT)) {
+            // 移除防火（修复：只移除本附魔写入的；物品默认组件（下界合金）/其它来源的
+            // FIRE_RESISTANT 不再被剥——判定标记是否存在）
+            if (stack.has(ModDataComponents.STURDY_APPLIED.get())) {
                 stack.remove(DataComponents.FIRE_RESISTANT);
+                stack.remove(ModDataComponents.STURDY_APPLIED.get());
             }
         }
     }

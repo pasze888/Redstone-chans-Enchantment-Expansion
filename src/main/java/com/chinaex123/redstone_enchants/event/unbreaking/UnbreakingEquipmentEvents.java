@@ -1,8 +1,10 @@
 package com.chinaex123.redstone_enchants.event.unbreaking;
 
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
+import com.chinaex123.redstone_enchants.init.ModDataComponents;
 import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.util.Unit;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -40,11 +42,17 @@ public final class UnbreakingEquipmentEvents {
 
             if (EnchantmentHelper.has(stack, ModEnchantmentEffectComponents.INDESTRUCTIBLE.get())) {
                 // 添加不可摧毁组件
-                stack.set(DataComponents.UNBREAKABLE, new Unbreakable(true));
+                if (!stack.has(DataComponents.UNBREAKABLE)) {
+                    stack.set(DataComponents.UNBREAKABLE, new Unbreakable(true));
+                    stack.set(ModDataComponents.INDESTRUCTIBLE_APPLIED.get(), Unit.INSTANCE);
+                }
             } else {
-                // 如果没有附魔，移除不可摧毁组件
-                // （旧 handler 同款副作用：会剥离其它来源设置的 UNBREAKABLE，原样保留）
-                stack.remove(DataComponents.UNBREAKABLE);
+                // 如果没有附魔，移除不可摧毁组件（修复：只移除本附魔写入的，
+                // 指令/其它 mod 设置的 UNBREAKABLE 不再被剥——判定标记是否存在）
+                if (stack.has(ModDataComponents.INDESTRUCTIBLE_APPLIED.get())) {
+                    stack.remove(DataComponents.UNBREAKABLE);
+                    stack.remove(ModDataComponents.INDESTRUCTIBLE_APPLIED.get());
+                }
             }
         }
     }
