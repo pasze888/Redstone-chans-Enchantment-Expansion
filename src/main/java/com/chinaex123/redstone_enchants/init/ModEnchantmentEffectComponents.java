@@ -64,6 +64,9 @@ public final class ModEnchantmentEffectComponents {
     /** 战斗回响（echoes_battle）：盾牌格挡后提升下一次攻击伤害 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> ECHOES_BATTLE =
             unit("echoes_battle");
+    /** 绵延不绝（endless_wool）：剪羊毛后羊立即重新长毛的概率（每级） */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> ENDLESS_WOOL_REGROW_CHANCE =
+            value("endless_wool_regrow_chance");
     /** 生命吸取（life_steal）：按本次实际造成伤害恢复的比例 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> LIFE_STEAL_RATIO =
             value("life_steal_ratio");

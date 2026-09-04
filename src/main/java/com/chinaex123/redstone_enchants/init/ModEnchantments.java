@@ -26,6 +26,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> DAYNIGHT_CYCLE = key("daynight_cycle");
     public static final ResourceKey<Enchantment> DECAPITATION = key("decapitation");
     public static final ResourceKey<Enchantment> ECHOES_BATTLE = key("echoes_battle");
+    public static final ResourceKey<Enchantment> ENDLESS_WOOL = key("endless_wool");
     public static final ResourceKey<Enchantment> EQUALIZER = key("equalizer");
     public static final ResourceKey<Enchantment> EXCAVATOR = key("excavator");
     public static final ResourceKey<Enchantment> EXECUTION = key("execution");

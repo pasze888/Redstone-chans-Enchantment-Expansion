@@ -46,6 +46,7 @@ public final class ModEnchantmentProvider {
     private static final TagKey<Item> ARMORS = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("armors"));
     private static final TagKey<Item> ALL_BOW = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("all_bow"));
     private static final TagKey<Item> ALL_FISHING = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("all_fishing"));
+    private static final TagKey<Item> ALL_SHEAR = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("all_shear"));
     private static final TagKey<Enchantment> MACE_EXCLUSIVE = TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/mace"));
     private static final TagKey<Enchantment> NO_SEA_BREEZE_EXCLUSIVE = TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/no_sea_breeze"));
     private static final TagKey<Item> ENCHANTABLES = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "enchantables"));
@@ -219,6 +220,12 @@ public final class ModEnchantmentProvider {
                 .withEffect(EnchantmentEffectComponents.FISHING_TIME_REDUCTION, new AddValue(LevelBasedValue.perLevel(10.0F)))
                 .withEffect(ModEnchantmentEffectComponents.TIDE_SENSE_FISH_CHANCE.get(),
                         new SetValue(LevelBasedValue.perLevel(0.8F, 0.1F))));
+
+        register(context, ModEnchantments.ENDLESS_WOOL, colored(
+                Enchantment.definition(items.getOrThrow(ALL_SHEAR), items.getOrThrow(ALL_SHEAR), 3, 4,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
+                0xFF55FF)
+                .withEffect(ModEnchantmentEffectComponents.ENDLESS_WOOL_REGROW_CHANCE.get(), new AddValue(LevelBasedValue.perLevel(0.10F))));
 
         register(context, ModEnchantments.BOONS, colored(
                 Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 2, 5,

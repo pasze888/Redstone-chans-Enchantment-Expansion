@@ -1,4 +1,4 @@
-// 1.21.1	2026-09-04T19:53:15.0014591	Registries
+// 1.21.1	2026-09-04T19:54:12.2445971	Registries
 29ad3becde1b6c0ff60e89178f426269d2b93321 data/redstone_enchants/enchantment/advanced_unbreaking.json
 e7fbadf4574badbf688a04ccb6e4992e38152308 data/redstone_enchants/enchantment/ambush.json
 8116d4cab23f5d8e00de0ffb4de6585c63ab9053 data/redstone_enchants/enchantment/angler.json
@@ -15,6 +15,7 @@ ec29f4bb2eed83b3109ab356292212c35b7d3930 data/redstone_enchants/enchantment/chai
 2a2ab2e97dd68468a0122a9bcb685762a4d722ec data/redstone_enchants/enchantment/daynight_cycle.json
 9a81a641e83c3795e2bba1cfb2a4ea35a8ba7bca data/redstone_enchants/enchantment/decapitation.json
 9fdda477968291e98f36872c1af863a09bbee1b6 data/redstone_enchants/enchantment/echoes_battle.json
+8ceccb1b9e9bbcf50fbff9f5822db1d91ba9183f data/redstone_enchants/enchantment/endless_wool.json
 07e7afb8adb9c7a55a96df009845744a38c86755 data/redstone_enchants/enchantment/equalizer.json
 1908557260c891d47ff6948cfcbacdee1185d621 data/redstone_enchants/enchantment/excavator.json
 c4491add953b12e4b4b4cdb70ad0bc5b1c3ea03c data/redstone_enchants/enchantment/execution.json
