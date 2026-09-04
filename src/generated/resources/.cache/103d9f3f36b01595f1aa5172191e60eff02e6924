@@ -1,4 +1,4 @@
-// 1.21.1	2026-09-04T20:08:30.3987081	Registries
+// 1.21.1	2026-09-04T20:09:46.6778738	Registries
 913d5e1b80904ec058aa8021a1962c3c080f3440 data/redstone_enchants/enchantment/adaptive.json
 29ad3becde1b6c0ff60e89178f426269d2b93321 data/redstone_enchants/enchantment/advanced_unbreaking.json
 b0a37f51f24776b5d9c3d679639ff238bf5c5e29 data/redstone_enchants/enchantment/against_all_odds.json
@@ -34,6 +34,7 @@ ddb3da0d5ecfd85d777fb856bddcc12f1fc95b1e data/redstone_enchants/enchantment/flam
 5d008b721aada440863c7e71b1bc369c0878a511 data/redstone_enchants/enchantment/harvest_echo.json
 100e5a283c779f7469263378308b72908d96080b data/redstone_enchants/enchantment/haste.json
 84ef24d7217347fdf419a125eea487f284807b3d data/redstone_enchants/enchantment/indestructible.json
+5252ca09968d84006c18b6501636dbdcc5b3eee7 data/redstone_enchants/enchantment/invisibility_cloak.json
 8b1fa4e0ee96e7cb02b2b01beb34c2c3f78234fc data/redstone_enchants/enchantment/life_steal.json
 f5883ab5ed511c64d5b4f259787b9fd9f2542a4f data/redstone_enchants/enchantment/magnet.json
 ad1b8082f2cd37a55a372b1fdf948b5a5173ad50 data/redstone_enchants/enchantment/master_gatherer.json

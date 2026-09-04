@@ -52,6 +52,7 @@ public final class ModEnchantmentProvider {
     private static final TagKey<Item> ARMORS_HEAD = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("armors_head"));
     private static final TagKey<Item> ARMORS_FOOT = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("armors_foot"));
     private static final TagKey<Item> ARMORS_CHEST = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("armors_chest"));
+    private static final TagKey<Item> ARMORS_LEG = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("armors_leg"));
     private static final TagKey<Enchantment> MACE_EXCLUSIVE = TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/mace"));
     private static final TagKey<Enchantment> NO_SEA_BREEZE_EXCLUSIVE = TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/no_sea_breeze"));
     private static final TagKey<Item> ENCHANTABLES = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "enchantables"));
@@ -313,6 +314,12 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
                 0xFF55FF)
                 .withEffect(ModEnchantmentEffectComponents.HARVEST_ECHO.get()));
+
+        register(context, ModEnchantments.INVISIBILITY_CLOAK, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_LEG), items.getOrThrow(ARMORS_LEG), 2, 1,
+                        Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.LEGS),
+                0xFFAA00)
+                .withEffect(ModEnchantmentEffectComponents.INVISIBILITY_CLOAK.get()));
 
         register(context, ModEnchantments.SHEPHERD, colored(
                 Enchantment.definition(items.getOrThrow(ALL_SHEAR), items.getOrThrow(ALL_SHEAR), 3, 4,

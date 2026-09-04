@@ -45,6 +45,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> HARVEST_ECHO = key("harvest_echo");
     public static final ResourceKey<Enchantment> HASTE = key("haste");
     public static final ResourceKey<Enchantment> INDESTRUCTIBLE = key("indestructible");
+    public static final ResourceKey<Enchantment> INVISIBILITY_CLOAK = key("invisibility_cloak");
     public static final ResourceKey<Enchantment> LIFE_STEAL = key("life_steal");
     public static final ResourceKey<Enchantment> MAGNET = key("magnet");
     public static final ResourceKey<Enchantment> MASTER_GATHERER = key("master_gatherer");

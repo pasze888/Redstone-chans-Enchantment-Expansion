@@ -91,6 +91,9 @@ public final class ModEnchantmentEffectComponents {
     /** 收获回响（harvest_echo）：剪刀右键时获得生命恢复 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> HARVEST_ECHO =
             unit("harvest_echo");
+    /** 隐身斗篷（invisibility_cloak）：潜行时获得隐身 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> INVISIBILITY_CLOAK =
+            unit("invisibility_cloak");
     /** 牧羊人（shepherd）：剪毛/采蜜额外掉落的概率（每级） */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> SHEPHERD_EXTRA_CHANCE =
             value("shepherd_extra_chance");
