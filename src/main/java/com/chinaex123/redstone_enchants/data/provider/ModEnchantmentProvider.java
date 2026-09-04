@@ -139,6 +139,10 @@ public final class ModEnchantmentProvider {
             TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/damage"));
     private static final TagKey<Enchantment> ARMORS_EXCLUSIVE =
             TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/armors"));
+    private static final TagKey<Enchantment> ARMORS_HEAD_EXCLUSIVE =
+            TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/armors_head"));
+    private static final TagKey<Enchantment> HEAD_LUCKY_EXCLUSIVE =
+            TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/head_lucky"));
     private static final TagKey<Enchantment> BANE_EXCLUSIVE =
             TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/bane"));
     private static final TagKey<Enchantment> TOUCH_EXCLUSIVE =
@@ -895,6 +899,57 @@ public final class ModEnchantmentProvider {
                 0xFF5555)
                 .withEffect(ModEnchantmentEffectComponents.CURSE_OF_RUST_DURABILITY.get(),
                         new SetValue(LevelBasedValue.perLevel(1.0F))));
+
+        register(context, ModEnchantments.CURSE_OF_ACROPHOBIA, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 4, 1,
+                        Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.HEAD),
+                0xFF5555)
+                .withEffect(EnchantmentEffectComponents.TICK,
+                        new ApplyMobEffect(
+                                HolderSet.direct(MobEffects.CONFUSION, MobEffects.MOVEMENT_SLOWDOWN),
+                                LevelBasedValue.constant(11.0F), LevelBasedValue.constant(11.0F),
+                                LevelBasedValue.constant(2.0F), LevelBasedValue.constant(2.0F)),
+                        LocationCheck.checkLocation(LocationPredicate.Builder.location()
+                                .setY(MinMaxBounds.Doubles.atLeast(180.0)))));
+
+        register(context, ModEnchantments.CURSE_OF_BASIPHOBIA, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 4, 1,
+                        Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.HEAD),
+                0xFF5555)
+                .withEffect(EnchantmentEffectComponents.TICK,
+                        new ApplyMobEffect(
+                                HolderSet.direct(MobEffects.DIG_SLOWDOWN, MobEffects.DARKNESS),
+                                LevelBasedValue.constant(11.0F), LevelBasedValue.constant(11.0F),
+                                LevelBasedValue.constant(2.0F), LevelBasedValue.constant(2.0F)),
+                        LocationCheck.checkLocation(LocationPredicate.Builder.location()
+                                .setY(MinMaxBounds.Doubles.atMost(-36.0)))));
+
+        register(context, ModEnchantments.CURSE_OF_BLINDNESS, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 4, 3,
+                        Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.HEAD),
+                0xFF5555)
+                .withEffect(EnchantmentEffectComponents.TICK,
+                        new ApplyMobEffect(HolderSet.direct(MobEffects.BLINDNESS),
+                                LevelBasedValue.constant(3.0F), LevelBasedValue.constant(3.0F),
+                                LevelBasedValue.perLevel(0.0F, 1.0F), LevelBasedValue.perLevel(0.0F, 1.0F))));
+
+        register(context, ModEnchantments.CURSE_OF_HUNGER, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 4, 4,
+                        Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.HEAD),
+                0xFF5555)
+                .withEffect(EnchantmentEffectComponents.TICK,
+                        new ApplyMobEffect(HolderSet.direct(MobEffects.HUNGER),
+                                LevelBasedValue.constant(0.2F), LevelBasedValue.constant(0.2F),
+                                LevelBasedValue.perLevel(0.0F, 1.0F), LevelBasedValue.perLevel(0.0F, 1.0F))));
+
+        register(context, ModEnchantments.CURSE_OF_UNLUCKY, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 5, 4,
+                        Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.HEAD),
+                0xFF5555)
+                .withEffect(EnchantmentEffectComponents.TICK,
+                        new ApplyMobEffect(HolderSet.direct(MobEffects.UNLUCK),
+                                LevelBasedValue.constant(0.2F), LevelBasedValue.constant(0.2F),
+                                LevelBasedValue.perLevel(0.0F, 1.0F), LevelBasedValue.perLevel(0.0F, 1.0F))));
 
         register(context, ModEnchantments.CURSE_OF_BLAST, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS), items.getOrThrow(ARMORS), 4, 1,
@@ -1782,6 +1837,27 @@ public final class ModEnchantmentProvider {
                         LevelBasedValue.perLevel(0.1F, 0.1F),
                         AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)));
 
+        register(context, ModEnchantments.LUCKY_BOOST, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 3, 5,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.HEAD),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantencore.lucky_boost_1"),
+                        Attributes.LUCK,
+                        LevelBasedValue.perLevel(2.0F, 2.5F),
+                        AttributeModifier.Operation.ADD_VALUE))
+                .exclusiveWith(enchantments.getOrThrow(HEAD_LUCKY_EXCLUSIVE)));
+
+        register(context, ModEnchantments.LUCKY_LIGHT, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 3, 5,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.HEAD),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.TICK,
+                        new ApplyMobEffect(HolderSet.direct(MobEffects.LUCK),
+                                LevelBasedValue.constant(0.2F), LevelBasedValue.constant(0.2F),
+                                LevelBasedValue.perLevel(0.0F, 1.0F), LevelBasedValue.perLevel(0.0F, 1.0F)))
+                .exclusiveWith(enchantments.getOrThrow(HEAD_LUCKY_EXCLUSIVE)));
+
         register(context, ModEnchantments.MAGNET, colored(
                 Enchantment.definition(items.getOrThrow(ItemTags.PICKAXES), 3, 4,
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
@@ -1793,6 +1869,100 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
                 0xFF55FF)
                 .withEffect(ModEnchantmentEffectComponents.ORE_DOUBLE_DROP_CHANCE.get(), new AddValue(LevelBasedValue.perLevel(0.2F))));
+
+        register(context, ModEnchantments.MAXIMIZATION, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 1, 4,
+                        Enchantment.dynamicCost(18, 8), Enchantment.dynamicCost(48, 18), 16, EquipmentSlotGroup.HEAD),
+                0xFF00BB)
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.maximization_1"),
+                        Attributes.SCALE,
+                        new LevelBasedValue.Lookup(List.of(0.15F, 0.25F, 0.35F, 0.5F),
+                                LevelBasedValue.perLevel(0.25F, 0.25F)),
+                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.maximization_2"),
+                        Attributes.STEP_HEIGHT,
+                        LevelBasedValue.perLevel(0.25F, 0.25F),
+                        AttributeModifier.Operation.ADD_VALUE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.maximization_3"),
+                        Attributes.ATTACK_DAMAGE,
+                        LevelBasedValue.perLevel(1.0F, 0.5F),
+                        AttributeModifier.Operation.ADD_VALUE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.maximization_4"),
+                        Attributes.MAX_HEALTH,
+                        LevelBasedValue.perLevel(2.5F, 2.5F),
+                        AttributeModifier.Operation.ADD_VALUE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.maximization_5"),
+                        Attributes.ENTITY_INTERACTION_RANGE,
+                        LevelBasedValue.perLevel(0.15F, 0.1F),
+                        AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.maximization_6"),
+                        Attributes.BLOCK_INTERACTION_RANGE,
+                        LevelBasedValue.perLevel(0.15F, 0.1F),
+                        AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.maximization_7"),
+                        Attributes.MOVEMENT_SPEED,
+                        LevelBasedValue.perLevel(-0.015F, -0.01F),
+                        AttributeModifier.Operation.ADD_VALUE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.maximization_8"),
+                        Attributes.JUMP_STRENGTH,
+                        LevelBasedValue.perLevel(-0.04F, -0.02F),
+                        AttributeModifier.Operation.ADD_VALUE))
+                .exclusiveWith(enchantments.getOrThrow(ARMORS_HEAD_EXCLUSIVE)));
+
+        register(context, ModEnchantments.MINIFY, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 1, 4,
+                        Enchantment.dynamicCost(18, 8), Enchantment.dynamicCost(48, 18), 16, EquipmentSlotGroup.HEAD),
+                0xFF00BB)
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.minify_1"),
+                        Attributes.SCALE,
+                        new LevelBasedValue.Lookup(List.of(-0.15F, -0.25F, -0.35F, -0.5F),
+                                LevelBasedValue.perLevel(-0.15F, -0.15F)),
+                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.minify_2"),
+                        Attributes.STEP_HEIGHT,
+                        LevelBasedValue.perLevel(-0.25F, -0.25F),
+                        AttributeModifier.Operation.ADD_VALUE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.minify_3"),
+                        Attributes.ATTACK_DAMAGE,
+                        LevelBasedValue.perLevel(-1.0F, -0.5F),
+                        AttributeModifier.Operation.ADD_VALUE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.minify_4"),
+                        Attributes.MAX_HEALTH,
+                        LevelBasedValue.perLevel(-2.5F, -2.5F),
+                        AttributeModifier.Operation.ADD_VALUE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.minify_5"),
+                        Attributes.ENTITY_INTERACTION_RANGE,
+                        LevelBasedValue.perLevel(-0.15F, -0.1F),
+                        AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.minify_6"),
+                        Attributes.BLOCK_INTERACTION_RANGE,
+                        LevelBasedValue.perLevel(-0.15F, -0.1F),
+                        AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.minify_7"),
+                        Attributes.MOVEMENT_SPEED,
+                        LevelBasedValue.perLevel(0.015F, 0.01F),
+                        AttributeModifier.Operation.ADD_VALUE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.minify_8"),
+                        Attributes.JUMP_STRENGTH,
+                        LevelBasedValue.perLevel(0.04F, 0.02F),
+                        AttributeModifier.Operation.ADD_VALUE))
+                .exclusiveWith(enchantments.getOrThrow(ARMORS_HEAD_EXCLUSIVE)));
 
         register(context, ModEnchantments.MOIST, colored(
                 Enchantment.definition(items.getOrThrow(ItemTags.HOES), 3, 1,

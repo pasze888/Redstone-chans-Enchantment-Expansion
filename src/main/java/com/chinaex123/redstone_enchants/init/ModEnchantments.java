@@ -55,6 +55,11 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> CONDUCTIVE_LINE = key("conductive_line");
     public static final ResourceKey<Enchantment> CROP_DANCE = key("crop_dance");
     public static final ResourceKey<Enchantment> CURSE_OF_RUST = key("curse_of_rust");
+    public static final ResourceKey<Enchantment> CURSE_OF_ACROPHOBIA = key("curse_of_acrophobia");
+    public static final ResourceKey<Enchantment> CURSE_OF_BASIPHOBIA = key("curse_of_basiphobia");
+    public static final ResourceKey<Enchantment> CURSE_OF_BLINDNESS = key("curse_of_blindness");
+    public static final ResourceKey<Enchantment> CURSE_OF_HUNGER = key("curse_of_hunger");
+    public static final ResourceKey<Enchantment> CURSE_OF_UNLUCKY = key("curse_of_unlucky");
     public static final ResourceKey<Enchantment> CURSE_OF_BLAST = key("curse_of_blast");
     public static final ResourceKey<Enchantment> CURSE_OF_STILLNESS = key("curse_of_stillness");
     public static final ResourceKey<Enchantment> CURSE_OF_VULNERABILITY = key("curse_of_vulnerability");
@@ -89,8 +94,12 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> INDESTRUCTIBLE = key("indestructible");
     public static final ResourceKey<Enchantment> INVISIBILITY_CLOAK = key("invisibility_cloak");
     public static final ResourceKey<Enchantment> LIFE_STEAL = key("life_steal");
+    public static final ResourceKey<Enchantment> LUCKY_BOOST = key("lucky_boost");
+    public static final ResourceKey<Enchantment> LUCKY_LIGHT = key("lucky_light");
     public static final ResourceKey<Enchantment> MAGNET = key("magnet");
     public static final ResourceKey<Enchantment> MASTER_GATHERER = key("master_gatherer");
+    public static final ResourceKey<Enchantment> MAXIMIZATION = key("maximization");
+    public static final ResourceKey<Enchantment> MINIFY = key("minify");
     public static final ResourceKey<Enchantment> MOIST = key("moist");
     public static final ResourceKey<Enchantment> NULLIFY = key("nullify");
     public static final ResourceKey<Enchantment> PACK_LEADER = key("pack_leader");
