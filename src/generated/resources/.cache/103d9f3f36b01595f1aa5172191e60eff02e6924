@@ -1,4 +1,4 @@
-// 1.21.1	2026-09-04T20:09:46.6778738	Registries
+// 1.21.1	2026-09-04T20:10:48.6229954	Registries
 913d5e1b80904ec058aa8021a1962c3c080f3440 data/redstone_enchants/enchantment/adaptive.json
 29ad3becde1b6c0ff60e89178f426269d2b93321 data/redstone_enchants/enchantment/advanced_unbreaking.json
 b0a37f51f24776b5d9c3d679639ff238bf5c5e29 data/redstone_enchants/enchantment/against_all_odds.json
@@ -50,6 +50,7 @@ eec63661b771860e7ec6666facc0081dd5841bca data/redstone_enchants/enchantment/pote
 e3dce6f9b58646e5ef58c09b789b90a2abe7166a data/redstone_enchants/enchantment/shepherd.json
 669d64bb713172ca317046967a6b7a1a8bca6d3e data/redstone_enchants/enchantment/snipe.json
 d7948a38240b624d389633ecf2107ac368a55ef4 data/redstone_enchants/enchantment/sturdy.json
+0bb1f0087749d83948b1e2f4cb829fe254727e1e data/redstone_enchants/enchantment/tactical_knee.json
 4ab31cea3018448b9c619f43a6b1f5db14200cae data/redstone_enchants/enchantment/tide_sense.json
 94e34c386bebecd767d6d73ef6f32afb85c30e17 data/redstone_enchants/enchantment/timber.json
 eb40468a58a8db24ed91be9269dd1628e5246769 data/redstone_enchants/enchantment/volt.json

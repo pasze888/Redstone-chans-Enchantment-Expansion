@@ -61,6 +61,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> SHEPHERD = key("shepherd");
     public static final ResourceKey<Enchantment> SNIPE = key("snipe");
     public static final ResourceKey<Enchantment> STURDY = key("sturdy");
+    public static final ResourceKey<Enchantment> TACTICAL_KNEE = key("tactical_knee");
     public static final ResourceKey<Enchantment> TIDE_SENSE = key("tide_sense");
     public static final ResourceKey<Enchantment> TIMBER = key("timber");
     public static final ResourceKey<Enchantment> VOLT = key("volt");
