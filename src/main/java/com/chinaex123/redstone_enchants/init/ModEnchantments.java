@@ -39,6 +39,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> NULLIFY = key("nullify");
     public static final ResourceKey<Enchantment> PRESERVATION = key("preservation");
     public static final ResourceKey<Enchantment> POTENTIAL_CONVERSION = key("potential_conversion");
+    public static final ResourceKey<Enchantment> REVIVE_WARD = key("revive_ward");
     public static final ResourceKey<Enchantment> SACRIFICE = key("sacrifice");
     public static final ResourceKey<Enchantment> SEA_BREEZE = key("sea_breeze");
     public static final ResourceKey<Enchantment> SEARING = key("searing");
