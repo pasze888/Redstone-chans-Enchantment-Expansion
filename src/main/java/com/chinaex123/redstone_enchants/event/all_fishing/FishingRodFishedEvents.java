@@ -38,6 +38,7 @@ public final class FishingRodFishedEvents {
     public static void onItemFished(ItemFishedEvent event) {
         // 固定顺序：渔夫 → 潮汐感知（旧版为两个独立订阅者，顺序未定义）
         angler(event);
+        tideSense(event);
     }
 
     // ---- 渔夫 ----
@@ -81,6 +82,51 @@ public final class FishingRodFishedEvents {
                 }
             }
         });
+    }
+
+    // ---- 潮汐感知 ----
+
+    private static void tideSense(ItemFishedEvent event) {
+        Player player = event.getEntity();
+
+        if (!player.level().isThundering()) {
+            return;
+        }
+        ItemStack rod = player.getMainHandItem();
+        if (rod.isEmpty() || !rod.is(Items.FISHING_ROD)) {
+            return;
+        }
+        if (!(player.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        if (!EnchantmentHelper.has(rod, ModEnchantmentEffectComponents.TIDE_SENSE_FISH_CHANCE.get())) {
+            return;
+        }
+
+        // 雷雨天时大幅提高鱼的几率（替换垃圾和宝藏）：0.7 + 0.1×级
+        float fishChance = EnchantmentUtil.itemValue(serverLevel, rod, ModEnchantmentEffectComponents.TIDE_SENSE_FISH_CHANCE.get());
+
+        if (RANDOM.nextFloat() < fishChance) {
+            // 强制设为鱼类掉落
+            event.getDrops().clear();
+
+            // 从鱼类标签中随机选择
+            var registry = player.level().registryAccess().registryOrThrow(Registries.ITEM);
+            var fishTag = ItemTags.FISHES;
+
+            List<Item> fishItems = new ArrayList<>();
+            for (var holder : registry.getTagOrEmpty(fishTag)) {
+                fishItems.add(holder.value());
+            }
+            for (var holder : registry.getTagOrEmpty(TIDE_FISH_TAG)) {
+                fishItems.add(holder.value());
+            }
+
+            if (!fishItems.isEmpty()) {
+                Item randomFish = fishItems.get(RANDOM.nextInt(fishItems.size()));
+                event.getDrops().add(new ItemStack(randomFish));
+            }
+        }
     }
 
     private FishingRodFishedEvents() {

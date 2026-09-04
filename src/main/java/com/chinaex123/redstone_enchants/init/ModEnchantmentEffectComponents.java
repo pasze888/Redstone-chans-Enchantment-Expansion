@@ -34,6 +34,9 @@ public final class ModEnchantmentEffectComponents {
     /** 导电鱼线（conductive_line）：雷雨天勾住生物召唤闪电 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> CONDUCTIVE_LINE =
             unit("conductive_line");
+    /** 潮汐感知（tide_sense）：雷雨天钓起为鱼的概率 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> TIDE_SENSE_FISH_CHANCE =
+            value("tide_sense_fish_chance");
     /** 地质学（geology）：挖石头时掉落随机矿石的概率 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> STONE_TO_ORE_CHANCE =
             value("stone_to_ore_chance");
