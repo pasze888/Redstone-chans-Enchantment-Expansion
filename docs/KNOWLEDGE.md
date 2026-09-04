@@ -167,11 +167,10 @@ gambler 双分支随机）。迁移它们 = 每个附魔写自定义 effect 类�
   `UnbreakingEquipmentEvents`（坚不可摧挂/卸 UNBREAKABLE）、`UnbreakingItemEntityEvents`（坚固掉落物
   EntityTick/爆炸/闪电）、`UnbreakingPlayerEvents`（保全 tick 特效/阻止挖掘/tooltip）。
 - 新增效果只在服务端执行（sacrifice 旧版双侧写 setDamageValue，客户端为无效写，结果行为不变）。
-- **已知副作用原样保留（潜在问题，待用户决定是否修）**：
-  - indestructible 的 else 分支：任何未带附魔的已装备物品都会被 `remove(UNBREAKABLE)`，会剥离其它来源的组件；
-  - sturdy 的 EntityTick else 分支：任何不带坚固的掉落物都会被 `remove(FIRE_RESISTANT)`，会剥离其它来源的
-    组件（如下界合金物品）；
-  - sturdy 的 Pre 段语义：穿戴坚固 → 本体对爆炸/闪电/火**整次伤害免疫**（不只保护装备）——旧行为照抄。
+- **已修复（2026-09 怪癖修复批次，见文末小节）**：
+  - ~~indestructible 的 else 分支剥其它来源的 UNBREAKABLE~~ → 标记组件精确清理；
+  - ~~sturdy 的 EntityTick else 分支剥其它来源的 FIRE_RESISTANT~~（原会剥掉下界合金自带防火）→ 同上；
+  - ~~sturdy 的 Pre 段本体整次免疫~~ → 缩小为"本体照常受伤，仅装备耐久不受损"（快照附件恢复）。
 
 ## 旧式 handler 全量迁移批次（2026-09，potential_conversion→spirit 共 35 个全部完成）
 
@@ -223,20 +222,48 @@ pack_leader/tracker）、armor_horse 2（pasture/spirit）。
   snipe/volt、fishing 3、shear 4、sea_breeze/searing、potential_conversion、echoes_battle、daynight_cycle、
   revive_ward）。纯标记/纯事件段保真双侧：tactical_knee（客户端取消本地坠落预测）、
   invisibility_cloak（本地效果预览）。
-- 怪癖原样保留清单：
-  - armor_foot `LAST_SNEAKING` 是 `ConcurrentHashMap`，实体卸载/死亡后条目**不清理**（泄漏），照抄；
-  - invisibility_cloak else 分支 `removeEffect(INVISIBILITY)` **不区分效果来源**（任何来源的隐身都会被
-    抹掉），照抄；
-  - pack_leader 旧注释写"每级每只狼+5%"但常量是 **0.5（=50%）**，行为以 50% 为准照抄；
+- 怪癖清单（迁移时原样照抄，2026-09 修复批次处理结果见文末）：
+  - ~~armor_foot `LAST_SNEAKING` 泄漏~~ → 已修（EntityLeaveLevelEvent 清理）；
+  - ~~invisibility_cloak 移除隐身不分来源~~ → 已修（附件标记精确移除）；
+  - pack_leader 旧注释写"每级每只狼+5%"但常量是 **0.5（=50%）**，**行为以 50% 为准保持原样**
+    （用户决定：数值与注释均不动，矛盾已知）；
   - spirit 用 `addPermanentModifier` 且每 tick 先 `removeModifier(spirit_speed)` 再加（非临时修饰符，
     摘除马铠靠 LivingEquipmentChangeEvent 清理，modifier id `spirit_speed` 照抄）；
-  - armor_head 的 AAO_DAMAGE/AAO_ARMOR attribute modifier id 照抄；against_all_odds 只统计
-    8 格内生物数（无 alive/可攻击过滤），照抄；
-  - revive_ward 在 `LivingDamageEvent.Pre` 用 `getNewDamage()` 判死——**不考虑同 tick 其它 Pre 加成
-    之后的值变化时序**（旧版即如此）；
+  - armor_head 的 AAO_DAMAGE/AAO_ARMOR attribute modifier id 照抄；~~against_all_odds 不过滤
+    死亡生物~~ → 已修（isAlive 谓词）；
+  - ~~revive_ward 判死时点~~（迁移时实际用的是 Pre + `getOriginalDamage()`，先前沉淀误记为
+    getNewDamage）→ 已修（改 Post 实际扣血后判定）；
   - experience_shear/harvest_echo 的"检查目标是否玩家/已被剪"等内嵌条件改为组件存在性读取后语义不变；
   - boltbringer/echoes_battle 的数值与状态字段照抄（详见各自提交）。
 - **bug 修复（已注明）**：life_steal ID `leeching`→`life_steal`（swords 批次）；本批无新修复。
 - 组件命名沿用 `组件名 = 效果语义`：数值组件带 `_bonus/_heal/_chance/_penalty` 等后缀，标记组件
   （unit）用附魔名本身（`CROP_DANCE/FLAME_WALKER/PEGASUS/WAVE_WALKER/INVISIBILITY_CLOAK/TACTICAL_KNEE`
   等），datagen 侧与事件侧一一对应。
+
+## 怪癖修复批次（2026-09，6 项经用户逐项确认的行为修复）
+
+提交序列（每项独立提交、build 验证）：lastSneakingMap 泄漏清理、against_all_odds isAlive 过滤、
+invisibility_cloak 附件标记精确移除、sturdy/indestructible 标记组件精确清理、sturdy 免疫缩小为
+仅装备耐久、revive_ward 改实际扣血判死。**pack_leader 0.5 注释矛盾经用户决定保持原样。**
+
+已验证的新 API 事实：
+
+- 实体附件：`DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, MODID)`，
+  `AttachmentType.builder(Supplier<T>).build()` 不带 serialize = 纯 transient（不存档、不同步）；
+  `IAttachmentHolder`（Entity 实现）方法 `setData/hasData/removeData(AttachmentType<T>)`（api-sources
+  IAttachmentHolder.java:24/39/90/106）。
+- 物品标记组件：`DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, MODID)`（注意与
+  附魔效果组件的 `ENCHANTMENT_EFFECT_COMPONENT_TYPE` 不同注册表）；unit 标记写法照抄原版
+  FIRE_RESISTANT：`DataComponentType.<Unit>builder().persistent(Unit.CODEC)
+  .networkSynchronized(StreamCodec.unit(Unit.INSTANCE)).build()`（DataComponents.java:120）。
+- `Item.components()` 返回物品默认组件 `DataComponentMap`（Item.java:106），`has(type)` 可判
+  "物品天然自带的组件"——区分天生防火与运行时写入用。
+- **1.21.1 NeoForge 没有装备耐久事件**（living 包只有 LivingEquipmentChangeEvent）——
+  "仅装备不损耗"只能用 Pre 快照 + Post 恢复（transient 附件传状态）实现。
+- `LivingDamageEvent.Post` 触发点在 `LivingEntity.actuallyHurt` 末尾（LivingEntity.java:1805，
+  `CommonHooks.onLivingDamagePost`），此时血量已扣但 **`die()` 尚未调用**（die 在 hurt() 的
+  isDeadOrDying 检查处）→ Post 里 `setHealth(0.5F)` 可阻止死亡（revive_ward 守护的合法实现点）。
+- `EntityLeaveLevelEvent`（`net.neoforged.neoforge.event.entity`，extends EntityEvent）可用于
+  按实体清理内存缓存；换维度也会触发（对"重新进入时重算"类缓存语义无损）。
+- `LivingDamageEvent.Pre` 判死用 `getOriginalDamage()` 与 `getNewDamage()` 的取舍：getNewDamage
+  可读"当前累积值"但晚于本事件的修改不算；需要严格"实际扣血后"语义必须用 Post。
