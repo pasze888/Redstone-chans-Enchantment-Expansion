@@ -85,6 +85,12 @@ public final class ModEnchantmentEffectComponents {
     /** 保全（preservation）：装备不因无耐久而损坏消失（主功能在 PreservationMixin） */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> PRESERVATION =
             unit("preservation");
+    /** 势能转化（potential_conversion）：下落攻击每格加伤比例（每级） */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> POTENTIAL_CONVERSION_FALL_BONUS =
+            value("potential_conversion_fall_bonus");
+    /** 势能转化（potential_conversion）：目标有护甲时的额外系数 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> POTENTIAL_CONVERSION_ARMOR_FACTOR =
+            value("potential_conversion_armor_factor");
 
     /** 攻击附加掉落（模板）：在受害实体位置生成物品堆，供 swords 类附魔通过 post_attack 声明 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<TargetedConditionalEffect<EnchantmentEntityEffect>>>> POST_ATTACK_SUMMON =
