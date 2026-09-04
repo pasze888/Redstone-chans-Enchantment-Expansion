@@ -39,20 +39,18 @@ public final class ArmorDamageEvents {
     };
 
     @SubscribeEvent
-    public static void onLivingDamagePre(LivingDamageEvent.Pre event) {
+    public static void onLivingDamagePost(LivingDamageEvent.Post event) {
         reviveWard(event);
     }
 
     // ---- 重生护盾 ----
 
-    private static void reviveWard(LivingDamageEvent.Pre event) {
+    private static void reviveWard(LivingDamageEvent.Post event) {
         LivingEntity entity = event.getEntity();
 
-        float damage = event.getOriginalDamage();
-        float remainingHealth = entity.getHealth() - damage;
-
-        // 只有当伤害会导致死亡时才触发
-        if (remainingHealth > 0) {
+        // 行为变更（经用户确认）：判死时点从 Pre(original) 改为 Post 实际扣血后——
+        // 考虑伤害链中其它修改后真正致死的伤害才触发守护
+        if (!entity.isDeadOrDying()) {
             return;
         }
 
@@ -80,8 +78,8 @@ public final class ArmorDamageEvents {
             return;
         }
 
-        // 阻止死亡：将伤害设置为当前生命值-0.5（保留一点血）
-        event.setNewDamage(entity.getHealth() - 0.5F);
+        // 阻止死亡：Post 时 die() 尚未调用，把血量拉回 0.5（旧版为压伤到保留 0.5 血）
+        entity.setHealth(0.5F);
 
         // 播放不死图腾音效
         entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
