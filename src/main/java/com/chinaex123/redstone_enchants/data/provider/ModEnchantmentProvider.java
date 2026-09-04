@@ -12,6 +12,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlotGroup;
@@ -24,6 +25,7 @@ import net.minecraft.world.item.enchantment.effects.EnchantmentAttributeEffect;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.item.enchantment.effects.AddValue;
+import net.minecraft.world.item.enchantment.effects.RemoveBinomial;
 import net.minecraft.world.item.enchantment.effects.SetValue;
 
 /**
@@ -38,8 +40,13 @@ public final class ModEnchantmentProvider {
     private static final TagKey<Item> SWORDS = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("swords"));
     private static final TagKey<Item> SWORDS_AND_AXES = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("swords_and_axes"));
     private static final TagKey<Item> SWORDS_AND_BOW = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("swords_and_bow"));
+    private static final TagKey<Item> ENCHANTABLES = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "enchantables"));
     private static final TagKey<Enchantment> STONE_TRANSMUTATION_EXCLUSIVE =
             TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/stone_transmutation"));
+    private static final TagKey<Enchantment> UNBREAKING_EXCLUSIVE =
+            TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/unbreaking"));
+    private static final TagKey<Enchantment> INDESTRUCTIBLE_EXCLUSIVE =
+            TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/indestructible"));
 
     private static void bootstrap(BootstrapContext<Enchantment> context) {
         HolderGetter<Item> items = context.lookup(Registries.ITEM);
@@ -50,6 +57,14 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
                 0xFF55FF)
                 .withEffect(ModEnchantmentEffectComponents.AUTO_SMELT.get()));
+
+        register(context, ModEnchantments.ADVANCED_UNBREAKING, colored(
+                Enchantment.definition(items.getOrThrow(ENCHANTABLES), items.getOrThrow(ENCHANTABLES), 1, 1,
+                        Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.ANY),
+                0xFFAA00)
+                .exclusiveWith(enchantments.getOrThrow(UNBREAKING_EXCLUSIVE))
+                .withEffect(EnchantmentEffectComponents.ITEM_DAMAGE,
+                        new RemoveBinomial(new LevelBasedValue.Fraction(LevelBasedValue.constant(4), LevelBasedValue.constant(5)))));
 
         register(context, ModEnchantments.AMBUSH, colored(
                 Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 3, 5,
