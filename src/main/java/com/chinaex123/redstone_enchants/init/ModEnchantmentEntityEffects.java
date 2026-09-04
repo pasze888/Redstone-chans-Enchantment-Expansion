@@ -1,6 +1,7 @@
 package com.chinaex123.redstone_enchants.init;
 
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
+import com.chinaex123.redstone_enchants.enchantment.effect.RandomBeneficialMobEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.SummonItemEffect;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.registries.Registries;
@@ -23,6 +24,10 @@ public final class ModEnchantmentEntityEffects {
     /** 攻击时在受害实体位置生成物品堆（模板示例） */
     public static final DeferredHolder<MapCodec<? extends EnchantmentEntityEffect>, MapCodec<? extends EnchantmentEntityEffect>> SUMMON_ITEM =
             TYPES.register("summon_item", () -> SummonItemEffect.CODEC);
+
+    /** 恩赐（boons）：攻击时按概率给攻击者施加随机正面药水 */
+    public static final DeferredHolder<MapCodec<? extends EnchantmentEntityEffect>, MapCodec<? extends EnchantmentEntityEffect>> RANDOM_BENEFICIAL_MOB_EFFECT =
+            TYPES.register("random_beneficial_mob_effect", () -> RandomBeneficialMobEffect.CODEC);
 
     public static void register(IEventBus eventBus) {
         TYPES.register(eventBus);

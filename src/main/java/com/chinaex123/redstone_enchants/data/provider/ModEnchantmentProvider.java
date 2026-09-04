@@ -1,6 +1,7 @@
 package com.chinaex123.redstone_enchants.data.provider;
 
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
+import com.chinaex123.redstone_enchants.enchantment.effect.RandomBeneficialMobEffect;
 import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
 import com.chinaex123.redstone_enchants.init.ModEnchantments;
 import net.minecraft.core.HolderGetter;
@@ -15,6 +16,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentTarget;
 import net.minecraft.world.item.enchantment.effects.EnchantmentAttributeEffect;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
@@ -29,6 +31,8 @@ public final class ModEnchantmentProvider {
             new RegistrySetBuilder().add(Registries.ENCHANTMENT, ModEnchantmentProvider::bootstrap);
 
     private static final TagKey<Item> TOOLS = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("tools"));
+    private static final TagKey<Item> SWORDS = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("swords"));
+    private static final TagKey<Item> SWORDS_AND_AXES = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("swords_and_axes"));
     private static final TagKey<Enchantment> STONE_TRANSMUTATION_EXCLUSIVE =
             TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/stone_transmutation"));
 
@@ -41,6 +45,14 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
                 0xFF55FF)
                 .withEffect(ModEnchantmentEffectComponents.AUTO_SMELT.get()));
+
+        register(context, ModEnchantments.BOONS, colored(
+                Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 2, 5,
+                        Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.MAINHAND),
+                0xFFAA00)
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK,
+                        EnchantmentTarget.ATTACKER, EnchantmentTarget.ATTACKER,
+                        new RandomBeneficialMobEffect(LevelBasedValue.perLevel(0.05F))));
 
         register(context, ModEnchantments.CHAIN_HASTE, colored(
                 Enchantment.definition(items.getOrThrow(TOOLS), 3, 3,
