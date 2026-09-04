@@ -20,6 +20,11 @@ public final class ModAttachments {
             ATTACHMENT_TYPES.register("cloak_invisibility",
                     () -> AttachmentType.builder(() -> Boolean.FALSE).build());
 
+    /** 坚固（sturdy）：受伤前各装备槽耐久快照（按 EquipmentSlot.values() 顺序，-1=空槽） */
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<int[]>> STURDY_DAMAGE_SNAPSHOT =
+            ATTACHMENT_TYPES.register("sturdy_damage_snapshot",
+                    () -> AttachmentType.builder(() -> new int[0]).build());
+
     private ModAttachments() {
     }
 
