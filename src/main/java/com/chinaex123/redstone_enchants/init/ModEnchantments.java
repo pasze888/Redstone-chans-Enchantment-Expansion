@@ -11,6 +11,7 @@ import net.neoforged.bus.api.IEventBus;
  */
 public final class ModEnchantments {
     public static final ResourceKey<Enchantment> ADVANCED_UNBREAKING = key("advanced_unbreaking");
+    public static final ResourceKey<Enchantment> ANGLER = key("angler");
     public static final ResourceKey<Enchantment> AMBUSH = key("ambush");
     public static final ResourceKey<Enchantment> AUTO_SMELT = key("auto_smelt");
     public static final ResourceKey<Enchantment> BACKSTAB = key("backstab");

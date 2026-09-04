@@ -28,6 +28,9 @@ public final class ModEnchantmentEffectComponents {
     /** 区域挖掘（excavator）：垂直于挖掘面的半径（1 级 = 3x3） */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> AREA_BREAK_RADIUS =
             value("area_break_radius");
+    /** 渔夫（angler）：钓鱼收获鱼类翻倍的概率（每级） */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> ANGLER_DOUBLE_CHANCE =
+            value("angler_double_chance");
     /** 地质学（geology）：挖石头时掉落随机矿石的概率 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> STONE_TO_ORE_CHANCE =
             value("stone_to_ore_chance");
