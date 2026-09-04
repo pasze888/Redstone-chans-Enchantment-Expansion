@@ -99,6 +99,13 @@ public final class ModEnchantmentProvider {
                 .withEffect(ModEnchantmentEffectComponents.SACRIFICE_REPAIR.get(),
                         new SetValue(LevelBasedValue.perLevel(1.0F, 0.5F))));
 
+        register(context, ModEnchantments.INDESTRUCTIBLE, colored(
+                Enchantment.definition(items.getOrThrow(ENCHANTABLES), items.getOrThrow(ENCHANTABLES), 1, 1,
+                        Enchantment.dynamicCost(0, 0), Enchantment.dynamicCost(0, 0), 50, EquipmentSlotGroup.ANY),
+                0xFF00BB)
+                .exclusiveWith(enchantments.getOrThrow(INDESTRUCTIBLE_EXCLUSIVE))
+                .withEffect(ModEnchantmentEffectComponents.INDESTRUCTIBLE.get()));
+
         register(context, ModEnchantments.BOONS, colored(
                 Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 2, 5,
                         Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.MAINHAND),

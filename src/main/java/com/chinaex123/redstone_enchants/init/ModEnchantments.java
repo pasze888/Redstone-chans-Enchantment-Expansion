@@ -26,6 +26,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> GEOLOGY = key("geology");
     public static final ResourceKey<Enchantment> GOLDFINGER = key("goldfinger");
     public static final ResourceKey<Enchantment> HASTE = key("haste");
+    public static final ResourceKey<Enchantment> INDESTRUCTIBLE = key("indestructible");
     public static final ResourceKey<Enchantment> LIFE_STEAL = key("life_steal");
     public static final ResourceKey<Enchantment> MAGNET = key("magnet");
     public static final ResourceKey<Enchantment> MASTER_GATHERER = key("master_gatherer");

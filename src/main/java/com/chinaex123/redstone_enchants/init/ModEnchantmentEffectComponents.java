@@ -76,6 +76,9 @@ public final class ModEnchantmentEffectComponents {
     /** 牺牲（sacrifice）：受击时每件带此附魔装备的自修量 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> SACRIFICE_REPAIR =
             value("sacrifice_repair");
+    /** 坚不可摧（indestructible）：装备变更时为持有物品挂 UNBREAKABLE 组件 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> INDESTRUCTIBLE =
+            unit("indestructible");
 
     /** 攻击附加掉落（模板）：在受害实体位置生成物品堆，供 swords 类附魔通过 post_attack 声明 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<TargetedConditionalEffect<EnchantmentEntityEffect>>>> POST_ATTACK_SUMMON =
