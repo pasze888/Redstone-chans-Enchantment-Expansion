@@ -1,7 +1,9 @@
 package com.chinaex123.redstone_enchants.event.armor_leg;
 
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
+import com.chinaex123.redstone_enchants.init.ModAttachments;
 import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -31,6 +33,10 @@ public final class ArmorLegTickEvents {
         if (!(event.getEntity() instanceof Player player)) {
             return;
         }
+        if (!(player.level() instanceof ServerLevel)) {
+            // 效果施加以服务端为准（旧版双侧执行，行为不变）
+            return;
+        }
 
         ItemStack leggings = player.getItemBySlot(EquipmentSlot.LEGS);
         if (leggings.isEmpty()) {
@@ -48,11 +54,15 @@ public final class ArmorLegTickEvents {
                         false,
                         false
                 ));
+                player.setData(ModAttachments.CLOAK_INVISIBILITY.get(), Boolean.TRUE);
             }
         } else {
-            if (player.hasEffect(MobEffects.INVISIBILITY)) {
+            // 修复：只移除本附魔施加的隐身，其它来源（药水等）的隐身不再被误抹
+            if (player.hasEffect(MobEffects.INVISIBILITY)
+                    && player.hasData(ModAttachments.CLOAK_INVISIBILITY.get())) {
                 player.removeEffect(MobEffects.INVISIBILITY);
             }
+            player.removeData(ModAttachments.CLOAK_INVISIBILITY.get());
         }
     }
 
