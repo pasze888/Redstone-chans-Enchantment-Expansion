@@ -52,6 +52,9 @@ public final class ModEnchantmentEffectComponents {
     /** 处决（execution）：目标当前生命占比低于 25% 时直接击杀 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> EXECUTION =
             unit("execution");
+    /** 战斗回响（echoes_battle）：盾牌格挡后提升下一次攻击伤害 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> ECHOES_BATTLE =
+            unit("echoes_battle");
     /** 生命吸取（life_steal）：按本次实际造成伤害恢复的比例 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> LIFE_STEAL_RATIO =
             value("life_steal_ratio");

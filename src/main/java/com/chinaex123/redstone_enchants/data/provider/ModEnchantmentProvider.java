@@ -41,6 +41,7 @@ public final class ModEnchantmentProvider {
     private static final TagKey<Item> SWORDS_AND_AXES = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("swords_and_axes"));
     private static final TagKey<Item> SWORDS_AND_BOW = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("swords_and_bow"));
     private static final TagKey<Item> MACE_ITEMS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "tools/mace"));
+    private static final TagKey<Item> SHIELD_ITEMS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "tools/shield"));
     private static final TagKey<Enchantment> MACE_EXCLUSIVE = TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/mace"));
     private static final TagKey<Item> ENCHANTABLES = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "enchantables"));
     private static final TagKey<Enchantment> STONE_TRANSMUTATION_EXCLUSIVE =
@@ -134,6 +135,12 @@ public final class ModEnchantmentProvider {
                 0xFF55FF)
                 .exclusiveWith(enchantments.getOrThrow(MACE_EXCLUSIVE))
                 .withEffect(ModEnchantmentEffectComponents.BOLTBRINGER.get()));
+
+        register(context, ModEnchantments.ECHOES_BATTLE, colored(
+                Enchantment.definition(items.getOrThrow(SHIELD_ITEMS), items.getOrThrow(SHIELD_ITEMS), 3, 3,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.OFFHAND),
+                0xFF55FF)
+                .withEffect(ModEnchantmentEffectComponents.ECHOES_BATTLE.get()));
 
         register(context, ModEnchantments.BOONS, colored(
                 Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 2, 5,
