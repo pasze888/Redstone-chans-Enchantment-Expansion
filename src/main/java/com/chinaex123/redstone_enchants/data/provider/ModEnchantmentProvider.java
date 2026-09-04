@@ -74,6 +74,12 @@ public final class ModEnchantmentProvider {
                         EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
                         new RemoveRandomBeneficialEffect(LevelBasedValue.perLevel(0.05F))));
 
+        register(context, ModEnchantments.EXECUTION, colored(
+                Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 2, 1,
+                        Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.MAINHAND),
+                0xFFAA00)
+                .withEffect(ModEnchantmentEffectComponents.EXECUTION.get()));
+
         register(context, ModEnchantments.CHAIN_HASTE, colored(
                 Enchantment.definition(items.getOrThrow(TOOLS), 3, 3,
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),

@@ -8,6 +8,7 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
@@ -30,6 +31,7 @@ public final class SwordLivingDamageEvents {
             return;
         }
         gamblerRoll(event, attacker);
+        executionKill(event, attacker);
     }
 
     // ---- 赌徒 ----
@@ -48,6 +50,21 @@ public final class SwordLivingDamageEvents {
             event.setNewDamage(originalDamage * data.bonusMultiplier());
         } else {
             event.setNewDamage(originalDamage * data.penaltyMultiplier());
+        }
+    }
+
+    // ---- 处决 ----
+
+    private static void executionKill(LivingDamageEvent.Pre event, LivingEntity attacker) {
+        ItemStack weapon = attacker.getMainHandItem();
+        if (!EnchantmentHelper.has(weapon, ModEnchantmentEffectComponents.EXECUTION.get())) {
+            return;
+        }
+        LivingEntity target = event.getEntity();
+        // 旧版公式原样：目标当前生命占比 < 25% 时，把伤害设为目标当前生命值（必死）
+        float healthPercent = target.getHealth() / target.getMaxHealth();
+        if (healthPercent < 0.25F) {
+            event.setNewDamage(target.getHealth());
         }
     }
 
