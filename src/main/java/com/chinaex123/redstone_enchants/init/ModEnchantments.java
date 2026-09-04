@@ -15,6 +15,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> AGAINST_ALL_ODDS = key("against_all_odds");
     public static final ResourceKey<Enchantment> ANGLER = key("angler");
     public static final ResourceKey<Enchantment> AMBUSH = key("ambush");
+    public static final ResourceKey<Enchantment> ANTI_CAMOUFLAGE = key("anti_camouflage");
     public static final ResourceKey<Enchantment> AUTO_SMELT = key("auto_smelt");
     public static final ResourceKey<Enchantment> BACKSTAB = key("backstab");
     public static final ResourceKey<Enchantment> BOONS = key("boons");

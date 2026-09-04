@@ -33,12 +33,15 @@ public final class ArmorHeadTickEvents {
     private static final ResourceLocation AAO_ARMOR_MODIFIER_ID =
             ResourceLocation.fromNamespaceAndPath(RedstoneEnchants.MOD_ID, "against_all_odds_armor");
     private static final double AAO_DETECTION_RANGE = 8.0;
+    private static final double AC_DETECTION_RANGE = 16.0; // 反伪装检测范围 16 格
+    private static final int AC_BASE_DURATION = 40; // 反伪装发光基础时长（tick）
 
     @SubscribeEvent
     public static void onEntityTick(EntityTickEvent.Post event) {
         // 固定顺序：矿工 → 以寡敌众 → 反伪装 → 绝境逆袭（旧版为独立订阅者，顺序未定义）
         adaptive(event);
         againstAllOdds(event);
+        antiCamouflage(event);
     }
 
     // ---- 矿工 ----
@@ -130,6 +133,45 @@ public final class ArmorHeadTickEvents {
                 );
                 armorAttribute.addPermanentModifier(armorModifier);
             }
+        }
+    }
+
+    // ---- 反伪装 ----
+
+    private static void antiCamouflage(EntityTickEvent.Post event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+        if (!(player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel)) {
+            // 效果施加以服务端为准，客户端由效果同步获得
+            return;
+        }
+
+        // 检查头盔是否有反伪装附魔
+        ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
+        if (helmet.isEmpty()) {
+            return;
+        }
+        if (!EnchantmentHelper.has(helmet, ModEnchantmentEffectComponents.ANTI_CAMOUFLAGE_DURATION_BONUS.get())) {
+            return;
+        }
+
+        // 只在潜行时生效
+        if (!player.isShiftKeyDown()) {
+            return;
+        }
+
+        // 获取范围内的所有敌对生物
+        List<Monster> nearbyMonsters = player.level().getEntitiesOfClass(
+                Monster.class, player.getBoundingBox().inflate(AC_DETECTION_RANGE)
+        );
+
+        // 给每个敌对生物施加发光效果（40 + 10×级 tick）
+        float durationBonus = EnchantmentUtil.itemValue(serverLevel, helmet,
+                ModEnchantmentEffectComponents.ANTI_CAMOUFLAGE_DURATION_BONUS.get());
+        int duration = AC_BASE_DURATION + (int) durationBonus;
+        for (Monster monster : nearbyMonsters) {
+            monster.addEffect(new MobEffectInstance(MobEffects.GLOWING, duration, 0, false, false));
         }
     }
 

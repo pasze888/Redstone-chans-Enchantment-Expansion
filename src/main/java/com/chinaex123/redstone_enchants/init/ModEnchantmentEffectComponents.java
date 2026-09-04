@@ -37,6 +37,9 @@ public final class ModEnchantmentEffectComponents {
     /** 渔夫（angler）：钓鱼收获鱼类翻倍的概率（每级） */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> ANGLER_DOUBLE_CHANCE =
             value("angler_double_chance");
+    /** 反伪装（anti_camouflage）：潜行发光效果的基础时长外的每级加成（tick） */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> ANTI_CAMOUFLAGE_DURATION_BONUS =
+            value("anti_camouflage_duration_bonus");
     /** 导电鱼线（conductive_line）：雷雨天勾住生物召唤闪电 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> CONDUCTIVE_LINE =
             unit("conductive_line");

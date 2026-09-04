@@ -221,6 +221,13 @@ public final class ModEnchantmentProvider {
                 0xFF55FF)
                 .withEffect(ModEnchantmentEffectComponents.ANGLER_DOUBLE_CHANCE.get(), new AddValue(LevelBasedValue.perLevel(0.1F))));
 
+        register(context, ModEnchantments.ANTI_CAMOUFLAGE, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.HEAD),
+                0xFF55FF)
+                .withEffect(ModEnchantmentEffectComponents.ANTI_CAMOUFLAGE_DURATION_BONUS.get(),
+                        new AddValue(LevelBasedValue.perLevel(10.0F))));
+
         register(context, ModEnchantments.CONDUCTIVE_LINE, colored(
                 Enchantment.definition(items.getOrThrow(ALL_FISHING), items.getOrThrow(ALL_FISHING), 3, 1,
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.MAINHAND),
