@@ -76,6 +76,8 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> DYNAMO = key("dynamo");
     public static final ResourceKey<Enchantment> ECHOES_BATTLE = key("echoes_battle");
     public static final ResourceKey<Enchantment> ENDLESS_WOOL = key("endless_wool");
+    public static final ResourceKey<Enchantment> ENHANCED_ARMOR = key("enhanced_armor");
+    public static final ResourceKey<Enchantment> ENDER_HEART = key("ender_heart");
     public static final ResourceKey<Enchantment> ETERNAL_FROST = key("eternal_frost");
     public static final ResourceKey<Enchantment> EXOSKELETON = key("exoskeleton");
     public static final ResourceKey<Enchantment> EQUALIZER = key("equalizer");
@@ -85,6 +87,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> FATAL_ARROW = key("fatal_arrow");
     public static final ResourceKey<Enchantment> FAST_SWIM = key("fast_swim");
     public static final ResourceKey<Enchantment> FIRE_ARROWS = key("fire_arrows");
+    public static final ResourceKey<Enchantment> FROST_HOOVES = key("frost_hooves");
     public static final ResourceKey<Enchantment> FIRE_PROTECTION = key("fire_protection");
     public static final ResourceKey<Enchantment> FORTRESS_STANCE = key("fortress_stance");
     public static final ResourceKey<Enchantment> FORTITUDE = key("fortitude");
@@ -112,7 +115,10 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> MAGNET = key("magnet");
     public static final ResourceKey<Enchantment> MASTER_GATHERER = key("master_gatherer");
     public static final ResourceKey<Enchantment> MAXIMIZATION = key("maximization");
+    public static final ResourceKey<Enchantment> MESSENGER = key("messenger");
+    public static final ResourceKey<Enchantment> MOONWALK = key("moonwalk");
     public static final ResourceKey<Enchantment> MINIFY = key("minify");
+    public static final ResourceKey<Enchantment> MY_LITTLE_PONY = key("my_little_pony");
     public static final ResourceKey<Enchantment> MOIST = key("moist");
     public static final ResourceKey<Enchantment> NULLIFY = key("nullify");
     public static final ResourceKey<Enchantment> PACK_LEADER = key("pack_leader");
@@ -134,6 +140,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> RICOCHET = key("ricochet");
     public static final ResourceKey<Enchantment> REVIVE_WARD = key("revive_ward");
     public static final ResourceKey<Enchantment> SAFE_FALL = key("safe_fall");
+    public static final ResourceKey<Enchantment> SAFE_LANDING = key("safe_landing");
     public static final ResourceKey<Enchantment> SACRIFICE = key("sacrifice");
     public static final ResourceKey<Enchantment> SCATTER = key("scatter");
     public static final ResourceKey<Enchantment> SEA_BREEZE = key("sea_breeze");
@@ -197,6 +204,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> WEAK_ARMOR = key("weak_armor");
     public static final ResourceKey<Enchantment> WEIGHTED = key("weighted");
     public static final ResourceKey<Enchantment> WIND_PROPULSION = key("wind_propulsion");
+    public static final ResourceKey<Enchantment> WOLF_SPIRIT_SHIELD = key("wolf_spirit_shield");
     public static final ResourceKey<Enchantment> XP_REAPER_MOBS = key("xp_reaper_mobs");
 
     public static ResourceKey<Enchantment> key(String path) {

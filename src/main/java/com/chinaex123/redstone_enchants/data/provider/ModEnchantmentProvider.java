@@ -116,6 +116,8 @@ public final class ModEnchantmentProvider {
     private static final TagKey<Item> SWORDS_AND_AXES = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("swords_and_axes"));
     private static final TagKey<Item> SWORDS_AND_BOW = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("swords_and_bow"));
     private static final TagKey<Item> TRIDENT_AND_BOW = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("trident_and_bow"));
+    private static final TagKey<Item> ELYTRA = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("elytra"));
+    private static final TagKey<Item> HORSE_ANIMAL_ARMOR = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("horse_animal_armor"));
     private static final TagKey<Item> MACE_ITEMS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "tools/mace"));
     private static final TagKey<Item> SHIELD_ITEMS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "tools/shield"));
     private static final TagKey<Item> ALL_FLINT_AND_STEEL = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("all_flint_and_steel"));
@@ -489,6 +491,16 @@ public final class ModEnchantmentProvider {
                         RedstoneEnchants.asResource("enchantment.safe_fall_1"),
                         Attributes.SAFE_FALL_DISTANCE,
                         LevelBasedValue.perLevel(2.0F, 1.0F),
+                        AttributeModifier.Operation.ADD_VALUE)));
+
+        register(context, ModEnchantments.SAFE_LANDING, colored(
+                Enchantment.definition(items.getOrThrow(ELYTRA), items.getOrThrow(ELYTRA), 3, 5,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.CHEST),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantencore.safe_landing_1"),
+                        Attributes.SAFE_FALL_DISTANCE,
+                        LevelBasedValue.perLevel(2.0F, 2.5F),
                         AttributeModifier.Operation.ADD_VALUE)));
 
         register(context, ModEnchantments.SACRIFICE, colored(
@@ -1994,6 +2006,29 @@ public final class ModEnchantmentProvider {
                         LevelBasedValue.perLevel(0.14F, 0.12F),
                         AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
 
+        register(context, ModEnchantments.FROST_HOOVES, colored(
+                Enchantment.definition(items.getOrThrow(HORSE_ARMOR), items.getOrThrow(HORSE_ARMOR), 3, 4,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.BODY),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.DAMAGE_IMMUNITY,
+                        new DamageImmunity(),
+                        DamageSourceCondition.hasDamageSource(DamageSourcePredicate.Builder.damageType()
+                                .tag(TagPredicate.is(DamageTypeTags.BURN_FROM_STEPPING))
+                                .tag(TagPredicate.isNot(DamageTypeTags.BYPASSES_INVULNERABILITY))))
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new ReplaceDisk(
+                                new LevelBasedValue.Clamped(LevelBasedValue.perLevel(3.0F, 1.0F), 0.0F, 16.0F),
+                                LevelBasedValue.constant(1.0F), new Vec3i(0, -1, 0),
+                                Optional.of(BlockPredicate.allOf(
+                                        BlockPredicate.matchesTag(new Vec3i(0, 1, 0), BlockTags.AIR),
+                                        BlockPredicate.matchesBlocks(Blocks.WATER),
+                                        BlockPredicate.matchesFluids(Fluids.WATER),
+                                        BlockPredicate.unobstructed())),
+                                BlockStateProvider.simple(Blocks.FROSTED_ICE),
+                                Optional.of(GameEvent.BLOCK_PLACE)),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().flags(EntityFlagsPredicate.Builder.flags().setOnGround(true)))));
+
         register(context, ModEnchantments.FROST_THORN, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS_CHEST), items.getOrThrow(ARMORS_CHEST), 3, 5,
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.CHEST),
@@ -2159,6 +2194,37 @@ public final class ModEnchantmentProvider {
                 0xFF55FF)
                 .withEffect(ModEnchantmentEffectComponents.CARRION_EATER_HEAL.get(),
                         new SetValue(LevelBasedValue.perLevel(0.25F))));
+
+        register(context, ModEnchantments.ENHANCED_ARMOR, colored(
+                Enchantment.definition(items.getOrThrow(HORSE_ANIMAL_ARMOR), items.getOrThrow(HORSE_ANIMAL_ARMOR), 3, 4,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.BODY),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enhanced_armor_bonus"),
+                        Attributes.ARMOR,
+                        LevelBasedValue.perLevel(2.0F, 2.0F),
+                        AttributeModifier.Operation.ADD_VALUE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enhanced_armor_penalty"),
+                        Attributes.JUMP_STRENGTH,
+                        LevelBasedValue.perLevel(-0.05F, -0.05F),
+                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
+
+        register(context, ModEnchantments.ENDER_HEART, colored(
+                Enchantment.definition(items.getOrThrow(ELYTRA), items.getOrThrow(ELYTRA), 3, 2,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.CHEST),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.TICK,
+                        new ApplyMobEffect(HolderSet.direct(MobEffects.REGENERATION),
+                                LevelBasedValue.constant(3.0F), LevelBasedValue.constant(3.0F),
+                                LevelBasedValue.perLevel(0.0F, 1.0F), LevelBasedValue.perLevel(0.0F, 1.0F)),
+                        LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
+                                EntityPredicate.Builder.entity().periodicTick(40)))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.ender_heart_1"),
+                        Attributes.MAX_HEALTH,
+                        LevelBasedValue.perLevel(0.0F, 2.0F),
+                        AttributeModifier.Operation.ADD_VALUE)));
 
         register(context, ModEnchantments.ETERNAL_FROST, colored(
                 Enchantment.definition(items.getOrThrow(TRIDENT_AND_BOW), items.getOrThrow(TRIDENT_AND_BOW), 2, 3,
@@ -2558,6 +2624,31 @@ public final class ModEnchantmentProvider {
                         AttributeModifier.Operation.ADD_VALUE))
                 .exclusiveWith(enchantments.getOrThrow(ARMORS_HEAD_EXCLUSIVE)));
 
+        register(context, ModEnchantments.MESSENGER, colored(
+                Enchantment.definition(items.getOrThrow(HORSE_ANIMAL_ARMOR), items.getOrThrow(HORSE_ANIMAL_ARMOR), 3, 4,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.BODY),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.messenger_1"),
+                        Attributes.MOVEMENT_SPEED,
+                        LevelBasedValue.perLevel(0.25F, 0.125F),
+                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.messenger_2"),
+                        Attributes.MOVEMENT_EFFICIENCY,
+                        LevelBasedValue.perLevel(1.0F, 0.5F),
+                        AttributeModifier.Operation.ADD_VALUE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.messenger_3"),
+                        Attributes.WATER_MOVEMENT_EFFICIENCY,
+                        LevelBasedValue.perLevel(0.6F, 0.1F),
+                        AttributeModifier.Operation.ADD_VALUE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.messenger_4"),
+                        Attributes.JUMP_STRENGTH,
+                        LevelBasedValue.perLevel(0.2F, 0.1F),
+                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
+
         register(context, ModEnchantments.MINIFY, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 1, 4,
                         Enchantment.dynamicCost(18, 8), Enchantment.dynamicCost(48, 18), 16, EquipmentSlotGroup.HEAD),
@@ -2605,6 +2696,41 @@ public final class ModEnchantmentProvider {
                         AttributeModifier.Operation.ADD_VALUE))
                 .exclusiveWith(enchantments.getOrThrow(ARMORS_HEAD_EXCLUSIVE)));
 
+        register(context, ModEnchantments.MOONWALK, colored(
+                Enchantment.definition(items.getOrThrow(ELYTRA), items.getOrThrow(ELYTRA), 3, 3,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.CHEST),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.moonwalk_1"),
+                        Attributes.GRAVITY,
+                        LevelBasedValue.perLevel(-0.03F, -0.015F),
+                        AttributeModifier.Operation.ADD_VALUE)));
+
+        register(context, ModEnchantments.MY_LITTLE_PONY, colored(
+                Enchantment.definition(items.getOrThrow(HORSE_ARMOR), items.getOrThrow(HORSE_ARMOR), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.BODY),
+                0xFF55FF)
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.my_little_pony_1"),
+                        Attributes.SCALE,
+                        LevelBasedValue.perLevel(-0.8F, -0.2F),
+                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.my_little_pony_2"),
+                        Attributes.JUMP_STRENGTH,
+                        LevelBasedValue.perLevel(2.0F, 1.0F),
+                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.my_little_pony_3"),
+                        Attributes.SAFE_FALL_DISTANCE,
+                        LevelBasedValue.perLevel(10.0F, 10.0F),
+                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.my_little_pony_4"),
+                        Attributes.FALL_DAMAGE_MULTIPLIER,
+                        LevelBasedValue.perLevel(0.01F, 0.01F),
+                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
+
         register(context, ModEnchantments.MOIST, colored(
                 Enchantment.definition(items.getOrThrow(ItemTags.HOES), 3, 1,
                         Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.MAINHAND),
@@ -2633,6 +2759,26 @@ public final class ModEnchantmentProvider {
                                         ResourceLocation.withDefaultNamespace("entity.wind_charge.wind_burst")))),
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().flags(EntityFlagsPredicate.Builder.flags().setOnGround(true)))));
+
+        register(context, ModEnchantments.WOLF_SPIRIT_SHIELD, colored(
+                Enchantment.definition(items.getOrThrow(WOLF_ARMOR), items.getOrThrow(WOLF_ARMOR), 2, 5,
+                        Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.BODY),
+                0xFFAA00)
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.wolf_spirit_shield_1"),
+                        Attributes.ATTACK_DAMAGE,
+                        LevelBasedValue.perLevel(5.0F, 5.0F),
+                        AttributeModifier.Operation.ADD_VALUE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.wolf_spirit_shield_2"),
+                        Attributes.ARMOR,
+                        LevelBasedValue.perLevel(5.0F, 5.0F),
+                        AttributeModifier.Operation.ADD_VALUE))
+                .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
+                        RedstoneEnchants.asResource("enchantment.wolf_spirit_shield_3"),
+                        Attributes.MAX_HEALTH,
+                        LevelBasedValue.perLevel(10.0F, 10.0F),
+                        AttributeModifier.Operation.ADD_VALUE)));
 
         register(context, ModEnchantments.WEAK_ARMOR, colored(
                 Enchantment.definition(items.getOrThrow(ARMORS), items.getOrThrow(ARMORS), 3, 4,

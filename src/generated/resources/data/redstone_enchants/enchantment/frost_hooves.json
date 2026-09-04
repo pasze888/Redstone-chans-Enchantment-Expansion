@@ -1,24 +1,9 @@
 {
+  "anvil_cost": 8,
   "description": {
     "color": "#FF55FF",
     "translate": "enchantment.redstone_enchants.frost_hooves"
   },
-  "supported_items": "#redstone_enchants:horse_armor",
-  "primary_items": "#redstone_enchants:horse_armor",
-  "weight": 3,
-  "max_level": 4,
-  "min_cost": {
-    "base": 12,
-    "per_level_above_first": 6
-  },
-  "max_cost": {
-    "base": 24,
-    "per_level_above_first": 12
-  },
-  "anvil_cost": 8,
-  "slots": [
-    "body"
-  ],
   "effects": {
     "minecraft:damage_immunity": [
       {
@@ -107,5 +92,20 @@
         }
       }
     ]
-  }
+  },
+  "max_cost": {
+    "base": 24,
+    "per_level_above_first": 12
+  },
+  "max_level": 4,
+  "min_cost": {
+    "base": 12,
+    "per_level_above_first": 6
+  },
+  "primary_items": "#redstone_enchants:horse_armor",
+  "slots": [
+    "body"
+  ],
+  "supported_items": "#redstone_enchants:horse_armor",
+  "weight": 3
 }
