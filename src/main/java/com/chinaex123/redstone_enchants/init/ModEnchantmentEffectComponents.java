@@ -73,6 +73,9 @@ public final class ModEnchantmentEffectComponents {
     /** 收获回响（harvest_echo）：剪刀右键时获得生命恢复 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> HARVEST_ECHO =
             unit("harvest_echo");
+    /** 牧羊人（shepherd）：剪毛/采蜜额外掉落的概率（每级） */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> SHEPHERD_EXTRA_CHANCE =
+            value("shepherd_extra_chance");
     /** 生命吸取（life_steal）：按本次实际造成伤害恢复的比例 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> LIFE_STEAL_RATIO =
             value("life_steal_ratio");

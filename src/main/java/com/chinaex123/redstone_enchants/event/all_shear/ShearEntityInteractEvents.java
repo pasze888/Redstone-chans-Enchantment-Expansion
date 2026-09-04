@@ -40,6 +40,7 @@ public final class ShearEntityInteractEvents {
         endlessWool(event);
         experienceShear(event);
         harvestEcho(event);
+        shepherdSheep(event);
     }
 
     // ---- 绵延不绝 ----
@@ -160,6 +161,53 @@ public final class ShearEntityInteractEvents {
 
         // 给予 1 级生命恢复效果 3 秒
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 60, 0, false, true));
+    }
+
+    // ---- 牧羊人（剪羊毛段） ----
+
+    private static void shepherdSheep(PlayerInteractEvent.EntityInteract event) {
+        Player player = event.getEntity();
+        Level level = player.level();
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+
+        ItemStack stack = event.getItemStack();
+        Entity target = event.getTarget();
+
+        // 只处理剪羊毛
+        if (!(target instanceof Sheep sheep)) {
+            return;
+        }
+        if (!stack.is(Items.SHEARS)) {
+            return;
+        }
+        if (!EnchantmentHelper.has(stack, ModEnchantmentEffectComponents.SHEPHERD_EXTRA_CHANCE.get())) {
+            return;
+        }
+
+        if (!sheep.isShearable(player, stack, level, sheep.blockPosition())) {
+            return;
+        }
+
+        event.setCanceled(true);
+        event.setCancellationResult(InteractionResult.SUCCESS);
+
+        List<ItemStack> drops = sheep.onSheared(player, stack, level, sheep.blockPosition());
+
+        RandomSource random = level.getRandom();
+        double probability = EnchantmentUtil.itemValue(serverLevel, stack, ModEnchantmentEffectComponents.SHEPHERD_EXTRA_CHANCE.get());
+
+        for (ItemStack drop : drops) {
+            sheep.spawnShearedDrop(level, sheep.blockPosition(), drop);
+            if (probability >= 1.0 || random.nextDouble() < probability) {
+                ItemStack extraDrop = drop.copy();
+                sheep.spawnShearedDrop(level, sheep.blockPosition(), extraDrop);
+            }
+        }
+
+        sheep.gameEvent(GameEvent.SHEAR, player);
+        stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(event.getHand()));
     }
 
     private ShearEntityInteractEvents() {

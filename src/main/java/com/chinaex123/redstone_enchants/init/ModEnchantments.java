@@ -48,6 +48,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> SACRIFICE = key("sacrifice");
     public static final ResourceKey<Enchantment> SEA_BREEZE = key("sea_breeze");
     public static final ResourceKey<Enchantment> SEARING = key("searing");
+    public static final ResourceKey<Enchantment> SHEPHERD = key("shepherd");
     public static final ResourceKey<Enchantment> SNIPE = key("snipe");
     public static final ResourceKey<Enchantment> STURDY = key("sturdy");
     public static final ResourceKey<Enchantment> TIDE_SENSE = key("tide_sense");
