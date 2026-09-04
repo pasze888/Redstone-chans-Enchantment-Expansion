@@ -21,6 +21,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
 import java.util.Map;
@@ -84,6 +85,14 @@ public final class ArmorFootTickEvents {
 
         // 更新潜行状态记录
         LAST_SNEAKING.put(player, isSneaking);
+    }
+
+    @SubscribeEvent
+    public static void onEntityLeaveLevel(EntityLeaveLevelEvent event) {
+        // 修复：实体离开关卡（退出/换维度）时清理潜行状态记录，消除旧版 Map 泄漏
+        if (event.getEntity() instanceof Player player) {
+            LAST_SNEAKING.remove(player);
+        }
     }
 
     private static void executeCropGrowth(Player player, ServerLevel serverLevel, int enchantLevel, double growthChance) {
