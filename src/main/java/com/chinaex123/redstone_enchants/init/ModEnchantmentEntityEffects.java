@@ -3,6 +3,7 @@ package com.chinaex123.redstone_enchants.init;
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
 import com.chinaex123.redstone_enchants.enchantment.effect.RandomBeneficialMobEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.RandomHarmfulMobEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.RemoveRandomBeneficialEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.SummonItemEffect;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.registries.Registries;
@@ -33,6 +34,10 @@ public final class ModEnchantmentEntityEffects {
     /** 灾厄（calamity）：攻击时按概率给受害者施加随机负面药水 */
     public static final DeferredHolder<MapCodec<? extends EnchantmentEntityEffect>, MapCodec<? extends EnchantmentEntityEffect>> RANDOM_HARMFUL_MOB_EFFECT =
             TYPES.register("random_harmful_mob_effect", () -> RandomHarmfulMobEffect.CODEC);
+
+    /** 消解（nullify）：攻击时按概率移除受害者身上的一个正面药水 */
+    public static final DeferredHolder<MapCodec<? extends EnchantmentEntityEffect>, MapCodec<? extends EnchantmentEntityEffect>> REMOVE_RANDOM_BENEFICIAL =
+            TYPES.register("remove_random_beneficial", () -> RemoveRandomBeneficialEffect.CODEC);
 
     public static void register(IEventBus eventBus) {
         TYPES.register(eventBus);

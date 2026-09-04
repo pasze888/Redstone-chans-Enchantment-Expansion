@@ -3,6 +3,7 @@ package com.chinaex123.redstone_enchants.data.provider;
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
 import com.chinaex123.redstone_enchants.enchantment.effect.RandomBeneficialMobEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.RandomHarmfulMobEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.RemoveRandomBeneficialEffect;
 import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
 import com.chinaex123.redstone_enchants.init.ModEnchantments;
 import net.minecraft.core.HolderGetter;
@@ -62,6 +63,14 @@ public final class ModEnchantmentProvider {
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK,
                         EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
                         new RandomHarmfulMobEffect(LevelBasedValue.perLevel(0.05F))));
+
+        register(context, ModEnchantments.NULLIFY, colored(
+                Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 2, 5,
+                        Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.MAINHAND),
+                0xFFAA00)
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK,
+                        EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
+                        new RemoveRandomBeneficialEffect(LevelBasedValue.perLevel(0.05F))));
 
         register(context, ModEnchantments.CHAIN_HASTE, colored(
                 Enchantment.definition(items.getOrThrow(TOOLS), 3, 3,

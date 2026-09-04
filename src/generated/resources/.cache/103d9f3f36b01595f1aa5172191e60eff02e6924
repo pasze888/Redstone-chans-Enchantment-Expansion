@@ -1,4 +1,4 @@
-// 1.21.1	2026-09-04T14:08:16.4962352	Registries
+// 1.21.1	2026-09-04T18:52:59.4956081	Registries
 62adef69d04f09bab9391cb9e0c3dd4810a2b6f8 data/redstone_enchants/enchantment/auto_smelt.json
 4dbea2b2de2a40cd14db8e901a58399bf0e64586 data/redstone_enchants/enchantment/boons.json
 0f22ea9b4b68d7d4c7d2e52b8f560d7070f16c7f data/redstone_enchants/enchantment/calamity.json
@@ -10,4 +10,5 @@ ec29f4bb2eed83b3109ab356292212c35b7d3930 data/redstone_enchants/enchantment/chai
 f5883ab5ed511c64d5b4f259787b9fd9f2542a4f data/redstone_enchants/enchantment/magnet.json
 ad1b8082f2cd37a55a372b1fdf948b5a5173ad50 data/redstone_enchants/enchantment/master_gatherer.json
 395149132c2c1d4dd30278717041fa500aec2291 data/redstone_enchants/enchantment/moist.json
+c9fea2537f4e651a41542685c4faf25e724c9377 data/redstone_enchants/enchantment/nullify.json
 94e34c386bebecd767d6d73ef6f32afb85c30e17 data/redstone_enchants/enchantment/timber.json

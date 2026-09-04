@@ -21,6 +21,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> MAGNET = key("magnet");
     public static final ResourceKey<Enchantment> MASTER_GATHERER = key("master_gatherer");
     public static final ResourceKey<Enchantment> MOIST = key("moist");
+    public static final ResourceKey<Enchantment> NULLIFY = key("nullify");
     public static final ResourceKey<Enchantment> TIMBER = key("timber");
 
     public static ResourceKey<Enchantment> key(String path) {
