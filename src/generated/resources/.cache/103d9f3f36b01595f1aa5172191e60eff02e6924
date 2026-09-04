@@ -1,4 +1,4 @@
-// 1.21.1	2026-09-04T20:05:57.2822144	Registries
+// 1.21.1	2026-09-04T20:06:46.2696894	Registries
 913d5e1b80904ec058aa8021a1962c3c080f3440 data/redstone_enchants/enchantment/adaptive.json
 29ad3becde1b6c0ff60e89178f426269d2b93321 data/redstone_enchants/enchantment/advanced_unbreaking.json
 b0a37f51f24776b5d9c3d679639ff238bf5c5e29 data/redstone_enchants/enchantment/against_all_odds.json
@@ -50,3 +50,4 @@ d7948a38240b624d389633ecf2107ac368a55ef4 data/redstone_enchants/enchantment/stur
 4ab31cea3018448b9c619f43a6b1f5db14200cae data/redstone_enchants/enchantment/tide_sense.json
 94e34c386bebecd767d6d73ef6f32afb85c30e17 data/redstone_enchants/enchantment/timber.json
 eb40468a58a8db24ed91be9269dd1628e5246769 data/redstone_enchants/enchantment/volt.json
+b13023d085c4ebf003e9192f19d8d33a4032819c data/redstone_enchants/enchantment/wave_walker.json

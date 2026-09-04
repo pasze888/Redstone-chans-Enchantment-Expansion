@@ -48,6 +48,7 @@ public final class ArmorFootTickEvents {
         cropDance(event);
         flameWalker(event);
         pegasus(event);
+        waveWalker(event);
     }
 
     // ---- 庄稼舞 ----
@@ -225,6 +226,59 @@ public final class ArmorFootTickEvents {
                     livingVehicle.removeEffect(MobEffects.SLOW_FALLING);
                 }
             }
+        }
+    }
+
+    // ---- 踏浪者 ----
+
+    private static void waveWalker(EntityTickEvent.Post event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+
+        ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
+        if (boots.isEmpty()) {
+            return;
+        }
+        if (!EnchantmentHelper.has(boots, ModEnchantmentEffectComponents.WAVE_WALKER.get())) {
+            return;
+        }
+
+        // 如果玩家潜行，允许正常下潜
+        if (player.isCrouching()) {
+            return;
+        }
+
+        // 检查玩家是否不在水中
+        if (player.isInWater()) {
+            return;
+        }
+
+        // 检测脚底下方 0.4 格的位置是否有水
+        BlockPos entityPos = player.blockPosition();
+        BlockPos waterCheckPos = new BlockPos(
+                entityPos.getX(),
+                (int) Math.floor(player.getBoundingBox().minY - 0.4),
+                entityPos.getZ()
+        );
+
+        boolean hasWaterBelow = player.level().getFluidState(waterCheckPos).is(Fluids.WATER);
+
+        if (hasWaterBelow) {
+            // 获取水面高度
+            double waterHeight = waterCheckPos.getY() + 1.0;
+
+            // 如果玩家在水面上方，调整到水面高度
+            if (player.getY() > waterHeight) {
+                player.setPos(player.getX(), waterHeight, player.getZ());
+            }
+
+            // 设置垂直速度为 0
+            player.setDeltaMovement(player.getDeltaMovement().x, 0, player.getDeltaMovement().z);
+            // 重置掉落距离
+            player.fallDistance = 0;
+            // 标记为在地面上
+            player.setOnGround(true);
         }
     }
 

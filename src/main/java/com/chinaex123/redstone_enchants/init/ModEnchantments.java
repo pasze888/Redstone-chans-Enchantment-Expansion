@@ -61,6 +61,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> TIDE_SENSE = key("tide_sense");
     public static final ResourceKey<Enchantment> TIMBER = key("timber");
     public static final ResourceKey<Enchantment> VOLT = key("volt");
+    public static final ResourceKey<Enchantment> WAVE_WALKER = key("wave_walker");
 
     public static ResourceKey<Enchantment> key(String path) {
         return ResourceKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource(path));

@@ -172,6 +172,9 @@ public final class ModEnchantmentEffectComponents {
     /** 伏特（volt）：雷雨天箭矢伤害加成比例（每级） */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> VOLT_BONUS =
             value("volt_bonus");
+    /** 踏浪者（wave_walker）：可在水面行走 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> WAVE_WALKER =
+            unit("wave_walker");
 
     /** 攻击附加掉落（模板）：在受害实体位置生成物品堆，供 swords 类附魔通过 post_attack 声明 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<TargetedConditionalEffect<EnchantmentEntityEffect>>>> POST_ATTACK_SUMMON =
