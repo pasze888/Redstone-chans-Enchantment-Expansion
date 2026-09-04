@@ -82,6 +82,9 @@ public final class ModEnchantmentEffectComponents {
     /** 坚固（sturdy）：穿戴者免疫爆炸/闪电/火伤害，掉落物防火防爆防雷 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> STURDY =
             unit("sturdy");
+    /** 保全（preservation）：装备不因无耐久而损坏消失（主功能在 PreservationMixin） */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> PRESERVATION =
+            unit("preservation");
 
     /** 攻击附加掉落（模板）：在受害实体位置生成物品堆，供 swords 类附魔通过 post_attack 声明 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<TargetedConditionalEffect<EnchantmentEntityEffect>>>> POST_ATTACK_SUMMON =

@@ -1,4 +1,4 @@
-// 1.21.1	2026-09-04T19:27:21.2042935	Registries
+// 1.21.1	2026-09-04T19:29:06.924133	Registries
 29ad3becde1b6c0ff60e89178f426269d2b93321 data/redstone_enchants/enchantment/advanced_unbreaking.json
 e7fbadf4574badbf688a04ccb6e4992e38152308 data/redstone_enchants/enchantment/ambush.json
 62adef69d04f09bab9391cb9e0c3dd4810a2b6f8 data/redstone_enchants/enchantment/auto_smelt.json
@@ -21,6 +21,7 @@ f5883ab5ed511c64d5b4f259787b9fd9f2542a4f data/redstone_enchants/enchantment/magn
 ad1b8082f2cd37a55a372b1fdf948b5a5173ad50 data/redstone_enchants/enchantment/master_gatherer.json
 395149132c2c1d4dd30278717041fa500aec2291 data/redstone_enchants/enchantment/moist.json
 c9fea2537f4e651a41542685c4faf25e724c9377 data/redstone_enchants/enchantment/nullify.json
+4013a6cc0d5abdafe3dcd5be56602262fc4308ec data/redstone_enchants/enchantment/preservation.json
 6f19cebe8f2e7f18d30d5c41946f3d2020a553e2 data/redstone_enchants/enchantment/sacrifice.json
 d7948a38240b624d389633ecf2107ac368a55ef4 data/redstone_enchants/enchantment/sturdy.json
 94e34c386bebecd767d6d73ef6f32afb85c30e17 data/redstone_enchants/enchantment/timber.json
