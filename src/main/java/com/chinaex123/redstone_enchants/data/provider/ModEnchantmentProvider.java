@@ -174,6 +174,12 @@ public final class ModEnchantmentProvider {
                 0xFF5555)
                 .withEffect(ModEnchantmentEffectComponents.CURSE_OF_WATER_SOURCE.get()));
 
+        register(context, ModEnchantments.DAYNIGHT_CYCLE, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS), items.getOrThrow(ARMORS), 3, 1,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.ARMOR),
+                0xFF55FF)
+                .withEffect(ModEnchantmentEffectComponents.DAYNIGHT_CYCLE.get()));
+
         register(context, ModEnchantments.BOONS, colored(
                 Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 2, 5,
                         Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.MAINHAND),

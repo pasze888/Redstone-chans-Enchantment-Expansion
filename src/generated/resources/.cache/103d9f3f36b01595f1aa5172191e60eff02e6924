@@ -1,4 +1,4 @@
-// 1.21.1	2026-09-04T19:45:10.121596	Registries
+// 1.21.1	2026-09-04T19:46:02.3881824	Registries
 29ad3becde1b6c0ff60e89178f426269d2b93321 data/redstone_enchants/enchantment/advanced_unbreaking.json
 e7fbadf4574badbf688a04ccb6e4992e38152308 data/redstone_enchants/enchantment/ambush.json
 62adef69d04f09bab9391cb9e0c3dd4810a2b6f8 data/redstone_enchants/enchantment/auto_smelt.json
@@ -10,6 +10,7 @@ e7fbadf4574badbf688a04ccb6e4992e38152308 data/redstone_enchants/enchantment/ambu
 ec29f4bb2eed83b3109ab356292212c35b7d3930 data/redstone_enchants/enchantment/chain_haste.json
 11448bd315dacf8d4d5672c1235f98a5bb216cf2 data/redstone_enchants/enchantment/curse_of_rust.json
 1a40505660a161fc0b3b745d62ef406efbf3ece3 data/redstone_enchants/enchantment/curse_of_water_source.json
+2a2ab2e97dd68468a0122a9bcb685762a4d722ec data/redstone_enchants/enchantment/daynight_cycle.json
 9a81a641e83c3795e2bba1cfb2a4ea35a8ba7bca data/redstone_enchants/enchantment/decapitation.json
 9fdda477968291e98f36872c1af863a09bbee1b6 data/redstone_enchants/enchantment/echoes_battle.json
 07e7afb8adb9c7a55a96df009845744a38c86755 data/redstone_enchants/enchantment/equalizer.json

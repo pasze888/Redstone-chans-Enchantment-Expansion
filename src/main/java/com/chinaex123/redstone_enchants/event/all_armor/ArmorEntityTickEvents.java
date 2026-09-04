@@ -1,60 +1,53 @@
 package com.chinaex123.redstone_enchants.event.all_armor;
 
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
+import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
 /**
- * 昼夜流转：白天增加伤害，夜晚增加移动速度
+ * 全身盔甲（all_armor）附魔在实体 tick 事件上的统一分发器（昼夜流转：白天加攻、夜晚加移速）。
+ * <p>行为参数由附魔 JSON 组件声明。旧实现是单个订阅者类。
  */
 @EventBusSubscriber(modid = RedstoneEnchants.MOD_ID)
-public class DaynightCycleEventHandler {
-    private static final ResourceLocation DAYNIGHT_CYCLE_ID =
-            ResourceLocation.fromNamespaceAndPath(RedstoneEnchants.MOD_ID, "daynight_cycle");
+public final class ArmorEntityTickEvents {
     private static final ResourceLocation DAMAGE_MODIFIER_ID =
             ResourceLocation.fromNamespaceAndPath(RedstoneEnchants.MOD_ID, "daynight_cycle_damage");
     private static final ResourceLocation SPEED_MODIFIER_ID =
             ResourceLocation.fromNamespaceAndPath(RedstoneEnchants.MOD_ID, "daynight_cycle_speed");
+    private static final double BONUS_PER_LEVEL = 0.05; // 每级提供 5% 加成
+    private static final EquipmentSlot[] ARMOR_SLOTS = {
+            EquipmentSlot.HEAD,
+            EquipmentSlot.CHEST,
+            EquipmentSlot.LEGS,
+            EquipmentSlot.FEET
+    };
 
     @SubscribeEvent
     public static void onEntityTick(EntityTickEvent.Post event) {
-        if (!(event.getEntity() instanceof Player player)) return;
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
 
         // 计算所有盔甲槽位的附魔等级总和
         int totalLevel = 0;
-
-        EquipmentSlot[] armorSlots = {
-                EquipmentSlot.HEAD,
-                EquipmentSlot.CHEST,
-                EquipmentSlot.LEGS,
-                EquipmentSlot.FEET
-        };
-
-        for (EquipmentSlot slot : armorSlots) {
+        for (EquipmentSlot slot : ARMOR_SLOTS) {
             ItemStack armor = player.getItemBySlot(slot);
-            if (armor.isEmpty()) continue;
-
-            Holder.Reference<Enchantment> daynightCycleEnchant = player.level()
-                    .registryAccess()
-                    .registryOrThrow(Registries.ENCHANTMENT)
-                    .getHolder(DAYNIGHT_CYCLE_ID)
-                    .orElse(null);
-
-            if (daynightCycleEnchant == null) continue;
-
-            @SuppressWarnings("deprecation")
-            int enchantLevel = armor.getEnchantments().getLevel(daynightCycleEnchant);
-            totalLevel += enchantLevel;
+            if (armor.isEmpty()) {
+                continue;
+            }
+            if (EnchantmentHelper.has(armor, ModEnchantmentEffectComponents.DAYNIGHT_CYCLE.get())) {
+                totalLevel += 1;
+            }
         }
 
         if (totalLevel <= 0) {
@@ -67,16 +60,15 @@ public class DaynightCycleEventHandler {
         long dayTime = player.level().getDayTime() % 24000;
         boolean isDay = dayTime >= 0 && dayTime < 12000;
 
-        // 获取属性
-        var attackDamageAttribute = player.getAttribute(Attributes.ATTACK_DAMAGE);
-        var speedAttribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
+        AttributeInstance attackDamageAttribute = player.getAttribute(Attributes.ATTACK_DAMAGE);
+        AttributeInstance speedAttribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
 
         if (attackDamageAttribute != null && speedAttribute != null) {
             // 移除旧的修饰符
             removeModifiers(player);
 
-            // 每级提供5%加成
-            double bonus = totalLevel * 0.05;
+            // 每级提供 5% 加成
+            double bonus = totalLevel * BONUS_PER_LEVEL;
 
             if (isDay) {
                 // 白天：增加伤害
@@ -99,8 +91,8 @@ public class DaynightCycleEventHandler {
     }
 
     private static void removeModifiers(Player player) {
-        var attackDamageAttribute = player.getAttribute(Attributes.ATTACK_DAMAGE);
-        var speedAttribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
+        AttributeInstance attackDamageAttribute = player.getAttribute(Attributes.ATTACK_DAMAGE);
+        AttributeInstance speedAttribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
 
         if (attackDamageAttribute != null) {
             attackDamageAttribute.removeModifier(DAMAGE_MODIFIER_ID);
@@ -108,5 +100,8 @@ public class DaynightCycleEventHandler {
         if (speedAttribute != null) {
             speedAttribute.removeModifier(SPEED_MODIFIER_ID);
         }
+    }
+
+    private ArmorEntityTickEvents() {
     }
 }

@@ -115,6 +115,9 @@ public final class ModEnchantmentEffectComponents {
     /** 水源诅咒（curse_of_water_source）：水中/雨中施加中毒 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> CURSE_OF_WATER_SOURCE =
             unit("curse_of_water_source");
+    /** 昼夜流转（daynight_cycle）：白天加攻、夜晚加移速 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> DAYNIGHT_CYCLE =
+            unit("daynight_cycle");
 
     /** 攻击附加掉落（模板）：在受害实体位置生成物品堆，供 swords 类附魔通过 post_attack 声明 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<TargetedConditionalEffect<EnchantmentEntityEffect>>>> POST_ATTACK_SUMMON =
