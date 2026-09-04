@@ -42,6 +42,7 @@ public final class ModEnchantmentProvider {
     private static final TagKey<Item> SWORDS_AND_BOW = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("swords_and_bow"));
     private static final TagKey<Item> MACE_ITEMS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "tools/mace"));
     private static final TagKey<Item> SHIELD_ITEMS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "tools/shield"));
+    private static final TagKey<Item> ALL_FLINT_AND_STEEL = TagKey.create(Registries.ITEM, RedstoneEnchants.asResource("all_flint_and_steel"));
     private static final TagKey<Enchantment> MACE_EXCLUSIVE = TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/mace"));
     private static final TagKey<Enchantment> NO_SEA_BREEZE_EXCLUSIVE = TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/no_sea_breeze"));
     private static final TagKey<Item> ENCHANTABLES = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "enchantables"));
@@ -151,6 +152,13 @@ public final class ModEnchantmentProvider {
                 .withEffect(ModEnchantmentEffectComponents.SEA_BREEZE.get())
                 .withEffect(ModEnchantmentEffectComponents.SEA_BREEZE_DAMAGE.get(),
                         new SetValue(LevelBasedValue.perLevel(4.0F, 2.0F))));
+
+        register(context, ModEnchantments.SEARING, colored(
+                Enchantment.definition(items.getOrThrow(ALL_FLINT_AND_STEEL), items.getOrThrow(ALL_FLINT_AND_STEEL), 5, 3,
+                        Enchantment.dynamicCost(10, 6), Enchantment.dynamicCost(20, 10), 6, EquipmentSlotGroup.MAINHAND),
+                0x55FFFF)
+                .withEffect(ModEnchantmentEffectComponents.SEARING_FIRE_TICKS.get(), new SetValue(LevelBasedValue.perLevel(40.0F)))
+                .withEffect(ModEnchantmentEffectComponents.SEARING_DAMAGE.get(), new SetValue(LevelBasedValue.perLevel(1.0F))));
 
         register(context, ModEnchantments.BOONS, colored(
                 Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 2, 5,

@@ -103,6 +103,12 @@ public final class ModEnchantmentEffectComponents {
     /** 海风（sea_breeze）：爆炸中心伤害（每级线性） */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> SEA_BREEZE_DAMAGE =
             value("sea_breeze_damage");
+    /** 灼烧（searing）：右键点燃的燃烧时长（tick） */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> SEARING_FIRE_TICKS =
+            value("searing_fire_ticks");
+    /** 灼烧（searing）：右键点燃的额外伤害 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> SEARING_DAMAGE =
+            value("searing_damage");
 
     /** 攻击附加掉落（模板）：在受害实体位置生成物品堆，供 swords 类附魔通过 post_attack 声明 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<TargetedConditionalEffect<EnchantmentEntityEffect>>>> POST_ATTACK_SUMMON =
