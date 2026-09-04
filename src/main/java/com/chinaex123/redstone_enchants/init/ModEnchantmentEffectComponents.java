@@ -187,6 +187,9 @@ public final class ModEnchantmentEffectComponents {
     /** 战术护膝（tactical_knee）：落地时潜行可抵消掉落伤害 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> TACTICAL_KNEE =
             unit("tactical_knee");
+    /** 追踪者（tracker）：狼攻击目标时发光的每级时长加成（tick） */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> TRACKER_GLOW_DURATION_BONUS =
+            value("tracker_glow_duration_bonus");
     /** 伏特（volt）：雷雨天箭矢伤害加成比例（每级） */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> VOLT_BONUS =
             value("volt_bonus");
