@@ -97,6 +97,12 @@ public final class ModEnchantmentEffectComponents {
     /** 闪电使者（boltbringer）：高处攻击时召唤闪电 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> BOLTBRINGER =
             unit("boltbringer");
+    /** 海风（sea_breeze）：三叉戟命中后造成风压爆炸 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> SEA_BREEZE =
+            unit("sea_breeze");
+    /** 海风（sea_breeze）：爆炸中心伤害（每级线性） */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> SEA_BREEZE_DAMAGE =
+            value("sea_breeze_damage");
 
     /** 攻击附加掉落（模板）：在受害实体位置生成物品堆，供 swords 类附魔通过 post_attack 声明 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<TargetedConditionalEffect<EnchantmentEntityEffect>>>> POST_ATTACK_SUMMON =

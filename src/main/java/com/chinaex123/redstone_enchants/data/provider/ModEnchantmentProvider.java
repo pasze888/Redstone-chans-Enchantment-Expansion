@@ -43,6 +43,7 @@ public final class ModEnchantmentProvider {
     private static final TagKey<Item> MACE_ITEMS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "tools/mace"));
     private static final TagKey<Item> SHIELD_ITEMS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "tools/shield"));
     private static final TagKey<Enchantment> MACE_EXCLUSIVE = TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/mace"));
+    private static final TagKey<Enchantment> NO_SEA_BREEZE_EXCLUSIVE = TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/no_sea_breeze"));
     private static final TagKey<Item> ENCHANTABLES = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "enchantables"));
     private static final TagKey<Enchantment> STONE_TRANSMUTATION_EXCLUSIVE =
             TagKey.create(Registries.ENCHANTMENT, RedstoneEnchants.asResource("exclusive_set/stone_transmutation"));
@@ -141,6 +142,15 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.OFFHAND),
                 0xFF55FF)
                 .withEffect(ModEnchantmentEffectComponents.ECHOES_BATTLE.get()));
+
+        register(context, ModEnchantments.SEA_BREEZE, colored(
+                Enchantment.definition(items.getOrThrow(ItemTags.TRIDENT_ENCHANTABLE), items.getOrThrow(ItemTags.TRIDENT_ENCHANTABLE), 3, 3,
+                        Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.HAND),
+                0xFF55FF)
+                .exclusiveWith(enchantments.getOrThrow(NO_SEA_BREEZE_EXCLUSIVE))
+                .withEffect(ModEnchantmentEffectComponents.SEA_BREEZE.get())
+                .withEffect(ModEnchantmentEffectComponents.SEA_BREEZE_DAMAGE.get(),
+                        new SetValue(LevelBasedValue.perLevel(4.0F, 2.0F))));
 
         register(context, ModEnchantments.BOONS, colored(
                 Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 2, 5,
