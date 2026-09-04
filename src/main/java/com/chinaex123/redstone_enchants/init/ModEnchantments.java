@@ -27,6 +27,8 @@ public final class ModEnchantments {
 
     public static void register(IEventBus eventBus) {
         ModEnchantmentEffectComponents.register(eventBus);
+        ModEnchantmentEntityEffects.register(eventBus);
+        ModEnchantmentLevelBasedValues.register(eventBus);
     }
 
     private ModEnchantments() {

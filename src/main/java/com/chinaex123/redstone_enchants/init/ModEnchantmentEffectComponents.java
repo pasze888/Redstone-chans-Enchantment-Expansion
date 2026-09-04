@@ -5,8 +5,10 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.enchantment.ConditionalEffect;
+import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.minecraft.world.item.enchantment.TargetedConditionalEffect;
+import net.minecraft.world.item.enchantment.effects.EnchantmentEntityEffect;
 import net.minecraft.world.item.enchantment.effects.EnchantmentValueEffect;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -48,6 +50,14 @@ public final class ModEnchantmentEffectComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> MOIST =
             unit("moist");
 
+    /** 攻击附加掉落（模板）：在受害实体位置生成物品堆，供 swords 类附魔通过 post_attack 声明 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<TargetedConditionalEffect<EnchantmentEntityEffect>>>> POST_ATTACK_SUMMON =
+            targeted("post_attack_summon");
+
+    /** 裸数值组件（模板）：承载单个 LevelBasedValue，配合 withSpecialEffect 使用 */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<LevelBasedValue>> RAW_VALUE =
+            special("raw_value", LevelBasedValue.CODEC);
+
     private static DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> value(String name) {
         return TYPES.register(name, () -> DataComponentType.<List<ConditionalEffect<EnchantmentValueEffect>>>builder()
                 .persistent(ConditionalEffect.codec(EnchantmentValueEffect.CODEC, LootContextParamSets.ENCHANTED_ITEM).listOf())
@@ -56,6 +66,25 @@ public final class ModEnchantmentEffectComponents {
 
     private static DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> unit(String name) {
         return TYPES.register(name, () -> DataComponentType.<Unit>builder().persistent(Unit.CODEC).build());
+    }
+
+    /**
+     * 定向实体效果组件：{@code List<TargetedConditionalEffect<EnchantmentEntityEffect>>}。
+     * <p>供战斗类附魔通过原版 {@code minecraft:post_attack} 声明"对攻击者/受害实体施加效果"；
+     * {@code enchanted/affected} 目标在 provider 里由 {@code Enchantment.Builder.withEffect(..., EnchantmentTarget, ...)} 指定。
+     */
+    private static DeferredHolder<DataComponentType<?>, DataComponentType<List<TargetedConditionalEffect<EnchantmentEntityEffect>>>> targeted(String name) {
+        return TYPES.register(name, () -> DataComponentType.<List<TargetedConditionalEffect<EnchantmentEntityEffect>>>builder()
+                .persistent(TargetedConditionalEffect.codec(EnchantmentEntityEffect.CODEC, LootContextParamSets.ENCHANTED_DAMAGE).listOf())
+                .build());
+    }
+
+    /**
+     * 裸值组件（配合 {@code Enchantment.Builder.withSpecialEffect(component, value)} 使用），
+     * 承载单个 {@code LevelBasedValue} 或其它自定义 record（参考神化 {@code MINERS_FERVOR} / {@code BERSERKING}）。
+     */
+    private static <E> DeferredHolder<DataComponentType<?>, DataComponentType<E>> special(String name, com.mojang.serialization.Codec<E> codec) {
+        return TYPES.register(name, () -> DataComponentType.<E>builder().persistent(codec).build());
     }
 
     public static void register(IEventBus eventBus) {

@@ -52,3 +52,40 @@
   单次连锁上限由服务端配置 `timberChainLimit` 控制（默认 512，范围 1-4096）。
 - 挖掘类效果的执行顺序从"订阅者注册顺序（不确定）"改为固定：连锁急迫 → 自动熔炼 → 概率掉落 → 连锁砍树 → 区域挖掘。
 - 连锁急迫上限（80% 封顶）仍在代码：它是全局平衡规则而非逐附魔数值。
+
+## 战斗类附魔基建（2026-08 补骨架，为 swords 批次铺路；参考神化 Apothic Enchanting + confluence）
+
+已验证（compileJava / build / runData 全通过）的 1.21.1 API 事实：
+
+- 两个自定义"序列化器"注册表都在 `Registries`：
+  `ENCHANTMENT_ENTITY_EFFECT_TYPE` = `ResourceKey<Registry<MapCodec<? extends EnchantmentEntityEffect>>>`、
+  `ENCHANTMENT_LEVEL_BASED_VALUE_TYPE` = `ResourceKey<Registry<MapCodec<? extends LevelBasedValue>>>`。
+  **注册的是 MapCodec（不是实例）**：`DeferredRegister.create(Registries.X, MODID)` 后 `register("name", () -> X.CODEC)`。
+- 自定义实体效果：`implements EnchantmentEntityEffect`（方法签名 `apply(ServerLevel, int level, EnchantedItemInUse, Entity, Vec3 origin)` + `MapCodec<? extends EnchantmentEntityEffect> codec()`）。
+  `EnchantedItemInUse` 是 record：`(ItemStack, @Nullable EquipmentSlot, @Nullable LivingEntity owner, Consumer<Item> onBreak)`。
+  模板见 `enchantment/effect/SummonItemEffect`（照 confluence 同款，1.21.1 签名核对过）。
+- `TargetedConditionalEffect<T>(enchanted, affected, effect, requirements)`（record）+ `codec(S, LootContextParamSet)`；
+  `Enchantment.Builder.withEffect(DataComponentType<List<TargetedConditionalEffect<E>>>, EnchantmentTarget, EnchantmentTarget, E[, requirements])`。
+  `EnchantmentTarget` 枚举：`ATTACKER / DAMAGING_ENTITY / VICTIM`（StringRepresentable）。
+  `LootContextParamSets` 有 `ENCHANTED_DAMAGE / ENCHANTED_ITEM / ENCHANTED_LOCATION / ENCHANTED_ENTITY`。
+- 裸值组件：`Enchantment.Builder.withSpecialEffect(DataComponentType<E>, E)`（神化 MINERS_FERVOR/BERSERKING 形态），
+  组件 codec 直接 `DataComponentType.builder().persistent(codec)`。
+- 自定义数值函数：`implements LevelBasedValue`（`calculate(int)` + `codec()`），
+  用 `LevelBasedValue.CODEC` 作子字段可复用（神化 ExponentialLevelBasedValue 同款，已按 1.21.1 适配）。
+  1.21.1 内置 `Linear/Constant/Clamped/LevelsSquared/Fraction/Lookup`。
+
+### 落地骨架（本轮，均已构建验证）
+
+- `init/ModEnchantmentEntityEffects`（注册 entity effect codec）+ `enchantment/effect/SummonItemEffect`（模板）
+- `init/ModEnchantmentLevelBasedValues`（注册数值函数 codec）+ `enchantment/value/ExponentialLevelBasedValue`（模板）
+- `ModEnchantmentEffectComponents` 新增 `targeted(...)` / `special(...)` helper + 示例组件
+  `POST_ATTACK_SUMMON`（targeted）/ `RAW_VALUE`（裸 LevelBasedValue）。
+- 全部注册在 `ModEnchantments.register(eventBus)` 接线。
+
+### 重要判断（swords 迁移前必读）
+
+swords 的 11 个旧 handler 行为核对结论：**绝大多数无法用原版 post_attack 零代码声明化**
+（ambush 带每玩家状态、backstab 需要方向点积、boons/calamity 随机遍历全药水表、butcher/decapitation 走
+LivingDropsEvent、life_steal 要 heal 攻击者、execution 条件秒杀、nullify 移除目标效果、equalizer 伤害随血量变化、
+gambler 双分支随机）。迁移它们 = 每个附魔写自定义 effect 类（部分还需保留事件分发器处理 drops），
+按"行为保真"逐个做，不能一次批量声明化。
