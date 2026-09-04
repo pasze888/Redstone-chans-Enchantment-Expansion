@@ -69,6 +69,15 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> TIDE_SENSE = key("tide_sense");
     public static final ResourceKey<Enchantment> TIMBER = key("timber");
     public static final ResourceKey<Enchantment> TRACKER = key("tracker");
+    public static final ResourceKey<Enchantment> TRAIL_CHERRY_LEAVES = key("trail_cherry_leaves");
+    public static final ResourceKey<Enchantment> TRAIL_DRAGON_BREATH = key("trail_dragon_breath");
+    public static final ResourceKey<Enchantment> TRAIL_FIREWORK = key("trail_firework");
+    public static final ResourceKey<Enchantment> TRAIL_GLOW = key("trail_glow");
+    public static final ResourceKey<Enchantment> TRAIL_SCULK_SOUL = key("trail_sculk_soul");
+    public static final ResourceKey<Enchantment> TRAIL_SNOWFLAKE = key("trail_snowflake");
+    public static final ResourceKey<Enchantment> TRAIL_TRIAL_OMEN = key("trail_trial_omen");
+    public static final ResourceKey<Enchantment> TRAIL_WAX_OFF = key("trail_wax_off");
+    public static final ResourceKey<Enchantment> TRAIL_WAX_ON = key("trail_wax_on");
     public static final ResourceKey<Enchantment> VOLT = key("volt");
     public static final ResourceKey<Enchantment> WAVE_WALKER = key("wave_walker");
 

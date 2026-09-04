@@ -28,6 +28,7 @@ import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.item.enchantment.effects.AddValue;
 import net.minecraft.world.item.enchantment.effects.RemoveBinomial;
+import net.minecraft.world.item.enchantment.effects.RunFunction;
 import net.minecraft.world.item.enchantment.effects.SetValue;
 
 /**
@@ -270,6 +271,69 @@ public final class ModEnchantmentProvider {
                 0x55FFFF)
                 .withEffect(ModEnchantmentEffectComponents.TRACKER_GLOW_DURATION_BONUS.get(),
                         new AddValue(LevelBasedValue.perLevel(20.0F))));
+
+        register(context, ModEnchantments.TRAIL_CHERRY_LEAVES, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 6, 1,
+                        Enchantment.dynamicCost(8, 4), Enchantment.dynamicCost(16, 8), 4, EquipmentSlotGroup.HEAD),
+                0xFFFF55)
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/trail/cherry_leaves"))));
+
+        register(context, ModEnchantments.TRAIL_DRAGON_BREATH, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 6, 1,
+                        Enchantment.dynamicCost(8, 4), Enchantment.dynamicCost(16, 8), 4, EquipmentSlotGroup.HEAD),
+                0xFFFF55)
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/trail/dragon_breath"))));
+
+        register(context, ModEnchantments.TRAIL_FIREWORK, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 6, 1,
+                        Enchantment.dynamicCost(8, 4), Enchantment.dynamicCost(16, 8), 4, EquipmentSlotGroup.HEAD),
+                0xFFFF55)
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/trail/firework"))));
+
+        register(context, ModEnchantments.TRAIL_GLOW, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 6, 1,
+                        Enchantment.dynamicCost(8, 4), Enchantment.dynamicCost(16, 8), 4, EquipmentSlotGroup.HEAD),
+                0xFFFF55)
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/trail/glow"))));
+
+        register(context, ModEnchantments.TRAIL_SCULK_SOUL, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 6, 1,
+                        Enchantment.dynamicCost(8, 4), Enchantment.dynamicCost(16, 8), 4, EquipmentSlotGroup.HEAD),
+                0xFFFF55)
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/trail/sculk_soul"))));
+
+        register(context, ModEnchantments.TRAIL_SNOWFLAKE, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 6, 1,
+                        Enchantment.dynamicCost(8, 4), Enchantment.dynamicCost(16, 8), 4, EquipmentSlotGroup.HEAD),
+                0xFFFF55)
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/trail/snowflake"))));
+
+        register(context, ModEnchantments.TRAIL_TRIAL_OMEN, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 6, 1,
+                        Enchantment.dynamicCost(8, 4), Enchantment.dynamicCost(16, 8), 4, EquipmentSlotGroup.HEAD),
+                0xFFFF55)
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/trail/trial_omen"))));
+
+        register(context, ModEnchantments.TRAIL_WAX_OFF, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 6, 1,
+                        Enchantment.dynamicCost(8, 4), Enchantment.dynamicCost(16, 8), 4, EquipmentSlotGroup.HEAD),
+                0xFFFF55)
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/trail/wax_off"))));
+
+        register(context, ModEnchantments.TRAIL_WAX_ON, colored(
+                Enchantment.definition(items.getOrThrow(ARMORS_HEAD), items.getOrThrow(ARMORS_HEAD), 6, 1,
+                        Enchantment.dynamicCost(8, 4), Enchantment.dynamicCost(16, 8), 4, EquipmentSlotGroup.HEAD),
+                0xFFFF55)
+                .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
+                        new RunFunction(RedstoneEnchants.asResource("enchantment/trail/wax_on"))));
 
         register(context, ModEnchantments.VOLT, colored(
                 Enchantment.definition(items.getOrThrow(ALL_BOW), items.getOrThrow(ALL_BOW), 3, 4,
