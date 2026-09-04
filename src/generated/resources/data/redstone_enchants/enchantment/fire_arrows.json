@@ -21,8 +21,7 @@
       },
       {
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:libs/kill_arrow"
+          "type": "redstone_enchants:kill_self"
         },
         "requirements": {
           "condition": "minecraft:entity_properties",
@@ -52,8 +51,7 @@
       {
         "affected": "damaging_entity",
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:libs/kill_arrow"
+          "type": "redstone_enchants:kill_self"
         },
         "enchanted": "attacker",
         "requirements": {

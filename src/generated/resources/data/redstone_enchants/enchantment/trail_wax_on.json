@@ -8,8 +8,10 @@
     "minecraft:location_changed": [
       {
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/trail/wax_on"
+          "type": "redstone_enchants:trail_particle",
+          "particle": {
+            "type": "minecraft:wax_on"
+          }
         }
       }
     ]

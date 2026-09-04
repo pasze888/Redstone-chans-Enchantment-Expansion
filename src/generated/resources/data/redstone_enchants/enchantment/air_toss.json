@@ -9,8 +9,12 @@
       {
         "affected": "victim",
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/air_toss/air_toss_1"
+          "type": "redstone_enchants:air_toss",
+          "motion_y": {
+            "type": "minecraft:linear",
+            "base": 0.0,
+            "per_level_above_first": 1.0
+          }
         },
         "enchanted": "attacker",
         "requirements": {
@@ -56,8 +60,12 @@
       {
         "affected": "victim",
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/air_toss/air_toss_2"
+          "type": "redstone_enchants:air_toss",
+          "motion_y": {
+            "type": "minecraft:linear",
+            "base": 1.0,
+            "per_level_above_first": 1.0
+          }
         },
         "enchanted": "attacker",
         "requirements": {

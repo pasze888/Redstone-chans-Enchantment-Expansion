@@ -9,8 +9,7 @@
       {
         "affected": "victim",
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/bottle_projection/water_bottle_projection/water_1"
+          "type": "redstone_enchants:throw_water_bottle"
         },
         "enchanted": "attacker",
         "requirements": {
@@ -40,8 +39,7 @@
       {
         "affected": "victim",
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/bottle_projection/water_bottle_projection/water_2"
+          "type": "redstone_enchants:throw_water_bottle"
         },
         "enchanted": "attacker",
         "requirements": {

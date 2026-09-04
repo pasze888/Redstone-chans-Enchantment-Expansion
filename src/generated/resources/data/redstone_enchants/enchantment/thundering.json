@@ -21,8 +21,7 @@
               "volume": 5.0
             },
             {
-              "type": "minecraft:run_function",
-              "function": "redstone_enchants:enchantment/thundering"
+              "type": "redstone_enchants:weather_thunder"
             }
           ]
         },

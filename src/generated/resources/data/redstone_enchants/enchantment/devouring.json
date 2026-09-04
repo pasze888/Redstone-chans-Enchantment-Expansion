@@ -9,8 +9,7 @@
       {
         "affected": "attacker",
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/devouring"
+          "type": "redstone_enchants:devouring"
         },
         "enchanted": "attacker",
         "requirements": {

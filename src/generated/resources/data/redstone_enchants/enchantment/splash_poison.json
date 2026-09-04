@@ -8,8 +8,22 @@
     "minecraft:hit_block": [
       {
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/splash_arrow/poison"
+          "type": "redstone_enchants:splash_cloud",
+          "cloud_particle": {
+            "type": "minecraft:dust_color_transition",
+            "from_color": [
+              0.529,
+              0.639,
+              0.388
+            ],
+            "scale": 1.0,
+            "to_color": [
+              0.529,
+              0.639,
+              0.388
+            ]
+          },
+          "effect": "minecraft:poison"
         },
         "requirements": {
           "condition": "minecraft:entity_properties",
@@ -27,8 +41,22 @@
           "type": "minecraft:all_of",
           "effects": [
             {
-              "type": "minecraft:run_function",
-              "function": "redstone_enchants:enchantment/splash_arrow/poison"
+              "type": "redstone_enchants:splash_cloud",
+              "cloud_particle": {
+                "type": "minecraft:dust_color_transition",
+                "from_color": [
+                  0.529,
+                  0.639,
+                  0.388
+                ],
+                "scale": 1.0,
+                "to_color": [
+                  0.529,
+                  0.639,
+                  0.388
+                ]
+              },
+              "effect": "minecraft:poison"
             },
             {
               "type": "minecraft:apply_mob_effect",

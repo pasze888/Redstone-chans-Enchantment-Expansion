@@ -8,8 +8,22 @@
     "minecraft:hit_block": [
       {
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/splash_arrow/oozing"
+          "type": "redstone_enchants:splash_cloud",
+          "cloud_particle": {
+            "type": "minecraft:dust_color_transition",
+            "from_color": [
+              0.6,
+              1.0,
+              0.639
+            ],
+            "scale": 1.0,
+            "to_color": [
+              0.6,
+              1.0,
+              0.639
+            ]
+          },
+          "effect": "minecraft:oozing"
         },
         "requirements": {
           "condition": "minecraft:entity_properties",
@@ -27,8 +41,22 @@
           "type": "minecraft:all_of",
           "effects": [
             {
-              "type": "minecraft:run_function",
-              "function": "redstone_enchants:enchantment/splash_arrow/oozing"
+              "type": "redstone_enchants:splash_cloud",
+              "cloud_particle": {
+                "type": "minecraft:dust_color_transition",
+                "from_color": [
+                  0.6,
+                  1.0,
+                  0.639
+                ],
+                "scale": 1.0,
+                "to_color": [
+                  0.6,
+                  1.0,
+                  0.639
+                ]
+              },
+              "effect": "minecraft:oozing"
             },
             {
               "type": "minecraft:apply_mob_effect",

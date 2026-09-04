@@ -8,8 +8,22 @@
     "minecraft:hit_block": [
       {
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/splash_arrow/infested"
+          "type": "redstone_enchants:splash_cloud",
+          "cloud_particle": {
+            "type": "minecraft:dust_color_transition",
+            "from_color": [
+              0.549,
+              0.608,
+              0.549
+            ],
+            "scale": 1.0,
+            "to_color": [
+              0.549,
+              0.608,
+              0.549
+            ]
+          },
+          "effect": "minecraft:infested"
         },
         "requirements": {
           "condition": "minecraft:entity_properties",
@@ -27,8 +41,22 @@
           "type": "minecraft:all_of",
           "effects": [
             {
-              "type": "minecraft:run_function",
-              "function": "redstone_enchants:enchantment/splash_arrow/infested"
+              "type": "redstone_enchants:splash_cloud",
+              "cloud_particle": {
+                "type": "minecraft:dust_color_transition",
+                "from_color": [
+                  0.549,
+                  0.608,
+                  0.549
+                ],
+                "scale": 1.0,
+                "to_color": [
+                  0.549,
+                  0.608,
+                  0.549
+                ]
+              },
+              "effect": "minecraft:infested"
             },
             {
               "type": "minecraft:apply_mob_effect",

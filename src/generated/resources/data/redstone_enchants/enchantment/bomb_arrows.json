@@ -60,8 +60,7 @@
       },
       {
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:libs/kill_arrow"
+          "type": "redstone_enchants:kill_self"
         }
       }
     ],

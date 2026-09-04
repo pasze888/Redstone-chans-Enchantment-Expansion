@@ -33,8 +33,8 @@
       {
         "affected": "attacker",
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/xp_blade"
+          "type": "redstone_enchants:add_experience",
+          "points": -15
         },
         "enchanted": "attacker",
         "requirements": {

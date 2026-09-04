@@ -14,8 +14,14 @@
     "minecraft:hit_block": [
       {
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/splash_arrow/delayed_explosion"
+          "type": "redstone_enchants:splash_cloud",
+          "cloud_duration": 40,
+          "cloud_particle": {
+            "type": "minecraft:small_flame"
+          },
+          "effect": "ars_nouveau:blasting",
+          "effect_duration": 50,
+          "show_effect_particles": false
         },
         "requirements": {
           "condition": "minecraft:entity_properties",
@@ -27,8 +33,7 @@
       },
       {
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:libs/kill_arrow"
+          "type": "redstone_enchants:kill_self"
         }
       }
     ],
@@ -39,8 +44,14 @@
           "type": "minecraft:all_of",
           "effects": [
             {
-              "type": "minecraft:run_function",
-              "function": "redstone_enchants:enchantment/splash_arrow/delayed_explosion"
+              "type": "redstone_enchants:splash_cloud",
+              "cloud_duration": 40,
+              "cloud_particle": {
+                "type": "minecraft:small_flame"
+              },
+              "effect": "ars_nouveau:blasting",
+              "effect_duration": 50,
+              "show_effect_particles": false
             },
             {
               "type": "minecraft:apply_mob_effect",

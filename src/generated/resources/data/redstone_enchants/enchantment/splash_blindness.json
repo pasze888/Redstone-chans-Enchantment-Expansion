@@ -8,8 +8,22 @@
     "minecraft:hit_block": [
       {
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/splash_arrow/blindness"
+          "type": "redstone_enchants:splash_cloud",
+          "cloud_particle": {
+            "type": "minecraft:dust_color_transition",
+            "from_color": [
+              0.122,
+              0.122,
+              0.137
+            ],
+            "scale": 1.0,
+            "to_color": [
+              0.122,
+              0.122,
+              0.137
+            ]
+          },
+          "effect": "minecraft:blindness"
         },
         "requirements": {
           "condition": "minecraft:entity_properties",
@@ -27,8 +41,22 @@
           "type": "minecraft:all_of",
           "effects": [
             {
-              "type": "minecraft:run_function",
-              "function": "redstone_enchants:enchantment/splash_arrow/blindness"
+              "type": "redstone_enchants:splash_cloud",
+              "cloud_particle": {
+                "type": "minecraft:dust_color_transition",
+                "from_color": [
+                  0.122,
+                  0.122,
+                  0.137
+                ],
+                "scale": 1.0,
+                "to_color": [
+                  0.122,
+                  0.122,
+                  0.137
+                ]
+              },
+              "effect": "minecraft:blindness"
             },
             {
               "type": "minecraft:apply_mob_effect",
