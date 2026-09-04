@@ -1,4 +1,4 @@
-// 1.21.1	2026-09-04T20:13:38.8819906	Registries
+// 1.21.1	2026-09-04T20:14:29.9241657	Registries
 913d5e1b80904ec058aa8021a1962c3c080f3440 data/redstone_enchants/enchantment/adaptive.json
 29ad3becde1b6c0ff60e89178f426269d2b93321 data/redstone_enchants/enchantment/advanced_unbreaking.json
 b0a37f51f24776b5d9c3d679639ff238bf5c5e29 data/redstone_enchants/enchantment/against_all_odds.json
@@ -42,6 +42,7 @@ ad1b8082f2cd37a55a372b1fdf948b5a5173ad50 data/redstone_enchants/enchantment/mast
 395149132c2c1d4dd30278717041fa500aec2291 data/redstone_enchants/enchantment/moist.json
 c9fea2537f4e651a41542685c4faf25e724c9377 data/redstone_enchants/enchantment/nullify.json
 c3e8430f2776b8a902100f0532b4a6b98370ad76 data/redstone_enchants/enchantment/pack_leader.json
+d4e17f002304e566cd9908aaf14e33dfaf888476 data/redstone_enchants/enchantment/pasture.json
 a74025d09c11a2e6b5af40882023b1aac70e4f37 data/redstone_enchants/enchantment/pegasus.json
 eec63661b771860e7ec6666facc0081dd5841bca data/redstone_enchants/enchantment/potential_conversion.json
 4013a6cc0d5abdafe3dcd5be56602262fc4308ec data/redstone_enchants/enchantment/preservation.json

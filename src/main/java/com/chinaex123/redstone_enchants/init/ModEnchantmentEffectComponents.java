@@ -142,6 +142,9 @@ public final class ModEnchantmentEffectComponents {
     /** 狼群领袖（pack_leader）：每级每只同伴狼的伤害加成比例 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> PACK_LEADER_DAMAGE_BONUS =
             value("pack_leader_damage_bonus");
+    /** 牧场（pasture）：马在草方块上时的周期回复量（每级） */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> PASTURE_HEAL =
+            value("pasture_heal");
     /** 势能转化（potential_conversion）：下落攻击每格加伤比例（每级） */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> POTENTIAL_CONVERSION_FALL_BONUS =
             value("potential_conversion_fall_bonus");
