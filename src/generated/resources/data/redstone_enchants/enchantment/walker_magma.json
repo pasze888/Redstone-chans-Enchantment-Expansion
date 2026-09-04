@@ -1,25 +1,9 @@
 {
+  "anvil_cost": 8,
   "description": {
     "color": "#FF55FF",
     "translate": "enchantment.redstone_enchants.walker_magma"
   },
-  "supported_items": "#redstone_enchants:armors_foot",
-  "primary_items": "#redstone_enchants:armors_foot",
-  "weight": 3,
-  "max_level": 2,
-  "min_cost": {
-    "base": 12,
-    "per_level_above_first": 6
-  },
-  "max_cost": {
-    "base": 24,
-    "per_level_above_first": 12
-  },
-  "anvil_cost": 8,
-  "slots": [
-    "feet"
-  ],
-  "exclusive_set": "#redstone_enchants:exclusive_set/walker",
   "effects": {
     "minecraft:damage_immunity": [
       {
@@ -29,12 +13,12 @@
           "predicate": {
             "tags": [
               {
-                "id": "minecraft:burn_from_stepping",
-                "expected": true
+                "expected": true,
+                "id": "minecraft:burn_from_stepping"
               },
               {
-                "id": "minecraft:bypasses_invulnerability",
-                "expected": false
+                "expected": false,
+                "id": "minecraft:bypasses_invulnerability"
               }
             ]
           }
@@ -50,7 +34,10 @@
             "entries": [
               {
                 "data": {
-                  "Name": "minecraft:basalt"
+                  "Name": "minecraft:basalt",
+                  "Properties": {
+                    "axis": "y"
+                  }
                 },
                 "weight": 9
               }
@@ -105,5 +92,21 @@
         }
       }
     ]
-  }
+  },
+  "exclusive_set": "#redstone_enchants:exclusive_set/walker",
+  "max_cost": {
+    "base": 24,
+    "per_level_above_first": 12
+  },
+  "max_level": 2,
+  "min_cost": {
+    "base": 12,
+    "per_level_above_first": 6
+  },
+  "primary_items": "#redstone_enchants:armors_foot",
+  "slots": [
+    "feet"
+  ],
+  "supported_items": "#redstone_enchants:armors_foot",
+  "weight": 3
 }

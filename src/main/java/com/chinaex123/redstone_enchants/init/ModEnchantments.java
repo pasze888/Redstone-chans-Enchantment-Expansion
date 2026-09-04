@@ -58,6 +58,7 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> CURSE_OF_ACROPHOBIA = key("curse_of_acrophobia");
     public static final ResourceKey<Enchantment> CURSE_OF_BASIPHOBIA = key("curse_of_basiphobia");
     public static final ResourceKey<Enchantment> CURSE_OF_BLINDNESS = key("curse_of_blindness");
+    public static final ResourceKey<Enchantment> CURSE_OF_GRAVITY = key("curse_of_gravity");
     public static final ResourceKey<Enchantment> CURSE_OF_HUNGER = key("curse_of_hunger");
     public static final ResourceKey<Enchantment> CURSE_OF_UNLUCKY = key("curse_of_unlucky");
     public static final ResourceKey<Enchantment> CURSE_OF_BLAST = key("curse_of_blast");
@@ -86,12 +87,16 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> FLAME_WALKER = key("flame_walker");
     public static final ResourceKey<Enchantment> GAMBLER = key("gambler");
     public static final ResourceKey<Enchantment> GEOLOGY = key("geology");
+    public static final ResourceKey<Enchantment> GALLOP = key("gallop");
+    public static final ResourceKey<Enchantment> GALLOP_END = key("gallop_end");
+    public static final ResourceKey<Enchantment> GALLOP_SAND = key("gallop_sand");
     public static final ResourceKey<Enchantment> GLASS_BREAKER = key("glass_breaker");
     public static final ResourceKey<Enchantment> GOLDFINGER = key("goldfinger");
     public static final ResourceKey<Enchantment> HARVEST_ECHO = key("harvest_echo");
     public static final ResourceKey<Enchantment> HASTE = key("haste");
     public static final ResourceKey<Enchantment> ICE_ARROWS = key("ice_arrows");
     public static final ResourceKey<Enchantment> INDESTRUCTIBLE = key("indestructible");
+    public static final ResourceKey<Enchantment> JUMP_AMPLIFIER = key("jump_amplifier");
     public static final ResourceKey<Enchantment> INVISIBILITY_CLOAK = key("invisibility_cloak");
     public static final ResourceKey<Enchantment> LIFE_STEAL = key("life_steal");
     public static final ResourceKey<Enchantment> LUCKY_BOOST = key("lucky_boost");
@@ -163,6 +168,9 @@ public final class ModEnchantments {
     public static final ResourceKey<Enchantment> TRAIL_WAX_ON = key("trail_wax_on");
     public static final ResourceKey<Enchantment> VOLT = key("volt");
     public static final ResourceKey<Enchantment> WATER_BOTTLE_PROJECTION = key("water_bottle_projection");
+    public static final ResourceKey<Enchantment> WALKER_GRASS = key("walker_grass");
+    public static final ResourceKey<Enchantment> WALKER_MAGMA = key("walker_magma");
+    public static final ResourceKey<Enchantment> WALKER_SNOWMELT = key("walker_snowmelt");
     public static final ResourceKey<Enchantment> WAVE_WALKER = key("wave_walker");
     public static final ResourceKey<Enchantment> WEAK_ARMOR = key("weak_armor");
     public static final ResourceKey<Enchantment> WEIGHTED = key("weighted");

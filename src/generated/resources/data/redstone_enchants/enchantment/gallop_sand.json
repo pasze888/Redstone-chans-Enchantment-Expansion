@@ -1,38 +1,22 @@
 {
+  "anvil_cost": 8,
   "description": {
     "color": "#FF55FF",
     "translate": "enchantment.redstone_enchants.gallop_sand"
   },
-  "supported_items": "#redstone_enchants:armors_foot",
-  "primary_items": "#redstone_enchants:armors_foot",
-  "weight": 3,
-  "max_level": 3,
-  "min_cost": {
-    "base": 12,
-    "per_level_above_first": 6
-  },
-  "max_cost": {
-    "base": 24,
-    "per_level_above_first": 12
-  },
-  "anvil_cost": 8,
-  "slots": [
-    "feet"
-  ],
-  "exclusive_set": "#redstone_enchants:exclusive_set/boots_gallop",
   "effects": {
     "minecraft:location_changed": [
       {
         "effect": {
           "type": "minecraft:attribute",
-          "id": "redstone_enchants:enchantment.gallop_sand_1",
-          "attribute": "minecraft:generic.movement_speed",
-          "operation": "add_value",
           "amount": {
             "type": "minecraft:linear",
             "base": 0.0405,
             "per_level_above_first": 0.0105
-          }
+          },
+          "attribute": "minecraft:generic.movement_speed",
+          "id": "redstone_enchants:enchantment.gallop_sand_1",
+          "operation": "add_value"
         },
         "requirements": {
           "condition": "minecraft:all_of",
@@ -54,8 +38,8 @@
                   "condition": "minecraft:all_of",
                   "terms": [
                     {
-                      "condition": "minecraft:enchantment_active_check",
-                      "active": true
+                      "active": true,
+                      "condition": "minecraft:enchantment_active_check"
                     },
                     {
                       "condition": "minecraft:entity_properties",
@@ -97,20 +81,20 @@
                   "condition": "minecraft:all_of",
                   "terms": [
                     {
-                      "condition": "minecraft:enchantment_active_check",
-                      "active": false
+                      "active": false,
+                      "condition": "minecraft:enchantment_active_check"
                     },
                     {
                       "condition": "minecraft:entity_properties",
                       "entity": "this",
                       "predicate": {
+                        "flags": {
+                          "is_flying": false
+                        },
                         "movement_affected_by": {
                           "block": {
                             "blocks": "#minecraft:sand"
                           }
-                        },
-                        "flags": {
-                          "is_flying": false
                         }
                       }
                     }
@@ -124,10 +108,10 @@
       {
         "effect": {
           "type": "minecraft:attribute",
-          "id": "redstone_enchants:enchantment.gallop_sand_2",
+          "amount": 1.0,
           "attribute": "minecraft:generic.movement_efficiency",
-          "operation": "add_value",
-          "amount": 1
+          "id": "redstone_enchants:enchantment.gallop_sand_2",
+          "operation": "add_value"
         },
         "requirements": {
           "condition": "minecraft:entity_properties",
@@ -144,29 +128,29 @@
       {
         "effect": {
           "type": "minecraft:damage_item",
-          "amount": 1
+          "amount": 1.0
         },
         "requirements": {
           "condition": "minecraft:all_of",
           "terms": [
             {
-              "condition": "minecraft:random_chance",
               "chance": {
                 "type": "minecraft:enchantment_level",
                 "amount": 0.04
-              }
+              },
+              "condition": "minecraft:random_chance"
             },
             {
               "condition": "minecraft:entity_properties",
               "entity": "this",
               "predicate": {
+                "flags": {
+                  "is_on_ground": true
+                },
                 "movement_affected_by": {
                   "block": {
                     "blocks": "#minecraft:sand"
                   }
-                },
-                "flags": {
-                  "is_on_ground": true
                 }
               }
             }
@@ -178,37 +162,41 @@
       {
         "effect": {
           "type": "minecraft:spawn_particles",
-          "particle": {
-            "type": "minecraft:dust",
-            "color": [
-              0,
-              0,
-              0
-            ],
-            "scale": 0.01
-          },
           "horizontal_position": {
             "type": "in_bounding_box"
-          },
-          "vertical_position": {
-            "type": "entity_position",
-            "offset": 0.1
           },
           "horizontal_velocity": {
             "movement_scale": -0.2
           },
+          "particle": {
+            "type": "minecraft:dust",
+            "color": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "scale": 0.01
+          },
+          "speed": 1.0,
+          "vertical_position": {
+            "type": "entity_position",
+            "offset": 0.1
+          },
           "vertical_velocity": {
             "base": 0.1
-          },
-          "speed": 1
+          }
         },
         "requirements": {
           "condition": "minecraft:entity_properties",
           "entity": "this",
           "predicate": {
+            "flags": {
+              "is_flying": false,
+              "is_on_ground": true
+            },
             "movement": {
-              "horizontal_speed": {
-                "min": 0.00001
+              "speed": {
+                "min": 1.0E-5
               }
             },
             "movement_affected_by": {
@@ -216,14 +204,26 @@
                 "blocks": "#minecraft:sand"
               }
             },
-            "flags": {
-              "is_on_ground": true,
-              "is_flying": false
-            },
             "periodic_tick": 5
           }
         }
       }
     ]
-  }
+  },
+  "exclusive_set": "#redstone_enchants:exclusive_set/boots_gallop",
+  "max_cost": {
+    "base": 24,
+    "per_level_above_first": 12
+  },
+  "max_level": 3,
+  "min_cost": {
+    "base": 12,
+    "per_level_above_first": 6
+  },
+  "primary_items": "#redstone_enchants:armors_foot",
+  "slots": [
+    "feet"
+  ],
+  "supported_items": "#redstone_enchants:armors_foot",
+  "weight": 3
 }
