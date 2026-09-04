@@ -8,8 +8,7 @@
     "minecraft:projectile_spawned": [
       {
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/accuracy_shot/on_shoot"
+          "type": "redstone_enchants:hovering_arrow"
         }
       }
     ]

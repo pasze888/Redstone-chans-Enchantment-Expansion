@@ -8,8 +8,7 @@
     "minecraft:location_changed": [
       {
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/unleash_potential"
+          "type": "redstone_enchants:unleash_potential"
         }
       }
     ]

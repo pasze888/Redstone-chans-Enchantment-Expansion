@@ -8,8 +8,7 @@
     "minecraft:hit_block": [
       {
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/ice_arrows/ice_arrows_hit_block"
+          "type": "redstone_enchants:freeze_water"
         },
         "requirements": {
           "condition": "minecraft:entity_properties",
@@ -39,8 +38,10 @@
           "type": "minecraft:all_of",
           "effects": [
             {
-              "type": "minecraft:run_function",
-              "function": "redstone_enchants:enchantment/ice_arrows/ice_arrows_hit_mob"
+              "type": "redstone_enchants:freeze_water"
+            },
+            {
+              "type": "redstone_enchants:ice_arrow_slowness"
             },
             {
               "type": "minecraft:apply_mob_effect",

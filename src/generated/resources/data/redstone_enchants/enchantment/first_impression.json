@@ -31,8 +31,8 @@
       {
         "affected": "victim",
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/first_impression/mark"
+          "type": "redstone_enchants:add_tag",
+          "tag": "redstone_enchants.first_impression"
         },
         "enchanted": "attacker"
       }

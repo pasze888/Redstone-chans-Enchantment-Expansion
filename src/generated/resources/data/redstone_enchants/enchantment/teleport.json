@@ -4,55 +4,6 @@
     "color": "#FF55FF",
     "translate": "enchantment.redstone_enchants.teleport"
   },
-  "effects": {
-    "minecraft:post_attack": [
-      {
-        "affected": "victim",
-        "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/teleport/hostile_int"
-        },
-        "enchanted": "attacker",
-        "requirements": {
-          "condition": "minecraft:entity_properties",
-          "entity": "direct_attacker",
-          "predicate": {
-            "type": "#redstone_enchants:projectiles"
-          }
-        }
-      },
-      {
-        "affected": "attacker",
-        "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/teleport/player_int"
-        },
-        "enchanted": "attacker",
-        "requirements": {
-          "condition": "minecraft:entity_properties",
-          "entity": "direct_attacker",
-          "predicate": {
-            "type": "#redstone_enchants:projectiles"
-          }
-        }
-      },
-      {
-        "affected": "victim",
-        "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/teleport/hostile_tp"
-        },
-        "enchanted": "attacker",
-        "requirements": {
-          "condition": "minecraft:entity_properties",
-          "entity": "direct_attacker",
-          "predicate": {
-            "type": "#redstone_enchants:projectiles"
-          }
-        }
-      }
-    ]
-  },
   "max_cost": {
     "base": 24,
     "per_level_above_first": 12

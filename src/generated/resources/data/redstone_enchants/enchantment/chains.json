@@ -9,8 +9,7 @@
       {
         "affected": "victim",
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/chains/chains_initial"
+          "type": "redstone_enchants:chain_bind"
         },
         "enchanted": "attacker",
         "requirements": {
