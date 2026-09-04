@@ -8,8 +8,7 @@
     "minecraft:hit_block": [
       {
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/fire_arrows"
+          "type": "redstone_enchants:ignite_area"
         },
         "requirements": {
           "condition": "minecraft:entity_properties",
@@ -36,8 +35,7 @@
       {
         "affected": "victim",
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/fire_arrows"
+          "type": "redstone_enchants:ignite_area"
         },
         "enchanted": "attacker",
         "requirements": {

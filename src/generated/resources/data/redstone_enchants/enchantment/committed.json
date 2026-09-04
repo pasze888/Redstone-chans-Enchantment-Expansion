@@ -28,8 +28,24 @@
       {
         "affected": "victim",
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/committed"
+          "type": "minecraft:all_of",
+          "effects": [
+            {
+              "type": "redstone_enchants:particle_burst",
+              "count": 1,
+              "dx": 0.0,
+              "dy": 0.0,
+              "dz": 0.0,
+              "particle": {
+                "type": "minecraft:angry_villager"
+              },
+              "y_offset": 2.2
+            },
+            {
+              "type": "redstone_enchants:add_tag",
+              "tag": "harmed_by_committed"
+            }
+          ]
         },
         "enchanted": "attacker",
         "requirements": {

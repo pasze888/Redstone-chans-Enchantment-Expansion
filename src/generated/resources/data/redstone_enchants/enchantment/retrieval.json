@@ -9,8 +9,8 @@
       {
         "affected": "victim",
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/retrieval/spectral"
+          "type": "redstone_enchants:give_item",
+          "item": "minecraft:spectral_arrow"
         },
         "enchanted": "victim",
         "requirements": {
@@ -40,8 +40,8 @@
       {
         "affected": "victim",
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/retrieval/arrow"
+          "type": "redstone_enchants:give_item",
+          "item": "minecraft:arrow"
         },
         "enchanted": "victim",
         "requirements": {

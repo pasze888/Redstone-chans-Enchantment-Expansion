@@ -11,8 +11,9 @@
           "type": "minecraft:all_of",
           "effects": [
             {
-              "type": "minecraft:run_function",
-              "function": "redstone_enchants:enchantment/rain/rain_dripstone"
+              "type": "redstone_enchants:rain_blocks",
+              "block": "minecraft:pointed_dripstone",
+              "fall_hurt_amount": 2.3
             }
           ]
         },
@@ -37,8 +38,9 @@
           "type": "minecraft:all_of",
           "effects": [
             {
-              "type": "minecraft:run_function",
-              "function": "redstone_enchants:enchantment/rain/rain_dripstone"
+              "type": "redstone_enchants:rain_blocks",
+              "block": "minecraft:pointed_dripstone",
+              "fall_hurt_amount": 2.3
             }
           ]
         },

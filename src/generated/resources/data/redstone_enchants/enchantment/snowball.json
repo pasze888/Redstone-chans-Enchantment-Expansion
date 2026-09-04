@@ -9,8 +9,7 @@
       {
         "affected": "victim",
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/snowball"
+          "type": "redstone_enchants:snowball_burst"
         },
         "enchanted": "victim",
         "requirements": {

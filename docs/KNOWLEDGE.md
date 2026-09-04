@@ -360,3 +360,30 @@ invisibility_cloak 附件标记精确移除、sturdy/indestructible 标记组件
   GLOWING/INFESTED/FIRE_RESISTANCE`。
 - **坑：`./gradlew runData build` 并行执行时 build 可能先于 runData 完成**，
   jar 会打进旧 JSON；runData 后单独再跑一次 build 确认。
+
+## mcfunction → Java 全面迁移（A/B/C 三批，2026-08-31）
+
+- 68 个 mcfunction 迁移后仅剩 5 个保留：`eternal_frost` + `freeze_pic` 动画库
+  （13 组手调 block_display 变换矩阵 + interpolation 时长的多步动画，
+  Java 化为纯数据搬运、收益低）。
+- **schedule 的 Java 等价**：`level.getServer().tell(new TickTask(
+  server.getTickCount()+delay, callback))`（TickTask 的 tick 是绝对服务器刻）；
+  回调里先检查 `entity.isRemoved()`。
+- **瞬态属性修正**（1.21.1）：`AttributeInstance.addTransientModifier(
+  new AttributeModifier(ResourceLocation id, amount, Operation))`，
+  `removeModifier(id)`；transient 不入 NBT，死亡/卸载自动清理。
+  Record 构造，id 用 fromNamespaceAndPath（withDefaultNamespace 不接受带冒号串）。
+- **FallingBlockEntity**：公开构造只有 (EntityType, Level)；带 NBT 的生成走
+  `entity.load(CompoundTag)`（与 /summon 同路径，BlockState 用
+  NbtUtils.writeBlockState）；`setHurtsEntities(float, int)` 设落伤。
+- `/kill` 与 `Entity.kill()` 都不走死亡掉落流程（remove KILLED），
+  因此绝命箭矢原函数的 DeathLootTable/隐形/clear 在同 tick kill 下本就无效。
+- 常见坑：`SoundSource.PLAYERS`（复数）；RecordCodecBuilder 在
+  `com.mojang.serialization.codecs`；自定义 effect 忘注册会在 datagen 报
+  "Unregistered holder"。
+- 附魔效果实体指向：POST_ATTACK 的 affected 目标决定 effect 的 entity
+  （ATTACKER=伤害来源实体、VICTIM=受击者、DAMAGING_ENTITY=直击实体如箭）；
+  箭矢清理类效果挂 affected=DAMAGING_ENTITY。
+- 顺带修复的上游 bug：冰霜箭减速永不解除（scheduled 函数从未被调度）、
+  雪球弹回自己（选择器未排除自身）、精准射击时间窗恒真、
+  第一印象 reset_mark 死代码。

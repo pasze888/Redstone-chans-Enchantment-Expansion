@@ -27,8 +27,7 @@
       {
         "affected": "attacker",
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/last_hope"
+          "type": "redstone_enchants:clear_main_hand"
         },
         "enchanted": "attacker",
         "requirements": {
@@ -45,8 +44,12 @@
       {
         "affected": "victim",
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:libs/particle/sonic_boom"
+          "type": "redstone_enchants:particle_burst",
+          "count": 50,
+          "particle": {
+            "type": "minecraft:sonic_boom"
+          },
+          "speed": 0.5
         },
         "enchanted": "attacker"
       }

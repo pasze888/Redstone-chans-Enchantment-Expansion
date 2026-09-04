@@ -9,8 +9,8 @@
       {
         "affected": "victim",
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/chain_reaction/chain_reaction_spectral"
+          "type": "redstone_enchants:chain_arrows",
+          "spectral": true
         },
         "enchanted": "attacker",
         "requirements": {
@@ -40,8 +40,7 @@
       {
         "affected": "victim",
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/chain_reaction/chain_reaction"
+          "type": "redstone_enchants:chain_arrows"
         },
         "enchanted": "attacker",
         "requirements": {

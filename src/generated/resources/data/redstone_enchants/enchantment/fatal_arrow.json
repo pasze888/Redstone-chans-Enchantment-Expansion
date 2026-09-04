@@ -9,8 +9,20 @@
       {
         "affected": "victim",
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/fatal_arrow"
+          "type": "minecraft:all_of",
+          "effects": [
+            {
+              "type": "redstone_enchants:particle_burst",
+              "count": 50,
+              "particle": {
+                "type": "minecraft:sonic_boom"
+              },
+              "speed": 0.5
+            },
+            {
+              "type": "redstone_enchants:kill_self"
+            }
+          ]
         },
         "enchanted": "attacker",
         "requirements": {
