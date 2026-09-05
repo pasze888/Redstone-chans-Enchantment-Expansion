@@ -258,7 +258,7 @@ APPENDIX = """
 
 **联动附魔**（带 `neoforge:mod_loaded` 条件，缺 mod 时不注册）：法术增幅/法术防护（`irons_spellbooks`）、
 双重暴击/速射/流血之触（`apothic_attributes`）、延迟爆破（`ars_nouveau`）、暗流涌动（`apothic_attributes`+`twilightforest` 双条件）；
-潮汐感知软引用 `tide:fish` 标签。法术防护的翻译键是 `enchantment.redstone_enchants.magic_resist`（与文件名不一致，但语言文件齐全）。
+潮汐感知软引用 `tide:fish` 标签。
 """
 
 out = header + "\n".join(lines) + APPENDIX
