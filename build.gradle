@@ -155,7 +155,6 @@ dependencies {
     localRuntime "curse.maven:overflowing-bars-852662:5770623" // 血量护甲显示上限
     localRuntime "curse.maven:enchantment-descriptions-250419:7039849" // 附魔描述
     localRuntime "curse.maven:attributefix-280510:7115922" // 属性修复
-    localRuntime "curse.maven:anvil-never-too-expensive-670282:6056726" // 移除铁砧昂贵
     localRuntime "curse.maven:trade-cycling-570431:6497876" // 交易刷新
     localRuntime "curse.maven:apothic-attributes-898963:7445079" // 神化属性
     localRuntime "curse.maven:jade-324717:7545219" // Jade
