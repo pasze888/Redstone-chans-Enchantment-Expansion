@@ -131,10 +131,18 @@ dependencies {
     localRuntime "curse.maven:puzzles-lib-495476:7140307"
     localRuntime "curse.maven:prickle-1023259:6961457"
     localRuntime "curse.maven:placebo-283644:6926281"
+    localRuntime "curse.maven:apothic-spawners-986583:6751589"
+    localRuntime "curse.maven:apothic-enchanting-1063926:7444883"
+    localRuntime "curse.maven:curios-309927:6529130"
+    localRuntime "curse.maven:gateways-to-eternity-417802:6926284"
+    localRuntime "curse.maven:geckolib-388172:8350073"
     localRuntime "curse.maven:rhino-416294:7104526"
     localRuntime "curse.maven:cloth-config-348521:5729127"
 
     // 联动
+    localRuntime "curse.maven:the-twilight-forest-227639:7797302" // 暮色森林 4.8.3345
+    localRuntime "curse.maven:apotheosis-313970:6926309" // 神化 8.4.0（8.7.0 要 neoforge ≥21.1.235，本项目 21.1.219 装不上）
+    localRuntime "curse.maven:ars-nouveau-401955:8721482" // 新生魔艺 1.21.1-5.13.1
     //localRuntime "curse.maven:fishing-real-348834:6465668" // 真实钓鱼
     //localRuntime "curse.maven:tide-884685:7586281" // Tide 2
 
