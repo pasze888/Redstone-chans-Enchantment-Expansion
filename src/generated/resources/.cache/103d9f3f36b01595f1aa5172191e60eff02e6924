@@ -1,4 +1,4 @@
-// 1.21.1	2026-09-04T23:47:23.4057089	Registries
+// 1.21.1	2026-09-05T16:45:57.4832068	Registries
 367e5e28773dfc3f40c59c2dd3ac3abca6619964 data/redstone_enchants/enchantment/absorbent_shield.json
 d8c24a0e2c68358bbad8c3250a4298bb46bc505b data/redstone_enchants/enchantment/accuracy_shot.json
 913d5e1b80904ec058aa8021a1962c3c080f3440 data/redstone_enchants/enchantment/adaptive.json
@@ -157,7 +157,7 @@ e3dce6f9b58646e5ef58c09b789b90a2abe7166a data/redstone_enchants/enchantment/shep
 531654525006d6fa5f4c4625d1d59955f1d5503d data/redstone_enchants/enchantment/slugger.json
 669d64bb713172ca317046967a6b7a1a8bca6d3e data/redstone_enchants/enchantment/snipe.json
 48e6f515d04bb9bdf238021f0b41d1c65454eaaa data/redstone_enchants/enchantment/snowball.json
-4c35582874961b38f248db49c0890d57fadbc2b4 data/redstone_enchants/enchantment/spell_magic_resist.json
+d70baa9d2eee3da4dd802fa61d75b8c692b97ef8 data/redstone_enchants/enchantment/spell_magic_resist.json
 500645595bc81f53a9cf103a39ee5ed6003c949b data/redstone_enchants/enchantment/spell_power.json
 061ab102c2ee6e741ee5e702faae7237d0c25d66 data/redstone_enchants/enchantment/spirit.json
 4a60936bf38c326245af781f81995999188dae6e data/redstone_enchants/enchantment/splash_blindness.json

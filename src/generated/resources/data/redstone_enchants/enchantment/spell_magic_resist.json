@@ -8,7 +8,7 @@
   "anvil_cost": 16,
   "description": {
     "color": "#FF00BB",
-    "translate": "enchantment.redstone_enchants.magic_resist"
+    "translate": "enchantment.redstone_enchants.spell_magic_resist"
   },
   "effects": {
     "minecraft:attributes": [

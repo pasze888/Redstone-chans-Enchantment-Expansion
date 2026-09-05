@@ -674,10 +674,10 @@ public final class ModEnchantmentProvider {
                 .exclusiveWith(enchantments.getOrThrow(INDESTRUCTIBLE_EXCLUSIVE))
                 .withEffect(ModEnchantmentEffectComponents.INDESTRUCTIBLE.get()));
 
-        register(context, ModEnchantments.SPELL_MAGIC_RESIST, coloredKey(
+        register(context, ModEnchantments.SPELL_MAGIC_RESIST, colored(
                 Enchantment.definition(items.getOrThrow(CHEST_ARMOR_ITEMS), items.getOrThrow(CHEST_ARMOR_ITEMS), 1, 5,
                         Enchantment.dynamicCost(18, 8), Enchantment.dynamicCost(48, 18), 16, EquipmentSlotGroup.CHEST),
-                0xFF00BB, "enchantment.redstone_enchants.magic_resist")
+                0xFF00BB)
                 .withEffect(EnchantmentEffectComponents.ATTRIBUTES, new EnchantmentAttributeEffect(
                         RedstoneEnchants.asResource("enchantment.magic_resist_1"),
                         foreignHolder(ResourceKey.create(Registries.ATTRIBUTE,
@@ -3256,13 +3256,6 @@ public final class ModEnchantmentProvider {
     private static Enchantment.Builder colored(Enchantment.EnchantmentDefinition definition, int color) {
         return Enchantment.enchantment(definition)
                 .withCustomName(name -> name.withStyle(style -> style.withColor(color)));
-    }
-
-    /** 同 colored，但描述 key 覆盖为手写的 lang key（spell_magic_resist 手写用 magic_resist）。 */
-    private static Enchantment.Builder coloredKey(Enchantment.EnchantmentDefinition definition, int color, String translate) {
-        return Enchantment.enchantment(definition)
-                .withCustomName(name -> net.minecraft.network.chat.Component.translatable(translate)
-                        .withStyle(style -> style.withColor(color)));
     }
 
     private static void register(BootstrapContext<Enchantment> context, ResourceKey<Enchantment> key, Enchantment.Builder builder) {
