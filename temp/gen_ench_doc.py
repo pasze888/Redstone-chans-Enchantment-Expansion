@@ -31,7 +31,8 @@ def fmt_value(v):
             return json.dumps(v, ensure_ascii=False)
         s = fmt_num(base)
         if pl:
-            s += f" + {fmt_num(pl)}/级"
+            sign = "-" if pl < 0 else "+"
+            s += f" {sign} {fmt_num(abs(pl))}*(Lv-1)"
         if 'exponential' in t:
             s += "（指数）"
         return s
@@ -226,7 +227,9 @@ header = """# Redstone 附魔扩展 · 附魔全表
 > **自动生成**：由 `temp/gen_ench_doc.py` 从 `src/generated/resources/data/redstone_enchants/enchantment/*.json`
 > 与 `zh_cn.json` 提取。共 **{n}** 个附魔。
 >
-> **数值公式约定**：形如 `X + Y/级` 表示效果量 = X + Y × (等级 − 1)（线性 LevelBasedValue）。
+> **数值公式约定**：效果量 = 首级基础值 + 每级增量 × (Lv − 1)，形如 `0.5 + 0.5*(Lv-1)`
+> 表示 Lv1 为 0.5，此后每提升 1 级再加 0.5（即 Lv1~5 = 0.5/1.0/1.5/2.0/2.5）。
+> 对应 JSON 的线性 LevelBasedValue（`base` + `per_level_above_first`）。
 > 时长单位为 tick（20 tick = 1 秒）。"条件触发"表示带 entity_requirements 谓词，详见 JSON。
 > 标记型附魔（如自动熔炼）无参数，行为由事件代码实现，见「机制备注」。
 
