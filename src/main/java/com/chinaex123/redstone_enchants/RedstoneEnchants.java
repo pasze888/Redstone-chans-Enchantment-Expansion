@@ -1,6 +1,5 @@
 package com.chinaex123.redstone_enchants;
 
-import com.chinaex123.redstone_enchants.config.ModConfigData;
 import com.chinaex123.redstone_enchants.init.ModAttachments;
 import com.chinaex123.redstone_enchants.init.ModDataComponents;
 import com.chinaex123.redstone_enchants.init.ModEnchantments;
@@ -20,7 +19,6 @@ public class RedstoneEnchants {
         ModEnchantments.register(modEventBus);
         ModAttachments.register(modEventBus);
         ModDataComponents.register(modEventBus);
-        ModConfigData.register(modContainer);
     }
 
     public static ResourceLocation asResource(String path) {

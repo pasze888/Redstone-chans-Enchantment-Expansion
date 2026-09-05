@@ -36,10 +36,9 @@
 ## 本次重构确立的架构（后续批次照此迁移）
 
 - 附魔效果组件注册：`init/ModEnchantmentEffectComponents`；ResourceKey 常量：`init/ModEnchantments`；
-  组件求值工具：`util/EnchantmentUtil`；服务端配置：`config/ModConfigData`
-  （`ModConfigSpec` + `modContainer.registerConfig(ModConfig.Type.SERVER, SPEC)`，
-  落在 `<world>/serverconfig/redstone_enchants-server.toml`，供服务器所有者控制数值，
-  如 `timberChainLimit` 控制连锁砍树单次上限）。
+  组件求值工具：`util/EnchantmentUtil`。
+  （原 `config/ModConfigData` 服务端配置基建已移除：唯一的配置项 `timberChainLimit`
+  改为 `ToolBlockBreakEvents` 内代码常量 `TIMBER_CHAIN_LIMIT = 512`。）
 - 事件侧只保留**按钩子集中的分发器**（`event/tool/ToolBlockBreakEvents` 等），行为参数全部从附魔 JSON 组件读取；
   禁止再写"一个附魔一个 @EventBusSubscriber + ResourceLocation 字符串 + getEnchantments().getLevel()"。
 - 迁移一个附魔的步骤：① JSON 迁入 `data/provider/ModEnchantmentProvider`（数值照抄原 JSON）并声明效果组件 →
@@ -52,7 +51,8 @@
 - haste：每 tick 施加/移除急迫药水效果 → 原版 `attributes` 组件（无药水图标，切换即生效；修复了误删信标急迫的 bug）。
 - magnet / chain_haste：只在服务端 tick 执行（旧版客户端也跑一遍产生无效扰动）。
 - timber：原木判定从 `asItem().toString().contains("log")` 改为 `minecraft:logs` 方块标签；
-  单次连锁上限由服务端配置 `timberChainLimit` 控制（默认 512，范围 1-4096）。
+  单次连锁上限原由服务端配置 `timberChainLimit` 控制（默认 512，范围 1-4096）；
+  该配置现已移除，改为代码常量 `TIMBER_CHAIN_LIMIT = 512`。
 - 挖掘类效果的执行顺序从"订阅者注册顺序（不确定）"改为固定：连锁急迫 → 自动熔炼 → 概率掉落 → 连锁砍树 → 区域挖掘。
 - 连锁急迫上限（80% 封顶）仍在代码：它是全局平衡规则而非逐附魔数值。
 

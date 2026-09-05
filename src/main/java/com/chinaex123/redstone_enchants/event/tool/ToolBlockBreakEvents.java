@@ -1,7 +1,6 @@
 package com.chinaex123.redstone_enchants.event.tool;
 
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
-import com.chinaex123.redstone_enchants.config.ModConfigData;
 import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
 import com.chinaex123.redstone_enchants.init.ModEnchantments;
 import com.chinaex123.redstone_enchants.util.EnchantmentUtil;
@@ -53,6 +52,8 @@ import java.util.UUID;
  */
 @EventBusSubscriber(modid = RedstoneEnchants.MOD_ID)
 public final class ToolBlockBreakEvents {
+    /** 连锁砍树单次最多连带破坏的原木数（原服务端配置默认值，配置系统已移除） */
+    private static final int TIMBER_CHAIN_LIMIT = 512;
     private static final TagKey<Block> CONVENTIONAL_ORES = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "ores"));
     private static final TagKey<Block> CONVENTIONAL_STONES = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "stones"));
     private static final TagKey<Item> CONVENTIONAL_ORE_ITEMS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "ores"));
@@ -186,7 +187,7 @@ public final class ToolBlockBreakEvents {
         if (EnchantmentUtil.levelOn(timber, tool) <= 0) {
             return;
         }
-        int limit = ModConfigData.TIMBER_CHAIN_LIMIT.get();
+        int limit = TIMBER_CHAIN_LIMIT;
         BlockPos pos = event.getPos();
         for (BlockPos logPos : findConnectedLogs(level, pos, startState, limit)) {
             BlockState state = level.getBlockState(logPos);
