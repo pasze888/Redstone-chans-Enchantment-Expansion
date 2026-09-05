@@ -80,7 +80,8 @@ public final class ToolBlockBreakEvents {
 
         updateChainHaste(player, level, tool, event.getPos(), event.getState());
 
-        if (EnchantmentHelper.has(tool, ModEnchantmentEffectComponents.AUTO_SMELT.get())) {
+        if (!player.isCreative()
+                && EnchantmentHelper.has(tool, ModEnchantmentEffectComponents.AUTO_SMELT.get())) {
             autoSmeltBreak(event, player, level, tool);
             return;
         }
