@@ -87,28 +87,28 @@ config="${mod_id}.mixins.json"
     ordering="NONE"
     side="BOTH"
 
-# 血量护甲显示上限
+# Health and armor bar overflow display (Overflowing Bars).
 [[dependencies.${mod_id}]]
     modId="overflowing_bars"
     type="optional"
     versionRange="[21.1,)"
     ordering="NONE"
     side="BOTH"
-# 附魔描述
+# Enchantment descriptions in item tooltips (Enchantment Descriptions).
 [[dependencies.${mod_id}]]
     modId="enchantment_descriptions"
     type="optional"
     versionRange="[21.1,)"
     ordering="NONE"
     side="BOTH"
-# 属性修复
+# Removes the vanilla attribute value caps (AttributeFix).
 [[dependencies.${mod_id}]]
     modId="attributefix"
     type="optional"
     versionRange="[21.1,)"
     ordering="NONE"
     side="BOTH"
-# 移除铁砧昂贵
+# Removes the anvil "Too Expensive" limit.
 [[dependencies.${mod_id}]]
     modId="ante"
     type="optional"
