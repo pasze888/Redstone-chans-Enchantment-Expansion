@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""从生成的附魔 JSON + 语言文件生成分类附魔文档 docs/ENCHANTMENTS.md"""
+"""从生成的附魔 JSON + 语言文件生成分类附魔文档 docs/reference/enchantments.md"""
 import json, os, re
 
 BASE = 'src/generated/resources/data/redstone_enchants/enchantment'
@@ -262,5 +262,5 @@ APPENDIX = """
 """
 
 out = header + "\n".join(lines) + APPENDIX
-open('docs/ENCHANTMENTS.md', 'w', encoding='utf-8').write(out + '\n')
-print(f"written docs/ENCHANTMENTS.md, {len(enchs)} enchantments, {len(out)} chars")
+open('docs/reference/enchantments.md', 'w', encoding='utf-8').write(out + '\n')
+print(f"written docs/reference/enchantments.md, {len(enchs)} enchantments, {len(out)} chars")

@@ -1,0 +1,174 @@
+# 附魔迁移批次记录 — Redstone-chan's Enchantment Expansion
+
+各批次附魔迁移（旧逐附魔 handler / 手写 JSON → 组件 + 家族分发器）已验证的 API 事实与有意为之的行为变更。
+组件体系与架构见 `enchantment-components.md`；本文件中的纠错教训见 `../ai/gotchas.md`。
+
+## swords/swords_and_bow 批次（2026-09 迁移验证，boons→decapitation 共 11 个全部完成）
+
+已验证（compileJava / build / runData 全通过，生成 JSON 逐字段核对）的 API 事实：
+
+- `Enchantment` 是 record，`effects()`（DataComponentMap）公开——单值（复合）组件直接
+  `ench.value().effects().get(type)` 读取（已封装为 `EnchantmentUtil.specialValue`；
+  `EnchantmentHelper.has(stack, DataComponentType)` 判存在，api-sources EnchantmentHelper.java:460）。
+- `EnchantmentHelper.getEnchantmentLevel(holder, entity)`（EnchantmentHelper.java:288）=
+  在该附魔 slots 对应装备上取**最大等级**（对仅 mainhand 槽的附魔等价于检查主手）。
+- `EnchantmentValueEffect` 两个实现的语义（求值入口 `Enchantment.modifyItemFilteredCount`，Enchantment.java:388，
+  从 0 起的 MutableFloat 逐 effect `setValue(process(...))`）：
+  `AddValue.process = value + value.calculate(level)`（AddValue.java:16）→ `AddValue(perLevel(x))` 求值 = x×级；
+  `SetValue.process = value.calculate(level)`（SetValue.java:15）→ 恒定值。序列化分别为 `minecraft:add`、`minecraft:set`。
+- `EquipmentSlotGroup.OFFHAND` 存在（gambler 双槽已用）。
+- `LivingDamageEvent.Pre`：`getOriginalDamage/getNewDamage/setNewDamage`（载体 DamageContainer，可变）；
+  `LivingDamageEvent.Post` 是**不可变快照**：`getNewDamage()` = 本次实际扣血量、`getOriginalDamage()` = hurt() 原始伤害
+  （LivingDamageEvent.java 源码核对）。
+- `LivingEntity.getHealth()`（:1126）/ `getMaxHealth()`（:1822，final float）/ `heal(float)`（:1117）；
+  `isCrouching()` 定义在 `Entity`（Entity.java:2367）。
+- POST_ATTACK 消费链（源码核对）：`Player.attack → EnchantmentHelper.doPostAttackEffects →
+  doPostAttackEffectsWithItemSource`；武器附魔（enchanted=ATTACKER）走 itemSource 路径；
+  `affected` 解析（Enchantment.doPostAttack 静态方法）：ATTACKER→damageSource.getEntity()、
+  DAMAGING_ENTITY→getDirectEntity()、VICTIM→被击实体；effect.apply 的 entity 参数=受效果实体、origin=其 position。
+  Mob 持械攻击（Mob.java:1511）同样触发 POST_ATTACK。
+- 头颅查找：`BuiltInRegistries.ENTITY_TYPE.getKey(type).getPath()` + `BuiltInRegistries.ITEM
+  .containsKey/get/keySet`（`ItemStack(Item)` 构造器）——按路径全注册表遍历支持模组头颅。
+
+### 行为变更备忘（swords 批次，有意为之）
+
+- **旧 11 个 handler 是独立订阅者**：执行顺序取决于注册顺序，且"以 original 为基数"的附魔互相
+  覆盖（实际只有一个生效）。新分发器按**固定顺序**执行、每条公式原样保留（基数语义不动）：
+  Pre `赌徒 → 伏击 → 背刺 → 均衡器 → 处决`，Post `生命吸取`，Drops `屠夫 → 斩首`。
+- 攻击者解析照抄各旧 handler：伏击/均衡器 = `getDirectEntity() instanceof Player`（投射物不触发）；
+  赌徒/处决/背刺/生命吸取/屠夫/斩首 = `getEntity() instanceof LivingEntity`。
+  **用户决定**：不添加 Player 限制——接受持械 Mob 攻击者也触发（原版 POST_ATTACK 对 Mob 攻击同样生效）。
+- life_steal **修复 ID bug**：旧 handler 引用不存在的 `leeching`（真 ID `life_steal`），getHolder 恒 null →
+  从未生效；修复后从"无效果"变为生效，数值基数由 original 改为实际伤害（Post getNewDamage）×10%。
+- 处决照旧实现语义：`setNewDamage(目标当前生命值)`（旧注释写"设为 0"但实现是设为当前血量，照实现）。
+- 伏击每玩家状态（Map<UUID,Boolean>：非潜行攻击置位/潜行首击 ×(1+0.2×级) 后置位/PlayerTickEvent.Post
+  非潜行重置）迁入分发器；组件求值需 ServerLevel，伏击/背刺/均衡器/生命吸取/屠夫/斩首均只服务端执行
+  （旧版伏击在双侧维护 Map 副本，结果行为不变）。
+- 背刺基数是 `getNewDamage()`（非 original，与其他附魔叠加方式不同，公式原样保留）。
+
+## unbreaking 家族批次（2026-09 迁移验证，advanced_unbreaking/sacrifice/indestructible/sturdy/preservation 共 5 个）
+
+已验证（compileJava / build / runData 全通过，生成 JSON 逐字段核对）的 API 事实：
+
+- `LevelBasedValue.perLevel(base, perLevelAfterFirst)` = `Linear(base, perLevelAboveFirst)`，
+  `calculate = base + perLevelAfterFirst × (级 - 1)`（LevelBasedValue.java:38）。
+  sacrifice 修复量 `floor(1.0 + 0.5×(级-1))` 用 `SetValue(LevelBasedValue.perLevel(1.0F, 0.5F))` 表达。
+- `LevelBasedValue.Fraction(numerator, denominator)`（LevelBasedValue.java:98，分子分母都是 LevelBasedValue，
+  序列化为 `minecraft:fraction`，常量序列化成裸数）。
+- `RemoveBinomial(LevelBasedValue chance)`（RemoveBinomial.java）：对每一"点"耐久消耗按 chance 判定是否不消耗
+  （advanced_unbreaking 的 `minecraft:item_damage` + `remove_binomial`，chance = fraction 4/5）。
+- `EquipmentSlotGroup.ANY`（序列化 `"any"`，EquipmentSlotGroup.java:13）。
+- `#c:enchantables`：provider 里 `TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "enchantables"))`，
+  datagen `items.getOrThrow(...)` 直接解析（NeoForge 公共标签，runData 实测）。
+- `Enchantment.Builder.exclusiveWith(HolderSet<Enchantment>)`（Enchantment.java:561）+ 手写 exclusive_set tag 的
+  `enchantments.getOrThrow(...)` 解析（批次 1 模式复用，本次 indestructible/unbreaking 两个标签同样通过）。
+- Mixin 内读附魔组件与事件侧一致：`EnchantmentHelper.has(stack, 标记组件)` 替代"registry 按名 getHolder + getLevel"
+  （PreservationMixin 已改造，mixin 注册配置未动）。
+- unbreaking 家族组件全部是"标记/单值"形态：advanced_unbreaking 纯原版组件、sacrifice 数值、其余 3 个标记。
+
+### unbreaking 批次行为变更备忘（有意为之）
+
+- 旧 4 个 handler → 4 个按钩子分发器：`UnbreakingDamageEvents`（Pre 坚固免疫 + Post 牺牲自修）、
+  `UnbreakingEquipmentEvents`（坚不可摧挂/卸 UNBREAKABLE）、`UnbreakingItemEntityEvents`（坚固掉落物
+  EntityTick/爆炸/闪电）、`UnbreakingPlayerEvents`（保全 tick 特效/阻止挖掘/tooltip）。
+- 新增效果只在服务端执行（sacrifice 旧版双侧写 setDamageValue，客户端为无效写，结果行为不变）。
+- **已修复（2026-09 怪癖修复批次，见本文件「怪癖修复批次」小节）**：
+  - ~~indestructible 的 else 分支剥其它来源的 UNBREAKABLE~~ → 标记组件精确清理；
+  - ~~sturdy 的 EntityTick else 分支剥其它来源的 FIRE_RESISTANT~~（原会剥掉下界合金自带防火）→ 同上；
+  - ~~sturdy 的 Pre 段本体整次免疫~~ → 缩小为"本体照常受伤，仅装备耐久不受损"（快照附件恢复）。
+
+## 旧式 handler 全量迁移批次（2026-09，potential_conversion→spirit 共 35 个全部完成）
+
+至此 `event/` 目录下**不再有任何逐附魔 handler**，全部为家族分发器（每家族按钩子建类，
+`@EventBusSubscriber(modid = MOD_ID)` + 私有构造 + 固定顺序段）。本批覆盖：potential_conversion、
+boltbringer、echoes_battle、sea_breeze、searing、curse_of_rust、curse_of_water_source、daynight_cycle、
+revive_ward、snipe、volt、fishing 3（angler/conductive_line/tide_sense）、shear 4（endless_wool/
+experience_shear/harvest_echo/shepherd）、armor_head 4（adaptive/against_all_odds/anti_camouflage/
+desperate_counter）、armor_foot 4（crop_dance/flame_walker/pegasus/wave_walker）、armor_chest 2
+（berserk/bulletproof）、armor_leg 2（invisibility_cloak/tactical_knee）、armor_wolf 3（carrion_eater/
+pack_leader/tracker）、armor_horse 2（pasture/spirit）。
+
+已验证（每附魔独立提交，compileJava / runData / build 全通过，生成 JSON 逐字段核对）的 API 事实：
+
+- `EnchantmentUtil.itemValue(ServerLevel, ItemStack, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>)`
+  签名要求 **ServerLevel**（不是 Level）——含数值求值的段一律 `instanceof ServerLevel` guard 后再求值。
+- 等级信息全部进组件后，事件侧不再需要 registry `getHolder` + `getLevel`：
+  `EnchantmentHelper.has(stack, 标记组件)` 判存在，`itemValue` 取每级数值。
+  `EnchantmentUtil.levelOn(EnchantmentUtil.holder(RegistryAccess, ResourceKey), stack)` 保留给
+  "需要确切等级"的场景（本批 35 个均未用到）。
+- 原版 exclusive_set 复刻：`Enchantment.Builder.exclusiveWith(HolderSet.direct(enchantments.getOrThrow(Enchantments.DEPTH_STRIDER)))`
+  （flame_walker/wave_walker；provider 需 import `net.minecraft.core.HolderSet` + `Enchantments`），
+  序列化输出 `"exclusive_set": "minecraft:depth_strider"`。
+- 原版组件复刻：tide_sense 直接 `.withEffect(EnchantmentEffectComponents.FISHING_TIME_REDUCTION, new AddValue(perLevel(10.0F)))`
+  （10×级 每级减 10t 钓鱼等待），datagen 与原版 JSON 同构。
+- `TagKey` 在 provider 里必须 `items.getOrThrow(tagKey)` 解析（sea_breeze 踩坑：把 TagKey 直接传给
+  `definition(...)` 编译错）。
+- `EquipmentSlotGroup.LEGS / BODY / FEET` 均存在（armor_leg/armor_wolf/armor_horse/armor_foot 已用）；
+  `#redstone_enchants:armors_head/armors_chest/armors_leg/wolf_armor/horse_armor` 标签照抄手写 JSON。
+- 钩子签名已用例：`LivingFallEvent.setCanceled(true)`（tactical_knee）、`LivingDeathEvent`（carrion_eater）、
+  `LivingEquipmentChangeEvent.getSlot()`（armor_head/armor_horse 摘除清理）、
+  `AbstractHorse.isSaddled()` + BODY 槽（armor_horse）、
+  `AttributeInstance.removeModifier(ResourceLocation)` / `addPermanentModifier(modifier)`（1.21.1 按
+  ResourceLocation 移除的重载存在，spirit 已编译验证）、`LivingIncomingDamageEvent.setCanceled()`
+  （bulletproof）、`EntityTickEvent.Post` 双用途（玩家 tick 与马 tick）。
+- `LevelBasedValue.perLevel(base, per)` 系列照抄汇总：crop_dance `perLevel(0.2,0.1)`=0.1+0.1×级、
+  bulletproof `perLevel(0.5,0.25)`、berserk `perLevel(0.03,0)`（等价 perLevel(0.03F)）——
+  **旧"×级"公式必须写成 `perLevel(v)`（base=v, per=v）而不是 `perLevel(0,v)`**，二者序列化不同但语义同；
+  pasture/heal 类 `heal(级×0.5)` 写 `SetValue(perLevel(0.5F))`。
+
+### 行为变更备忘（本批，有意为之 / 怪癖原样保留）
+
+- 逐附魔 handler 全删；每家族分发器固定顺序（旧版为多个独立订阅者，顺序未定义）：
+  armor_head tick `adaptive → against_all_odds → anti_camouflage → desperate_counter`，
+  armor_foot tick `crop_dance → flame_walker → pegasus → wave_walker`，
+  sword Pre `赌徒 → 伏击 → 背刺 → 均衡器 → 处决`，armor_wolf Pre `pack_leader → tracker`，
+  armor_horse tick `pasture → spirit`。
+- **仅服务端执行**（旧版双侧跑，行为不变）：所有 itemValue 段（armor 全家族、berserk/bulletproof、
+  snipe/volt、fishing 3、shear 4、sea_breeze/searing、potential_conversion、echoes_battle、daynight_cycle、
+  revive_ward）。纯标记/纯事件段保真双侧：tactical_knee（客户端取消本地坠落预测）、
+  invisibility_cloak（本地效果预览）。
+- 怪癖清单（迁移时原样照抄，2026-09 修复批次处理结果见本文件「怪癖修复批次」小节）：
+  - ~~armor_foot `LAST_SNEAKING` 泄漏~~ → 已修（EntityLeaveLevelEvent 清理）；
+  - ~~invisibility_cloak 移除隐身不分来源~~ → 已修（附件标记精确移除）；
+  - pack_leader 旧注释写"每级每只狼+5%"但常量是 **0.5（=50%）**，**行为以 50% 为准保持原样**
+    （用户决定：数值与注释均不动，矛盾已知）；
+  - spirit 用 `addPermanentModifier` 且每 tick 先 `removeModifier(spirit_speed)` 再加（非临时修饰符，
+    摘除马铠靠 LivingEquipmentChangeEvent 清理，modifier id `spirit_speed` 照抄）；
+  - armor_head 的 AAO_DAMAGE/AAO_ARMOR attribute modifier id 照抄；~~against_all_odds 不过滤
+    死亡生物~~ → 已修（isAlive 谓词）；
+  - ~~revive_ward 判死时点~~（迁移时实际用的是 Pre + `getOriginalDamage()`，先前沉淀误记为
+    getNewDamage）→ 已修（改 Post 实际扣血后判定）；
+  - experience_shear/harvest_echo 的"检查目标是否玩家/已被剪"等内嵌条件改为组件存在性读取后语义不变；
+  - boltbringer/echoes_battle 的数值与状态字段照抄（详见各自提交）。
+- **bug 修复（已注明）**：life_steal ID `leeching`→`life_steal`（swords 批次）；本批无新修复。
+- 组件命名沿用 `组件名 = 效果语义`：数值组件带 `_bonus/_heal/_chance/_penalty` 等后缀，标记组件
+  （unit）用附魔名本身（`CROP_DANCE/FLAME_WALKER/PEGASUS/WAVE_WALKER/INVISIBILITY_CLOAK/TACTICAL_KNEE`
+  等），datagen 侧与事件侧一一对应。
+
+## 怪癖修复批次（2026-09，6 项经用户逐项确认的行为修复）
+
+提交序列（每项独立提交、build 验证）：lastSneakingMap 泄漏清理、against_all_odds isAlive 过滤、
+invisibility_cloak 附件标记精确移除、sturdy/indestructible 标记组件精确清理、sturdy 免疫缩小为
+仅装备耐久、revive_ward 改实际扣血判死。**pack_leader 0.5 注释矛盾经用户决定保持原样。**
+
+已验证的新 API 事实：
+
+- 实体附件：`DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, MODID)`，
+  `AttachmentType.builder(Supplier<T>).build()` 不带 serialize = 纯 transient（不存档、不同步）；
+  `IAttachmentHolder`（Entity 实现）方法 `setData/hasData/removeData(AttachmentType<T>)`（api-sources
+  IAttachmentHolder.java:24/39/90/106）。
+- 物品标记组件：`DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, MODID)`（注意与
+  附魔效果组件的 `ENCHANTMENT_EFFECT_COMPONENT_TYPE` 不同注册表）；unit 标记写法照抄原版
+  FIRE_RESISTANT：`DataComponentType.<Unit>builder().persistent(Unit.CODEC)
+  .networkSynchronized(StreamCodec.unit(Unit.INSTANCE)).build()`（DataComponents.java:120）。
+- `Item.components()` 返回物品默认组件 `DataComponentMap`（Item.java:106），`has(type)` 可判
+  "物品天然自带的组件"——区分天生防火与运行时写入用。
+- **1.21.1 NeoForge 没有装备耐久事件**（living 包只有 LivingEquipmentChangeEvent）——
+  "仅装备不损耗"只能用 Pre 快照 + Post 恢复（transient 附件传状态）实现。
+- `LivingDamageEvent.Post` 触发点在 `LivingEntity.actuallyHurt` 末尾（LivingEntity.java:1805，
+  `CommonHooks.onLivingDamagePost`），此时血量已扣但 **`die()` 尚未调用**（die 在 hurt() 的
+  isDeadOrDying 检查处）→ Post 里 `setHealth(0.5F)` 可阻止死亡（revive_ward 守护的合法实现点）。
+- `EntityLeaveLevelEvent`（`net.neoforged.neoforge.event.entity`，extends EntityEvent）可用于
+  按实体清理内存缓存；换维度也会触发（对"重新进入时重算"类缓存语义无损）。
+- `LivingDamageEvent.Pre` 判死用 `getOriginalDamage()` 与 `getNewDamage()` 的取舍：getNewDamage
+  可读"当前累积值"但晚于本事件的修改不算；需要严格"实际扣血后"语义必须用 Post。

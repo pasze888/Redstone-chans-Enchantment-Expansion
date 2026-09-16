@@ -55,5 +55,7 @@ NeoForged Discord: https://discord.neoforged.net/
 > 按用户决定，代码与注释保持原样不做修改；若未来要改为注释意图的 5%，
 > 只需把数值组件 `pack_leader_damage_bonus` 从 `perLevel(0.5)` 改为 `perLevel(0.05)` 后重跑 runData。
 
-另见：`docs/KNOWLEDGE.md`（迁移与修复批次的完整备忘）。
+另见：[附魔全表](docs/reference/enchantments.md)、[迁移与修复批次备忘](docs/reference/enchantment-migrations.md)、
+[附魔效果组件体系](docs/reference/enchantment-components.md)、[附魔 JSON 迁 datagen](docs/reference/enchantment-datagen.md)、
+[光环与 mcfunction 迁移](docs/reference/enchantment-runtime-effects.md)、[AI 协作坑](docs/ai/gotchas.md)、[构建与环境坑](docs/troubleshooting.md)。
 
