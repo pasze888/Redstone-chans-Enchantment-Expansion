@@ -1,5 +1,7 @@
 # Redstone-chans Enchantment Expansion
 
+[English](README.md) | [简体中文](README.zh-CN.md)
+
 A NeoForge 1.21.1 enchantment expansion adding 217 enchantments.
 Fork of [WitherRedstone/Redstone-chans-Enchantment-Expansion](https://github.com/WitherRedstone/Redstone-chans-Enchantment-Expansion).
 
