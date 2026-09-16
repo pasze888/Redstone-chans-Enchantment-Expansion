@@ -22,12 +22,10 @@
 
 ## 剩余待办
 
-1. `README.md` 第 27-58 行「附魔说明」是单个附魔的机制长文（触发条件、伤害公式、数值矛盾说明），
-   超出 README 承载范围（简介 / 安装 / 快速开始 / 配置 / 常用命令 / 文档链接）；
-   应按落点表迁到 `docs/reference/`（数值事实）或 `docs/design/`（设计取舍）后再精简 README。
-   本次遵守"README 正文不重写"，未搬动正文。
-2. `README.md` 前半仍是 MDK 模板样板（Installation information / Mapping Names / Additional Resources），
-   未替换为本项目简介与安装说明；本仓库没有 `README.zh-CN.md`，故顶部语言切换行（English ↔ 简体中文）未添加。
-   是否新建中文 README 需用户决定。
+1. ~~`README.md` 第 27-58 行「附魔说明」是单个附魔的机制长文~~ **（2026-09-16 完成）**：已迁入
+   `docs/reference/enchantment-pack-leader.md`，README 只留一行文档链接。
+2. ~~`README.md` 前半仍是 MDK 模板样板~~ **（2026-09-16 完成）**：已替换为本项目简介与安装说明，
+   并加「Documentation」文档链接表。本仓库没有 `README.zh-CN.md`，故顶部语言切换行（English ↔ 简体中文）
+   仍未添加；是否新建中文 README 需用户决定。
 3. 本轮未重跑 `scripts/gen_ench_doc.py`：它依赖 `runData` 产物，直接跑会覆盖已提交的附魔全表。
    若后续跑 `runData`，脚本会把全表写回 `docs/reference/enchantments.md`（路径已改对）。
