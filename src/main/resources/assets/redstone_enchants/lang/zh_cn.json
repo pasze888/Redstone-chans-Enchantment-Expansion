@@ -111,7 +111,7 @@
   "enchantment.redstone_enchants.shadow_pierce":"影刺",
   "enchantment.redstone_enchants.shadow_pierce.desc": "攻击处于隐身或黑暗效果下的目标时，会造成多倍伤害",
   "enchantment.redstone_enchants.life_steal":"生命吸取",
-  "enchantment.redstone_enchants.life_steal.desc": "攻击时恢复造成伤害10%的生命值",
+  "enchantment.redstone_enchants.life_steal.desc": "攻击时恢复造成伤害10%×等级的生命值",
   "enchantment.redstone_enchants.decapitation":"斩首",
   "enchantment.redstone_enchants.decapitation.desc": "增加生物头颅的掉落概率",
   "enchantment.redstone_enchants.boons":"福佑",

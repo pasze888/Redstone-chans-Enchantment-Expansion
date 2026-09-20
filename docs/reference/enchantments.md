@@ -87,7 +87,7 @@
 | 发电机（`dynamo`） | 4 | 伤害: [add] 值 = 1 + 1*(Lv-1)（条件触发）；knockback: [add] 值 = 0.5 + 0.5*(Lv-1)（条件触发） | 冲刺时增加攻击力 |
 | 均衡器（`equalizer`） | 5 | equalizer_bonus: [add] 值 = 0.2 + 0.2*(Lv-1) | 伤害根据目标血量百分比变化；目标血量越高，伤害越高 |
 | 处决（`execution`） | 1 | （纯标记型，行为见代码） | 对生命值低于25%的目标直接秒杀 |
-| 生命吸取（`life_steal`） | 5 | life_steal_ratio: [set] 值 = 0.1 | 攻击时恢复造成伤害10%的生命值 |
+| 生命吸取（`life_steal`） | 5 | life_steal_ratio: [set] 值 = 0.1 + 0.1*(Lv-1) | 攻击时恢复造成伤害10%×等级的生命值 |
 | 消解（`nullify`） | 5 | 攻击后: [remove_random_beneficial] 概率 = 0.05 + 0.05*(Lv-1) | 攻击时有概率移除目标身上的一个正面效果 |
 | 抗击之盾（`resilience_shield`） | 4 | 属性: 数值 = 0.2 + 0.1*(Lv-1)，属性 generic.knockback_resistance（乘基数） | 提升击退抗性 |
 | 影刺（`shadow_pierce`） | 3 | 伤害: [multiply] （条件触发） | 攻击处于隐身或黑暗效果下的目标时，会造成多倍伤害 |

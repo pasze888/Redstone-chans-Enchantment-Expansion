@@ -111,7 +111,7 @@
   "enchantment.redstone_enchants.shadow_pierce":"Shadow Pierce",
   "enchantment.redstone_enchants.shadow_pierce.desc": "Attacking a target that is invisible or under the effects of darkness will deal multiplied damage.",
   "enchantment.redstone_enchants.life_steal":"Life Steal",
-  "enchantment.redstone_enchants.life_steal.desc": "Restores 10% of damage dealt as health on attack",
+  "enchantment.redstone_enchants.life_steal.desc": "Restores 10% of damage dealt as health per level on attack",
   "enchantment.redstone_enchants.decapitation": "Decapitation",
   "enchantment.redstone_enchants.decapitation.desc": "Increases the drop chance of mob heads",
   "enchantment.redstone_enchants.boons": "Boons",
