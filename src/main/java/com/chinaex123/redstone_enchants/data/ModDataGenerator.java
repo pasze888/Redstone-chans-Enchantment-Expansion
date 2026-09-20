@@ -3,7 +3,9 @@ package com.chinaex123.redstone_enchants.data;
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
 import com.chinaex123.redstone_enchants.data.provider.ModEnchantmentProvider;
 import com.chinaex123.redstone_enchants.init.ModEnchantments;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -12,6 +14,7 @@ import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * 数据生成入口（runData）。
@@ -27,7 +30,7 @@ public final class ModDataGenerator {
 
         // splash_delayed_explosion 依赖 ars_nouveau 的状态效果（ars_nouveau:blasting）；
         // rapid 依赖 apothic_attributes 的属性（apothic_attributes:draw_speed）——均带 mod_loaded 条件
-        generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(
+        DatapackBuiltinEntriesProvider enchantments = new DatapackBuiltinEntriesProvider(
                 output, event.getLookupProvider(), ModEnchantmentProvider.DATA_BUILDER,
                 conditions -> {
                     conditions.accept(ModEnchantments.SPLASH_DELAYED_EXPLOSION,
@@ -47,7 +50,22 @@ public final class ModDataGenerator {
                     conditions.accept(ModEnchantments.UNDERCURRENT,
                             new ModLoadedCondition("twilightforest"));
                 },
-                Set.of(RedstoneEnchants.MOD_ID)));
+                Set.of(RedstoneEnchants.MOD_ID));
+
+        // 神化在自己的 GatherDataEvent 里把全局 DataProvider.INDENT_WIDTH 设成 4，订阅顺序不可控；
+        // 写入发生在 run 内部的 saveStable，所以在这里钉回 2 与依赖有无无关。
+        generator.addProvider(event.includeServer(), new DataProvider() {
+            @Override
+            public CompletableFuture<?> run(CachedOutput cache) {
+                DataProvider.INDENT_WIDTH.set(2);
+                return enchantments.run(cache);
+            }
+
+            @Override
+            public String getName() {
+                return "Registries";
+            }
+        });
     }
 
     private ModDataGenerator() {

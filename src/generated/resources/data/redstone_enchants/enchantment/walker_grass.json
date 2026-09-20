@@ -67,8 +67,8 @@
           },
           "radius": {
             "type": "minecraft:clamped",
-            "max": 16.0,
             "min": 0.0,
+            "max": 16.0,
             "value": {
               "type": "minecraft:linear",
               "base": 3.0,
