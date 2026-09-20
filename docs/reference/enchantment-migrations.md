@@ -182,18 +182,35 @@ invisibility_cloak 附件标记精确移除、sturdy/indestructible 标记组件
 | 优先级 | 订阅者 | 段 | 基数 |
 |---|---|---|---|
 | HIGHEST | `UnbreakingDamageEvents` | 坚固（耐久快照，不改伤害） | — |
-| HIGH | `MaceLivingDamageEvents` | 势能转化 | original（覆盖） |
-| NORMAL | `BowDamageEvents` | 狙击 / 伏特 | original（覆盖） |
-| LOW | `SwordLivingDamageEvents` | 赌徒 / 伏击 / 均衡器 / 处决 | original（覆盖） |
-| LOW | `SwordLivingDamageEvents` | 背刺 | getNewDamage（连乘） |
+| HIGH | `MaceLivingDamageEvents` | 势能转化 | getNewDamage（连乘） |
+| NORMAL | `BowDamageEvents` | 狙击 / 伏特 | getNewDamage（连乘） |
+| LOW | `SwordLivingDamageEvents` | 赌徒/伏击/背刺/均衡器 | getNewDamage（连乘） |
+| LOW | `SwordLivingDamageEvents` | 处决 | 绝对值覆盖（设为目标当前生命） |
 | LOWEST | `ArmorChestLivingDamageEvents` | 狂战士 | getNewDamage（连乘） |
 | LOWEST | `ArmorWolfDamageEvents` | 狼群领袖 | getNewDamage（连乘） |
+
+> 上表是**基数统一之后**的状态；武器族原先以 original 为基数的段已在同一天全部改为连乘，见下一节。
 
 - **优先级方向**：高优先级先执行（官方 `Documentation` 仓库 capabilities.md 注释
   "use HIGH priority to register before NeoForge!"，HIGHEST 最早、LOWEST 最晚）。
 - **同档不冲突**：胸甲与狼铠同为 LOWEST，但判定互斥（狂战士要求 `getDirectEntity()` 是
   Player、狼群领袖要求是 Wolf），同档顺序不影响结果。
-- **行为变化**：狂战士 / 狼群领袖现在**必定**吃到武器段的加成结果（此前取决于注册顺序）；
-  剑族排在弓族之后 → 副手带赌徒时会覆盖狙击/伏特的结果（已知取舍，与"越通用的段越靠后"一致）。
+- **行为变化**：狂战士 / 狼群领袖现在**必定**吃到武器段的加成结果（此前取决于注册顺序）。
 - 本批只定序 Pre；Post 侧（`life_steal` / `revive_ward` / `sea_breeze` / `TeleportSwapEvents` /
   `UnbreakingDamageEvents` Post）不改伤害数值，顺序问题留待观察。
+
+## Pre 伤害基数统一批次（2026-09-20）
+
+武器族 5 段从"以 `getOriginalDamage()` 覆盖"改为"以 `getNewDamage()` 连乘"：赌徒（`SwordLivingDamageEvents`）、
+伏击、均衡器、狙击 / 伏特（`BowDamageEvents`）、势能转化（`MaceLivingDamageEvents`）。处决保持绝对值语义
+（设为目标当前生命），与基数无关。
+
+- **为什么必须改**：`originalDamage` 是 `hurt()` 收到的原始伤害（`DamageContainer` 创建时定格），
+  而 Pre 之前已算进 `newDamage` 的东西会被覆盖式写入整段抹掉——神化系的暴击正是如此
+  （Apothic Attributes `AttributeEvents#apothCriticalStrike` 在 `LivingIncomingDamageEvent` 里
+  `setAmount`，只写 newDamage），护甲/抗性/保护减伤同理。实测：100% 暴击、暴击伤害 400%、
+  无附魔下界合金剑 32.7，带赌徒一 roll 只剩 8×1.4=11.2 / 8×0.8=6.4（8 = 剑攻击力）。
+- **数值影响（相对旧版会变强）**：原来同族内"以 original 为基数"的段互相覆盖、只生效一段，
+  改连乘后**会叠加**——同一把剑的赌徒×伏击×背刺×均衡器、同一张弓的狙击×伏特。
+  与狂战士/狼群领袖的连乘段相乘也保持原意（那些段本来就是连乘）。
+- **上游语义偏离**：这几处原注释写着"公式原样"（照搬 fork 前上游行为），本批有意偏离。

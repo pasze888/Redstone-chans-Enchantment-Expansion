@@ -29,6 +29,9 @@ import java.util.UUID;
  * 执行顺序取决于注册顺序且互相覆盖（均以原始伤害为基数的附魔只有一个生效），
  * 分发器固定执行顺序：赌徒 → 伏击 → （后续）背刺 → 均衡器 → 处决，生命吸取在 Post 阶段，
  * 沿用各旧公式与攻击者解析（各段自行按旧版语义判定）。
+ * <p>伤害基数统一为 {@code getNewDamage()} 连乘：以 {@code getOriginalDamage()} 覆盖会抹掉
+ * Pre 之前已算入 newDamage 的暴击（Apothic Attributes 在 {@code LivingIncomingDamageEvent} 结算）
+ * 与护甲/抗性/保护减伤。处决是"设为目标当前生命"的绝对值语义，与基数无关，保持 {@code setNewDamage(health)}。
  */
 @EventBusSubscriber(modid = RedstoneEnchants.MOD_ID)
 public final class SwordLivingDamageEvents {
@@ -37,7 +40,7 @@ public final class SwordLivingDamageEvents {
     /** 伏击每玩家状态（旧 handler 同款 Map）：记录已非潜行攻击过/已吃过潜行首击加成 */
     private static final Map<UUID, Boolean> AMBUSH_HAS_ATTACKED = new HashMap<>();
 
-    // LOW：武器族最后一个覆盖段（含处决的"设为当前生命"），排在锤/弓之后
+    // LOW：武器族之一，排在锤/弓之后；各段以 getNewDamage() 连乘，处决段最后做绝对值覆盖
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onLivingDamagePre(LivingDamageEvent.Pre event) {
         // 固定顺序：赌徒 → 伏击 → 背刺 → 均衡器 → 处决（各段按旧版语义自行解析攻击者）
@@ -81,11 +84,11 @@ public final class SwordLivingDamageEvents {
         if (data == null) {
             return;
         }
-        float originalDamage = event.getOriginalDamage();
+        float baseDamage = event.getNewDamage();
         if (attacker.getRandom().nextFloat() < data.odds()) {
-            event.setNewDamage(originalDamage * data.bonusMultiplier());
+            event.setNewDamage(baseDamage * data.bonusMultiplier());
         } else {
-            event.setNewDamage(originalDamage * data.penaltyMultiplier());
+            event.setNewDamage(baseDamage * data.penaltyMultiplier());
         }
     }
 
@@ -120,9 +123,9 @@ public final class SwordLivingDamageEvents {
             return;
         }
 
-        // 潜行时的首次攻击，增加伤害（每级+20%，公式原样）
+        // 潜行时的首次攻击，增加伤害（每级+20%，以 getNewDamage() 连乘）
         float bonus = EnchantmentUtil.itemValue(serverLevel, weapon, ModEnchantmentEffectComponents.AMBUSH_BONUS.get());
-        event.setNewDamage(event.getOriginalDamage() * (1 + bonus));
+        event.setNewDamage(event.getNewDamage() * (1 + bonus));
 
         // 标记为已攻击
         AMBUSH_HAS_ATTACKED.put(playerId, true);
@@ -156,7 +159,7 @@ public final class SwordLivingDamageEvents {
         // 计算点积：>0 表示攻击者在目标背后，<0 表示在正面
         double dotProduct = dx * targetLookX + dz * targetLookZ;
 
-        // 旧版公式原样：基数是 getNewDamage()（非 original）；背后每级+30%，正面（含正侧方）每级-15%
+        // 旧版公式：背后每级+30%，正面（含正侧方）每级-15%，以 getNewDamage() 连乘
         if (dotProduct > 0) {
             float behind = EnchantmentUtil.itemValue(serverLevel, weapon, ModEnchantmentEffectComponents.BACKSTAB_BEHIND_BONUS.get());
             event.setNewDamage(event.getNewDamage() * (1 + behind));
@@ -190,9 +193,9 @@ public final class SwordLivingDamageEvents {
         float currentHealth = target.getHealth();
         float healthPercentage = currentHealth / maxHealth;
 
-        // 旧版公式原样：伤害 = original × (1 + hp% × 0.2×级)
+        // 旧版公式：伤害 × (1 + hp% × 0.2×级)，基数改为 getNewDamage() 连乘
         float bonusMultiplier = healthPercentage * EnchantmentUtil.itemValue(serverLevel, weapon, ModEnchantmentEffectComponents.EQUALIZER_BONUS.get());
-        event.setNewDamage(event.getOriginalDamage() * (1 + bonusMultiplier));
+        event.setNewDamage(event.getNewDamage() * (1 + bonusMultiplier));
     }
 
     // ---- 处决 ----

@@ -30,7 +30,7 @@ public final class MaceLivingDamageEvents {
     private static final float MIN_FALL_DISTANCE = 8.0F; // 从高处攻击的下落距离
     private static final long COOLDOWN_TICKS = 10; // 冷却时间
 
-    // HIGH：武器族覆盖段之一（与原版一致以 original 为基数），排在弓/剑之前
+    // HIGH：武器族之一，排在弓/剑之前（势能转化以 getNewDamage() 连乘）
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onLivingDamagePre(LivingDamageEvent.Pre event) {
         // 固定顺序：势能转化 → 闪电使者（各段按旧版语义自行解析攻击者）
@@ -75,8 +75,8 @@ public final class MaceLivingDamageEvents {
             totalBonus *= (1 + armorBonus);
         }
 
-        // 增加伤害（基数 original，公式原样）
-        event.setNewDamage(event.getOriginalDamage() * (1 + totalBonus));
+        // 增加伤害：以 getNewDamage() 连乘，保留 Pre 之前已算入的减伤
+        event.setNewDamage(event.getNewDamage() * (1 + totalBonus));
     }
 
     // ---- 闪电使者 ----

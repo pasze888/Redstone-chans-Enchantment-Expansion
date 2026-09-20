@@ -19,16 +19,17 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
  * 弓类（all_bow）附魔在伤害事件上的统一分发器。
  * <p>行为参数由附魔 JSON 组件声明，这里按固定顺序驱动各效果。
  * 旧实现是每个附魔一个独立订阅者（两者都以 original 为基数直接 setNewDamage，相互覆盖、不叠加）；
+ * 现统一以 {@code getNewDamage()} 为基数连乘，各段可叠加，且不会抹掉 Pre 之前已算入的暴击与护甲减伤。
  * 分发器固定执行顺序：狙击 → （后续）伏特。
  */
 @EventBusSubscriber(modid = RedstoneEnchants.MOD_ID)
 public final class BowDamageEvents {
     private static final double DISTANCE_STEP = 10.0; // 每 10 格一个加成档位
 
-    // NORMAL：武器族覆盖段之一（snipe/volt 均以 original 为基数），排在锤之后、剑之前
+    // NORMAL：武器族之一，排在锤之后、剑之前
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public static void onLivingDamagePre(LivingDamageEvent.Pre event) {
-        // 固定顺序：狙击 → 伏特（各段以 original 为基数直接 setNewDamage，与旧版一致地相互覆盖、不叠加）
+        // 固定顺序：狙击 → 伏特（均以 getNewDamage() 连乘，可叠加）
         snipe(event);
         volt(event);
     }
@@ -67,7 +68,7 @@ public final class BowDamageEvents {
         float bonusPer10Blocks = EnchantmentUtil.itemValue(serverLevel, bow, ModEnchantmentEffectComponents.SNIPE_BONUS.get());
         float bonus = distanceBonus * bonusPer10Blocks;
 
-        event.setNewDamage(event.getOriginalDamage() * (1 + bonus));
+        event.setNewDamage(event.getNewDamage() * (1 + bonus));
     }
 
     // ---- 伏特 ----
@@ -103,7 +104,7 @@ public final class BowDamageEvents {
         // 每级增加 25% 伤害
         float bonus = EnchantmentUtil.itemValue(serverLevel, bow, ModEnchantmentEffectComponents.VOLT_BONUS.get());
 
-        event.setNewDamage(event.getOriginalDamage() * (1 + bonus));
+        event.setNewDamage(event.getNewDamage() * (1 + bonus));
     }
 
     private BowDamageEvents() {

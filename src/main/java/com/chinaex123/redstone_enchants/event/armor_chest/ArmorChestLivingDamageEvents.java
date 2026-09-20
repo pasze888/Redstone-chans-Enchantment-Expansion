@@ -22,7 +22,7 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 public final class ArmorChestLivingDamageEvents {
     private static final float HEALTH_LOST_STEP = 0.1F; // 每 10% 生命损失为一个步长
 
-    // LOWEST：狂战士以 getNewDamage() 为基数连乘，必须晚于所有以 original 为基数的覆盖段
+    // LOWEST：狂战士以 getNewDamage() 为基数连乘，须晚于所有武器段（含处决的绝对值覆盖）
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onLivingDamagePre(LivingDamageEvent.Pre event) {
         berserk(event);
