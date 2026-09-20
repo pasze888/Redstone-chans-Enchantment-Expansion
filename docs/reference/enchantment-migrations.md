@@ -40,6 +40,9 @@
   **用户决定**：不添加 Player 限制——接受持械 Mob 攻击者也触发（原版 POST_ATTACK 对 Mob 攻击同样生效）。
 - life_steal **修复 ID bug**：旧 handler 引用不存在的 `leeching`（真 ID `life_steal`），getHolder 恒 null →
   从未生效；修复后从"无效果"变为生效，数值基数由 original 改为实际伤害（Post getNewDamage）×10%。
+- life_steal **数值变更（2026-09-20）**：`life_steal_ratio` 由 `SetValue(LevelBasedValue.constant(0.1F))`
+  改为 `SetValue(LevelBasedValue.perLevel(0.1F))` → 回血比例 10%×级（Lv5 = 50%）。此前 max_level 5
+  但 `constant` 使 5 个等级全部恒为 10%（等级实际无效）；改后需重跑 runData 刷新生成 JSON。
 - 处决照旧实现语义：`setNewDamage(目标当前生命值)`（旧注释写"设为 0"但实现是设为当前血量，照实现）。
 - 伏击每玩家状态（Map<UUID,Boolean>：非潜行攻击置位/潜行首击 ×(1+0.2×级) 后置位/PlayerTickEvent.Post
   非潜行重置）迁入分发器；组件求值需 ServerLevel，伏击/背刺/均衡器/生命吸取/屠夫/斩首均只服务端执行
@@ -130,8 +133,10 @@ pack_leader/tracker）、armor_horse 2（pasture/spirit）。
 - 怪癖清单（迁移时原样照抄，2026-09 修复批次处理结果见本文件「怪癖修复批次」小节）：
   - ~~armor_foot `LAST_SNEAKING` 泄漏~~ → 已修（EntityLeaveLevelEvent 清理）；
   - ~~invisibility_cloak 移除隐身不分来源~~ → 已修（附件标记精确移除）；
-  - pack_leader 旧注释写"每级每只狼+5%"但常量是 **0.5（=50%）**，**行为以 50% 为准保持原样**
-    （用户决定：数值与注释均不动，矛盾已知）；
+  - ~~pack_leader 旧注释写"每级每只狼+5%"但常量是 **0.5（=50%）**，**行为以 50% 为准保持原样**
+    （用户决定：数值与注释均不动，矛盾已知）~~ → 2026-09-20 用户改判：**数值不动，注释改为 50%**
+    （`ArmorWolfDamageEvents` 计算处 / `ModEnchantmentEffectComponents` 组件声明处，详见
+    `enchantment-pack-leader.md`）；
   - spirit 用 `addPermanentModifier` 且每 tick 先 `removeModifier(spirit_speed)` 再加（非临时修饰符，
     摘除马铠靠 LivingEquipmentChangeEvent 清理，modifier id `spirit_speed` 照抄）；
   - armor_head 的 AAO_DAMAGE/AAO_ARMOR attribute modifier id 照抄；~~against_all_odds 不过滤
@@ -149,7 +154,8 @@ pack_leader/tracker）、armor_horse 2（pasture/spirit）。
 
 提交序列（每项独立提交、build 验证）：lastSneakingMap 泄漏清理、against_all_odds isAlive 过滤、
 invisibility_cloak 附件标记精确移除、sturdy/indestructible 标记组件精确清理、sturdy 免疫缩小为
-仅装备耐久、revive_ward 改实际扣血判死。**pack_leader 0.5 注释矛盾经用户决定保持原样。**
+仅装备耐久、revive_ward 改实际扣血判死。~~**pack_leader 0.5 注释矛盾经用户决定保持原样。**~~
+（2026-09-20 改判：数值不动，注释改为 50%，见上节怪癖清单。）
 
 已验证的新 API 事实：
 

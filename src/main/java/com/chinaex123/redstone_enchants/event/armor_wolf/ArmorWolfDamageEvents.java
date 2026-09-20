@@ -77,7 +77,7 @@ public final class ArmorWolfDamageEvents {
             return;
         }
 
-        // 计算伤害加成：每级每只狼 × 组件值
+        // 计算伤害加成：每只同伴狼 × 组件值（组件值 = 50% × 等级，即每级每只狼 +50%）
         float bonusPerWolf = EnchantmentUtil.itemValue(serverLevel, armor,
                 ModEnchantmentEffectComponents.PACK_LEADER_DAMAGE_BONUS.get());
         double damageBonus = wolfCount * bonusPerWolf;
