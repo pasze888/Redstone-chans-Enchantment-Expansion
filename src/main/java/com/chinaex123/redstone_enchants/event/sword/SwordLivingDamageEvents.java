@@ -12,6 +12,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
@@ -36,7 +37,8 @@ public final class SwordLivingDamageEvents {
     /** 伏击每玩家状态（旧 handler 同款 Map）：记录已非潜行攻击过/已吃过潜行首击加成 */
     private static final Map<UUID, Boolean> AMBUSH_HAS_ATTACKED = new HashMap<>();
 
-    @SubscribeEvent
+    // LOW：武器族最后一个覆盖段（含处决的"设为当前生命"），排在锤/弓之后
+    @SubscribeEvent(priority = EventPriority.LOW)
     public static void onLivingDamagePre(LivingDamageEvent.Pre event) {
         // 固定顺序：赌徒 → 伏击 → 背刺 → 均衡器 → 处决（各段按旧版语义自行解析攻击者）
         gamblerRoll(event);

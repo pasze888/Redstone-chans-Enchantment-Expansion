@@ -10,6 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
@@ -29,7 +30,8 @@ public final class MaceLivingDamageEvents {
     private static final float MIN_FALL_DISTANCE = 8.0F; // 从高处攻击的下落距离
     private static final long COOLDOWN_TICKS = 10; // 冷却时间
 
-    @SubscribeEvent
+    // HIGH：武器族覆盖段之一（与原版一致以 original 为基数），排在弓/剑之前
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onLivingDamagePre(LivingDamageEvent.Pre event) {
         // 固定顺序：势能转化 → 闪电使者（各段按旧版语义自行解析攻击者）
         potentialConversion(event);

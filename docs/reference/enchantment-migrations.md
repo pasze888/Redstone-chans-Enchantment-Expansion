@@ -172,3 +172,28 @@ invisibility_cloak 附件标记精确移除、sturdy/indestructible 标记组件
   按实体清理内存缓存；换维度也会触发（对"重新进入时重算"类缓存语义无损）。
 - `LivingDamageEvent.Pre` 判死用 `getOriginalDamage()` 与 `getNewDamage()` 的取舍：getNewDamage
   可读"当前累积值"但晚于本事件的修改不算；需要严格"实际扣血后"语义必须用 Post。
+
+## 伤害事件优先级定序批次（2026-09-20）
+
+此前 6 个 `LivingDamageEvent.Pre` 订阅者都未设 priority，跨家族顺序取决于注册顺序（未定义），
+导致"以 `getNewDamage()` 连乘"的段可能被"以 `getOriginalDamage()` 覆盖"的段整段抹掉。
+现按"覆盖段先、连乘段后"显式定序（`@SubscribeEvent(priority = ...)`）：
+
+| 优先级 | 订阅者 | 段 | 基数 |
+|---|---|---|---|
+| HIGHEST | `UnbreakingDamageEvents` | 坚固（耐久快照，不改伤害） | — |
+| HIGH | `MaceLivingDamageEvents` | 势能转化 | original（覆盖） |
+| NORMAL | `BowDamageEvents` | 狙击 / 伏特 | original（覆盖） |
+| LOW | `SwordLivingDamageEvents` | 赌徒 / 伏击 / 均衡器 / 处决 | original（覆盖） |
+| LOW | `SwordLivingDamageEvents` | 背刺 | getNewDamage（连乘） |
+| LOWEST | `ArmorChestLivingDamageEvents` | 狂战士 | getNewDamage（连乘） |
+| LOWEST | `ArmorWolfDamageEvents` | 狼群领袖 | getNewDamage（连乘） |
+
+- **优先级方向**：高优先级先执行（官方 `Documentation` 仓库 capabilities.md 注释
+  "use HIGH priority to register before NeoForge!"，HIGHEST 最早、LOWEST 最晚）。
+- **同档不冲突**：胸甲与狼铠同为 LOWEST，但判定互斥（狂战士要求 `getDirectEntity()` 是
+  Player、狼群领袖要求是 Wolf），同档顺序不影响结果。
+- **行为变化**：狂战士 / 狼群领袖现在**必定**吃到武器段的加成结果（此前取决于注册顺序）；
+  剑族排在弓族之后 → 副手带赌徒时会覆盖狙击/伏特的结果（已知取舍，与"越通用的段越靠后"一致）。
+- 本批只定序 Pre；Post 侧（`life_steal` / `revive_ward` / `sea_breeze` / `TeleportSwapEvents` /
+  `UnbreakingDamageEvents` Post）不改伤害数值，顺序问题留待观察。

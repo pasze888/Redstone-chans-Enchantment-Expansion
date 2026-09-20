@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
@@ -24,7 +25,8 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 public final class BowDamageEvents {
     private static final double DISTANCE_STEP = 10.0; // 每 10 格一个加成档位
 
-    @SubscribeEvent
+    // NORMAL：武器族覆盖段之一（snipe/volt 均以 original 为基数），排在锤之后、剑之前
+    @SubscribeEvent(priority = EventPriority.NORMAL)
     public static void onLivingDamagePre(LivingDamageEvent.Pre event) {
         // 固定顺序：狙击 → 伏特（各段以 original 为基数直接 setNewDamage，与旧版一致地相互覆盖、不叠加）
         snipe(event);

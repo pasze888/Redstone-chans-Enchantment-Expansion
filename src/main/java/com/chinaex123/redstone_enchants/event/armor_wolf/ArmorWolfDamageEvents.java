@@ -13,6 +13,7 @@ import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
@@ -29,7 +30,8 @@ public final class ArmorWolfDamageEvents {
     private static final double PACK_LEADER_RANGE = 16.0; // 同伴狼检测范围
     private static final int TRACKER_BASE_DURATION = 80; // 追踪者发光基础时长（tick）
 
-    @SubscribeEvent
+    // LOWEST：狼群领袖以 getNewDamage() 为基数连乘；与胸甲狂战士互斥（要求直接来源是狼）
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onLivingDamagePre(LivingDamageEvent.Pre event) {
         // 固定顺序：狼群领袖 → 追踪者（旧版为独立订阅者，顺序未定义）
         packLeader(event);
