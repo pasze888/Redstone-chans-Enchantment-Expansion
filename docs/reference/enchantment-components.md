@@ -44,8 +44,12 @@
   改为 `ToolBlockBreakEvents` 内代码常量 `TIMBER_CHAIN_LIMIT = 512`。）
 - 事件侧只保留**按钩子集中的分发器**（`event/tool/ToolBlockBreakEvents` 等），行为参数全部从附魔 JSON 组件读取；
   禁止再写"一个附魔一个 @EventBusSubscriber + ResourceLocation 字符串 + getEnchantments().getLevel()"。
-- 迁移一个附魔的步骤：① JSON 迁入 `data/provider/ModEnchantmentProvider`（数值照抄原 JSON）并声明效果组件 →
+- 迁移一个附魔的步骤：① JSON 迁入 `data/provider/` 下对应的 `*Enchantments` 分类类（数值照抄原 JSON；
+  标签常量与 `colored`/`register` 等 helper 在 `ModEnchantmentProvider`）并声明效果组件 →
   ② 删除 main/resources 下对应手写 JSON → ③ 分发器读取组件 → ④ 删除旧 handler。
+- 附魔声明按主标签 `supportedItems` 分 12 个类（Ranged/Melee/Mace/Shield/Helmet/Chestplate/Leggings/Boots/Armor/
+  AnimalArmor/Tool/Universal），17 个诅咒按名称家族聚合到 `CurseEnchantments`；`ModEnchantmentProvider.bootstrap()`
+  只做委托，runData 产物与拆分前逐字节一致。
 
 构建与 runData 命令见 `../troubleshooting.md`。
 
