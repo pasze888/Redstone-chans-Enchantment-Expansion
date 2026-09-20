@@ -2693,7 +2693,7 @@ public final class ModEnchantmentProvider {
                         Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.MAINHAND),
                 0xFFAA00)
                 .withEffect(ModEnchantmentEffectComponents.LIFE_STEAL_RATIO.get(),
-                        new SetValue(LevelBasedValue.constant(0.1F))));
+                        new SetValue(LevelBasedValue.perLevel(0.1F))));
 
         register(context, ModEnchantments.CHAIN_REACTION, colored(
                 Enchantment.definition(items.getOrThrow(ALL_BOW), items.getOrThrow(ALL_BOW), 3, 3,

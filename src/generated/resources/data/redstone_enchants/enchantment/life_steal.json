@@ -9,7 +9,11 @@
       {
         "effect": {
           "type": "minecraft:set",
-          "value": 0.1
+          "value": {
+            "type": "minecraft:linear",
+            "base": 0.1,
+            "per_level_above_first": 0.1
+          }
         }
       }
     ]
