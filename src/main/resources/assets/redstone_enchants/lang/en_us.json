@@ -369,7 +369,7 @@
   "enchantment.redstone_enchants.desperate_counter": "Desperate Counter",
   "enchantment.redstone_enchants.desperate_counter.desc": "Increases attack damage when suffering from Blindness or Darkness.",
   "enchantment.redstone_enchants.against_all_odds": "Against All Odds",
-  "enchantment.redstone_enchants.against_all_odds.desc": "Increases damage/armor by 2% for each nearby enemy.",
+  "enchantment.redstone_enchants.against_all_odds.desc": "Increases damage/armor by 2% per level for each nearby enemy.",
   "enchantment.redstone_enchants.adaptive": "Miner",
   "enchantment.redstone_enchants.adaptive.desc": "Grants Night Vision while below Y=0.",
 

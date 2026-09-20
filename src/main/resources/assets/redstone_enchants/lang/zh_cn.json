@@ -369,7 +369,7 @@
   "enchantment.redstone_enchants.desperate_counter": "绝境逆袭",
   "enchantment.redstone_enchants.desperate_counter.desc": "自身拥有失明或黑暗时增加攻击伤害",
   "enchantment.redstone_enchants.against_all_odds": "以寡敌众",
-  "enchantment.redstone_enchants.against_all_odds.desc": "根据周围敌人数目，每多一个敌人伤害/护甲+2%",
+  "enchantment.redstone_enchants.against_all_odds.desc": "根据周围敌人数目，每多一个敌人伤害/护甲+2%×等级",
   "enchantment.redstone_enchants.adaptive": "矿工",
   "enchantment.redstone_enchants.adaptive.desc": "在低于Y0时获得夜视效果",
 

@@ -210,7 +210,7 @@
 | [移动轨迹]白色星星（`trail_wax_off`）〔轨迹〕 | 1 | 换格触发: [trail_particle]  | 移动时留下白色星星粒子效果 |
 | [移动轨迹]橙色星星（`trail_wax_on`）〔轨迹〕 | 1 | 换格触发: [trail_particle]  | 移动时留下橙色星星粒子效果 |
 | 矿工（`adaptive`） | 1 | （纯标记型，行为见代码） | 在低于Y0时获得夜视效果 |
-| 以寡敌众（`against_all_odds`） | 5 | against_all_odds_bonus_per_enemy: [set] 值 = 0.02 + 0.02*(Lv-1) | 根据周围敌人数目，每多一个敌人伤害/护甲+2% |
+| 以寡敌众（`against_all_odds`） | 5 | against_all_odds_bonus_per_enemy: [set] 值 = 0.02 + 0.02*(Lv-1) | 根据周围敌人数目，每多一个敌人伤害/护甲+2%×等级 |
 | 反伪装（`anti_camouflage`） | 1 | anti_camouflage_duration_bonus: [add] 值 = 10 + 10*(Lv-1) | 潜行时显示周围的敌对生物 |
 | 绝境逆袭（`desperate_counter`） | 5 | desperate_counter_damage: [set] 值 = 0.25 + 0.25*(Lv-1) | 自身拥有失明或黑暗时增加攻击伤害 |
 | 幸运增幅（`lucky_boost`） | 5 | 属性: 数值 = 2 + 2.5*(Lv-1)，属性 generic.luck（加值） | 提升幸运值 |
