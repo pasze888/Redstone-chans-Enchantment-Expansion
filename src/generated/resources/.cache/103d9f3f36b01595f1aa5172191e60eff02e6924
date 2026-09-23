@@ -1,4 +1,4 @@
-// 1.21.1	2026-09-23T11:09:43.5091346	Registries
+// 1.21.1	2026-09-23T14:03:03.1162382	Registries
 367e5e28773dfc3f40c59c2dd3ac3abca6619964 data/redstone_enchants/enchantment/absorbent_shield.json
 d8c24a0e2c68358bbad8c3250a4298bb46bc505b data/redstone_enchants/enchantment/accuracy_shot.json
 913d5e1b80904ec058aa8021a1962c3c080f3440 data/redstone_enchants/enchantment/adaptive.json
@@ -77,7 +77,7 @@ bb6d95f3091af00f945fc31d014ab4ba27864fb3 data/redstone_enchants/enchantment/ende
 8ceccb1b9e9bbcf50fbff9f5822db1d91ba9183f data/redstone_enchants/enchantment/endless_wool.json
 98a606ed60566d0fac8d14aa01f2a1b727fd87af data/redstone_enchants/enchantment/enhanced_armor.json
 07e7afb8adb9c7a55a96df009845744a38c86755 data/redstone_enchants/enchantment/equalizer.json
-2f09550c595eee0602a81cb1e213ec689642bf24 data/redstone_enchants/enchantment/eternal_frost.json
+2ea1c29b6e0338e24c32261728fc3d1df40a9831 data/redstone_enchants/enchantment/eternal_frost.json
 1908557260c891d47ff6948cfcbacdee1185d621 data/redstone_enchants/enchantment/excavator.json
 c4491add953b12e4b4b4cdb70ad0bc5b1c3ea03c data/redstone_enchants/enchantment/execution.json
 529548081187135cd14c6c48bc2421ac5950532e data/redstone_enchants/enchantment/exorcism.json

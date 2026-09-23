@@ -9,6 +9,7 @@ import com.chinaex123.redstone_enchants.enchantment.effect.ChainBindEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.ClearMainHandEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.DevouringEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.DropHeldItemEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.EternalFrostAnimationEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.FreezeWaterEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.GiveItemEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.HoveringArrowEffect;
@@ -94,6 +95,10 @@ public final class ModEnchantmentEntityEffects {
     /** 冰霜箭：重度冰缓（4 项属性归零），5 秒后自动移除 */
     public static final DeferredHolder<MapCodec<? extends EnchantmentEntityEffect>, MapCodec<? extends EnchantmentEntityEffect>> ICE_ARROW_SLOWNESS =
             TYPES.register("ice_arrow_slowness", () -> IceArrowSlownessEffect.CODEC);
+
+    /** 永恒冰霜：命中点的 13 片霜冰生长/回缩动画（原 libs/animation/freeze_pic 5 个 mcfunction 的 Java 化） */
+    public static final DeferredHolder<MapCodec<? extends EnchantmentEntityEffect>, MapCodec<? extends EnchantmentEntityEffect>> ETERNAL_FROST_ANIMATION =
+            TYPES.register("eternal_frost_animation", () -> EternalFrostAnimationEffect.CODEC);
 
     /** 笨拙诅咒：把主手物品掉出去 */
     public static final DeferredHolder<MapCodec<? extends EnchantmentEntityEffect>, MapCodec<? extends EnchantmentEntityEffect>> DROP_HELD_ITEM =

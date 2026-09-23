@@ -53,8 +53,7 @@
       },
       {
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/eternal_frost"
+          "type": "redstone_enchants:eternal_frost_animation"
         },
         "requirements": {
           "condition": "minecraft:entity_properties",
@@ -81,8 +80,7 @@
       {
         "affected": "victim",
         "effect": {
-          "type": "minecraft:run_function",
-          "function": "redstone_enchants:enchantment/eternal_frost"
+          "type": "redstone_enchants:eternal_frost_animation"
         },
         "enchanted": "attacker"
       },

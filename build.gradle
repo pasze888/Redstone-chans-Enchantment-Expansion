@@ -50,8 +50,9 @@ neoForge {
         minecraftVersion = project.parchment_minecraft_version
     }
 
-    // This line is optional. Access Transformers are automatically detected
-    // accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
+    // 访问转换器：永恒冰霜的冻结动画要写 Display 的私有 setter（1.21.1 无公开 API）。
+    // 这里显式声明，不依赖 ModDevGradle 的自动检测。内容见 src/main/resources/META-INF/accesstransformer.cfg
+    accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
 
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.

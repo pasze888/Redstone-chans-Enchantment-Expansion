@@ -2,6 +2,7 @@ package com.chinaex123.redstone_enchants.data.provider;
 
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
 import com.chinaex123.redstone_enchants.enchantment.effect.ChainArrowsEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.EternalFrostAnimationEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.IgniteAreaEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.ParticleBurstEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.RainBlocksEffect;
@@ -52,7 +53,6 @@ import net.minecraft.world.item.enchantment.effects.PlaySoundEffect;
 import net.minecraft.world.item.enchantment.effects.MultiplyValue;
 import net.minecraft.world.item.enchantment.effects.ReplaceBlock;
 import net.minecraft.world.item.enchantment.effects.ReplaceDisk;
-import net.minecraft.world.item.enchantment.effects.RunFunction;
 import net.minecraft.world.item.enchantment.effects.SummonEntityEffect;
 import net.minecraft.world.item.enchantment.effects.SetValue;
 import net.minecraft.world.item.enchantment.effects.SpawnParticlesEffect;
@@ -687,7 +687,7 @@ final class RangedEnchantments {
                         Enchantment.dynamicCost(16, 8), Enchantment.dynamicCost(32, 16), 12, EquipmentSlotGroup.HAND),
                 0xFFAA00)
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/eternal_frost")))
+                        EternalFrostAnimationEffect.INSTANCE)
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
                         new ApplyMobEffect(HolderSet.direct(MobEffects.MOVEMENT_SLOWDOWN),
                                 LevelBasedValue.perLevel(1.0F, 1.0F), LevelBasedValue.perLevel(3.0F, 1.0F),
@@ -704,7 +704,7 @@ final class RangedEnchantments {
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(PROJECTILES)))
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
-                        new RunFunction(RedstoneEnchants.asResource("enchantment/eternal_frost")),
+                        EternalFrostAnimationEffect.INSTANCE,
                         LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,
                                 EntityPredicate.Builder.entity().of(PROJECTILES)))
                 .withEffect(EnchantmentEffectComponents.HIT_BLOCK,
