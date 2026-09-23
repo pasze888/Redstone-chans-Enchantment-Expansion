@@ -360,7 +360,24 @@
 | 绝境逆袭 / 以寡敌众 | 属性修饰符（transient/permanent）按 tick 重算，`ADD_MULTIPLIED_BASE` 乘区 |
 | 昼夜流转（`daynight_cycle`） | 服务端每 20 tick 收敛一次属性：白天给攻击伤害、夜晚给移动速度（`ADD_MULTIPLIED_BASE`），**每件**带该附魔的盔甲 +5%（代码常量 `0.05`，非 JSON 数值）；没有附魔时两个修饰符都移除；值没变不重写属性 |
 | 高级耐久（`advanced_unbreaking`） | 二项分布概率减免耐久（4/5 概率免耗），应用在 `item_damage` 组件，非原版 Unbreaking 机制 |
-| 基岩破坏者 / 幻岩转化 | 数据包函数 `run_function` + `replace_block` 实现，分别消耗 1.5K / 1K 耐久，均无掉落 |
+
+### 纯组件声明、只有"无掉落"看不出来的附魔
+
+下列附魔没有事件代码，行为全在 `hit_block` 组件里（组件细节见对应分节的数值列）；只有"无掉落"
+这一点从 JSON 看不出，单独记。两者都只作用于基岩（基岩破坏者用 `#redstone_enchants:bedrock_breaker`
+方块标签，当前只含 `minecraft:bedrock`，留作数据包扩展；幻岩转化把 `minecraft:bedrock` 写死）：
+
+| 附魔 | 机制要点 |
+|---|---|
+| 基岩破坏者（`bedrock_breaker`） | 爆炸音效（`entity.generic.explode`，音量 1 / 音高 2）+ 爆炸粒子（`explosion_emitter`）+ `replace_block` → 空气（触发 `block_destroy`）+ `damage_item` 1000 |
+| 幻岩转化（`rock_illusion`） | `damage_item` 1000 + `replace_block` 基岩 → 强化深板岩（触发 `block_destroy`）+ `poof` 粒子 |
+
+两者的 `replace_block` 走的是 `Level#setBlockAndUpdate`（`ReplaceBlock.java:34`），**不是破坏流程，
+因此不掉落任何物品**，挖掘等级、时运等一概不参与。
+
+> 更正（2026-09-24）：本节原写作"数据包函数 `run_function` + `replace_block` 实现，分别消耗
+> 1.5K / 1K 耐久，均无掉落"，与生成的 JSON 不符——两者都没有 `run_function`（纯组件声明），
+> 耐久也都是 1000。原先挂在"标记型附魔"表里也不合适，故单列。
 
 **联动附魔**（带 `neoforge:mod_loaded` 条件，缺 mod 时不注册）：法术增幅/法术防护（`irons_spellbooks`）、
 双重暴击/速射/流血之触（`apothic_attributes`）、延迟爆破（`ars_nouveau`）、暗流涌动（`apothic_attributes`+`twilightforest` 双条件）；
