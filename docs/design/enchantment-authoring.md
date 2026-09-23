@@ -115,6 +115,7 @@ P0 已全部处理完。新增状态照 §3 第 4 条走 `ModAttachments`；静�
 | # | 位置 | 问题 |
 |---|---|---|
 | P1-7 | `event/armor_head/ArmorHeadTickEvents.java:75-76` | `adaptive`（矿工）在 Y≥0 时用 `removeEffect(NIGHT_VISION)` 无差别摘夜视，也会洗掉夜视药水（`../reference/enchantments.md:356` 已记此行为）。当前决定：**先不动** |
+| P1-8 | `event/sword/SwordLivingDamageEvents.java:195-210` | `execution`（处决）是"把伤害设成目标当前血量"的绝对值语义，**不是真 kill**：①门槛用**受伤前**血量且严格 <25%，所以要两刀（先打到 25% 以下，下一刀才处决）；②`LivingDamageEvent.Pre` 的结算顺序是 护甲 → 保护/抗性 → **Pre** → **吸收** → 扣血（`LivingEntity.java:1787-1794`，`DamageContainer.setReduction` 里 `newDamage -= amount`），所以**吸收会按 `min(吸收量, 伤害)` 抵扣掉这次伤害，带吸收的目标秒不掉**；③走的是普通扣血流，不死图腾照常救（`:1260-1261` 的 `checkTotemDeathProtection`）；④排在 dispatcher 最后做绝对覆盖，会丢弃赌徒/伏击/背刺/均衡器的连乘。已知改法：最小改是 `setNewDamage(getHealth() + getAbsorptionAmount())`（残余伤害正好等于血量）；更彻底的是照 `Apotheosis/.../ExecutingAffix.java:69-89` 改成 POST_ATTACK + 自定义 DamageType + `die()` 的单刀处决（会改变玩家感知，且改动涉及是否绕过护甲/图腾）。当前决定：**维持现状，不动** |
 
 ### P2 — 观察项
 
