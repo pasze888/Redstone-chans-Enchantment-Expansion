@@ -39,7 +39,9 @@
    17 个诅咒按名称家族聚合在 `CurseEnchantments`）。数值照抄原 JSON，不得"顺手调整"。
 3. **数值全进 JSON**：Java 里不留伤害系数、概率、半径这类常量。确有全局平衡规则需要留常量的
    （如 `TIMBER_CHAIN_LIMIT`），必须在 `../reference/enchantments.md` 的「机制备注」表登记，
-   否则全表会失真——最近几次返工都是描述与 JSON 不一致。
+   否则全表会失真——最近几次返工都是描述与 JSON 不一致。纯**美术/动画数据**（如
+   `EternalFrostAnimationEffect` 的 13 组变换矩阵与两段插值时长）不受此条约束，逐行照搬在
+   Java 里即可；这类常量的落点记在 `../reference/enchantment-runtime-effects.md`。
 4. **读值走 util**：组件求值统一走 `util/EnchantmentUtil`（`itemValue:27` / `specialValue:39` /
    `levelOn:55` / `levelOf:63` / `holder:67`）。缺 helper 就补 helper，不要在事件类里手写
    `holder()` + `levelOn()` 两连——需要确切等级时用 `levelOf(registryAccess, stack, key)` 一步到位。
@@ -134,7 +136,7 @@ P0 已全部处理完。新增状态照 §3 第 4 条走 `ModAttachments`；静�
 
 **待观察**
 
-- `enchantment/effect/**` 目前 25 个 `EnchantmentEntityEffect` + 4 个 location-based（共 29 个类），
+- `enchantment/effect/**` 目前 26 个 `EnchantmentEntityEffect` + 4 个 location-based（共 30 个类），
   除索敌外没有别的明显可合并族。
 - 21.1.219 里另外三处弃用 API 仍未处理（`-Xlint:deprecation` 实测）：`EntityType.builtInRegistryHolder()`
   （`data/provider/RangedEnchantments.java:577,:595`）、`Item.byBlock(Block)` 与

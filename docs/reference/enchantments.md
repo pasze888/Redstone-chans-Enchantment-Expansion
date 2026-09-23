@@ -53,7 +53,7 @@
 
 | 附魔 | 最大等级 | 数值/公式 | 描述 |
 |---|---|---|---|
-| 永恒冰霜（`eternal_frost`） | 3 | 命中方块: [replace_disk] 半径 = 3 + 2*(Lv-1)格（条件触发）；命中方块: [run_function] function=redstone_enchants:enchantment/eternal_frost（条件触发）；命中方块: [kill_self] （条件触发）；攻击后: [run_function] function=redstone_enchants:enchantment/eternal_frost；攻击后: [apply_mob_effect] 效果: slowness，时长 1 + 1*(Lv-1)tick，时长上限 3 + 1*(Lv-1)tick，等级 0 + 1*(Lv-1)~1 + 1*(Lv-1) | 命中后冻结目标及周围水域并将水转为霜冰 |
+| 永恒冰霜（`eternal_frost`） | 3 | 命中方块: [replace_disk] 半径 = 3 + 2*(Lv-1)格（条件触发）；命中方块: [eternal_frost_animation] （条件触发）；命中方块: [kill_self] （条件触发）；攻击后: [eternal_frost_animation] ；攻击后: [apply_mob_effect] 效果: slowness，时长 1 + 1*(Lv-1)tick，时长上限 3 + 1*(Lv-1)tick，等级 0 + 1*(Lv-1)~1 + 1*(Lv-1) | 命中后冻结目标及周围水域并将水转为霜冰 |
 | 传送（`teleport`） | 1 | （纯标记型，行为见代码） | 命中后与目标交换位置 |
 
 ## 远程武器（弓/弩/三叉戟）

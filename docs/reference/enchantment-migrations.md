@@ -310,3 +310,52 @@ invisibility_cloak 附件标记精确移除、sturdy/indestructible 标记组件
   逐目标过滤只能写在 effect 里（本次 `AreaMobEffectEffect` 就是这么做的）。
 - `Block.getDrops(BlockState, ServerLevel, BlockPos, BlockEntity, Entity, ItemStack)` 在 21.1.219 已弃用
   （`ToolBlockBreakEvents` 三处仍在用，见设计文档 §4 P2 观察项）。
+
+## mcfunction 收尾批次（2026-09-24，freeze_pic 动画）
+
+A/B/C 三批之后剩下的最后 5 个 mcfunction（`function/enchantment/eternal_frost.mcfunction` +
+`function/libs/animation/freeze_pic/{start,first_step,second_step,finished}.mcfunction`）迁为
+`EternalFrostAnimationEffect`（注册名 `eternal_frost_animation`）：
+`POST_ATTACK` 与 `HIT_BLOCK` 里的 `RunFunction` 换成它，`data/redstone_enchants/function/`
+整个目录删除，**本仓库已无 `.mcfunction`**。
+
+结构对应：`summon` → `new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, level)` +
+`setBlockState`/`setTransformation`/`setPos`/`addFreshEntity`；`data merge` → `setTransformation` +
+`setTransformationInterpolationDuration` + `setTransformationInterpolationDelay`；
+`schedule function ... Nt` → `server.tell(new TickTask(server.getTickCount() + N, ...))`；
+`kill @e[tag=...]` → 逐个体 `kill()`。13 组手调四元数/缩放/两段插值时长逐行照搬到 `KEYFRAMES` 表。
+
+### 行为变更备忘（本批，有意为之）
+
+- **两处本就失效的音效被修好**（用户确认的行为变更）：`first_step` 的
+  `execute at @e[...] run playsound ... @s` 中 `at` 不换执行实体、而 `schedule` 的命令源无实体，
+  `@s` 不指向任何实体，该音效从来是死代码；`start` 的三声同理只发给 `@s`——本附魔声明
+  `affected=VICTIM`，即 POST_ATTACK 路径下 `@s` 是受击者（多为生物）、HIT_BLOCK 路径下是弹射物，
+  所以实际上也几乎不响。现在四声都在命中点对附近所有玩家播放（`level.playSound(null, ...)`）。
+- **并发触发不再互相清理**：原 `finished` 是
+  `kill @e[tag=redstone_enchants.block_display.animation.finished]`，全局匹配——两次动画时间重叠时
+  先结束的那次会把后一次的霜冰一起杀掉。现在每片霜冰由本次调用的闭包持有，只清自己的 13 片。
+- **重启不再续播，但残留会被清扫**：`schedule function` 会把待执行函数写进
+  `overworldData().getScheduledEvents()` 并随存档保存、重启后继续；`TickTask` 是纯内存队列，
+  服务器在动画的约 50 tick 内重启（或区块在此期间卸载）会断链，13 片霜冰会以存档里的目标变换
+  永久留在原地。为此新增 `event/freeze/FreezeShardCleanupEvents`：实体**从存档**加入世界时
+  （`EntityJoinLevelEvent#loadedFromDisk()`）若带霜冰 tag 就取消加入——这个标志天然区分
+  "自己 `addFreshEntity` 的"（false）与"从区块 NBT 恢复的"（true），故不需要任何静态状态。
+  **区块卸载这条在原实现里同样会留残留**（`kill @e[tag=…]` 匹配不到已卸载的实体），本次一并修掉。
+  手工兜底仍是 `/kill @e[tag=redstone_enchants.block_display.freezing]`。
+- **生长那声爆响整段只播一次**：原 `execute at @e[...]` 是每片一次，但 13 片共用同一坐标、
+  同一 tick，叠播只是变响；用户确认改为整段一次（初态的三声本来就各只有一次）。
+
+### 已验证的 API 事实
+
+- `Display` 四个写入 setter 的访问级别、AT 方案、`Entity#load` 不能当 `data merge` 用、
+  `execute at`/`schedule function` 下 `@s` 的归属等通用结论，见
+  `enchantment-runtime-effects.md` 的「D 批（2026-09-24）」条目，此处不重复。
+- 本批新增代码用到的签名（`javap` 核对 `compiledWithNeoForge_50f69430…jar`，即 21.1.219）：
+  `new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, Level)` 公开；
+  `com.mojang.math.Transformation(Vector3f, Quaternionf, Vector3f, Quaternionf)`；
+  `org.joml.Quaternionf(float, float, float, float)`（joml 1.10.5 / 1.10.8 同）；
+  `ServerLevel#sendParticles(T, double, double, double, int, double, double, double, double)`；
+  `Level#playSound(Player, double, double, double, SoundEvent, SoundSource, float, float)`；
+  `SoundEvents.AMETHYST_BLOCK_STEP/BREAK/FALL`；`SoundSource.MASTER`；
+  `FrostedIceBlock.AGE`（= `BlockStateProperties.AGE_3`）；`Entity#addTag(String)` / `kill()`。

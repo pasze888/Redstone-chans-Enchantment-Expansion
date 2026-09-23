@@ -52,11 +52,13 @@
   REGENERATION/DAMAGE_RESISTANCE/MOVEMENT_SLOWDOWN/WEAKNESS/POISON/WITHER/
   GLOWING/INFESTED/FIRE_RESISTANCE`。
 
-## mcfunction → Java 全面迁移（A/B/C 三批，2026-08-31）
+## mcfunction → Java 全面迁移（A/B/C 三批 2026-08-31，D 批 2026-09-24 收尾）
 
-- 68 个 mcfunction 迁移后仅剩 5 个保留：`eternal_frost` + `freeze_pic` 动画库
-  （13 组手调 block_display 变换矩阵 + interpolation 时长的多步动画，
-  Java 化为纯数据搬运、收益低）。
+- 68 个 mcfunction 于 A/B/C 三批迁完，最后 5 个（`eternal_frost` + `freeze_pic` 动画库）
+  于 D 批迁为 `EternalFrostAnimationEffect`（注册名 `eternal_frost_animation`），
+  **本仓库已无 `.mcfunction`**。当时判"Java 化为纯数据搬运、收益低"的理由（13 组手调
+  block_display 变换矩阵）依然成立——D 批的收益是去掉 `run_function` 这条数据包依赖，
+  动画数据本身仍按行照搬在 Java 里（见文末「D 批」条目）。
 - **schedule 的 Java 等价**：`level.getServer().tell(new TickTask(
   server.getTickCount()+delay, callback))`（TickTask 的 tick 是绝对服务器刻）；
   回调里先检查 `entity.isRemoved()`。
@@ -77,3 +79,63 @@
 - 顺带修复的上游 bug：冰霜箭减速永不解除（scheduled 函数从未被调度）、
   雪球弹回自己（选择器未排除自身）、精准射击时间窗恒真、
   第一印象 reset_mark 死代码。
+
+## D 批（2026-09-24）：`Display` 的 transformation 写入
+
+`EternalFrostAnimationEffect`（注册名 `eternal_frost_animation`）替代最后 5 个 mcfunction，
+本批验证的运行期事实：
+
+- **`Display` 没有公开写入 API，只能自备 AT**：1.21.1 里
+  `Display#setTransformation(Transformation)`、`setTransformationInterpolationDuration(int)`、
+  `setTransformationInterpolationDelay(int)`、`Display.BlockDisplay#setBlockState(BlockState)`
+  全是 `private`；NeoForge 没有 Display 扩展接口（`ITransformationExtension` 只加
+  `isIdentity` / `transformPosition` / `blockCenterToCorner` / `applyOrigin` 这类矩阵数学），
+  NeoForge 自己的 AT 清单（`api-sources/META-INF/accesstransformer.cfg`）也没有覆盖 Display。
+  两条独立出处一致：`api-sources/net/minecraft/world/entity/Display.java:273,353,361,581` 与真实编译
+  classpath `compiledWithNeoForge_50f69430…jar`（`javap -p`）。故本仓库自备
+  `src/main/resources/META-INF/accesstransformer.cfg`（4 条），并在 `build.gradle` 用
+  `accessTransformers = project.files(...)` 显式声明（不依赖 ModDevGradle 的自动检测）。
+- **AT 的 descriptor 必须对准真实版本**：AT 写错**不报编译错**，只在应用 AT 时失败。嵌套类在
+  AT 里写 `$`，形如 `net.minecraft.world.entity.Display$BlockDisplay setBlockState(...)V`。
+- **`data merge` 的 Java 等价就是这三个 setter**，逐字段对应 `transformation` /
+  `interpolation_duration` / `start_interpolation`（`Display.readAdditionalSaveData`，
+  `Display.java:210-225`）。**`Entity#load(CompoundTag)` 不是 `data merge`**：它无条件读
+  `Pos`/`Motion`/`Rotation`（缺失即归零），`BlockDisplay.readAdditionalSaveData` 还无条件读
+  `block_state`（缺失 → 空气）；`load()` 只适合"新建实体"（`RainBlocksEffect` 那种），
+  不能用来增量改活实体。
+- **插值要先让客户端建立起初态**：客户端 `interpolationDuration` 非 0 且 `renderState != null`
+  时才做插值（`Display.java:151-166`），所以原实现 `schedule … 0.1s`（2 tick）后才改
+  `interpolation_duration`，Java 侧照搬这个间隔，不要同 tick 内完成 spawn + 改插值。
+- **`execute at` 不换执行实体**：`ExecuteCommand.java:163-178` 的 `at` 只做
+  `withLevel/withPosition/withRotation`。**`schedule function` 的命令源无实体**：
+  `FunctionCallback.java:20` → `ServerFunctionManager.getGameLoopSender()`
+  （`ServerFunctionManager.java:88-89` = `withPermission(2).withSuppressedOutput()`）。
+  于是 `schedule` 出来的函数里 `execute at @e[...] run playsound … @s` 的 `@s` 不指向实体，
+  该音效静默失效（错误被 `withSuppressedOutput` 吞掉）——判原 mcfunction 有无死代码先看这条。
+- **`@s` 的实体由 `affected` 决定**：`RunFunction` 用 `withEntity(entity)`
+  （`RunFunction.java:31-37`），entity 取自 `TargetedConditionalEffect.affected()`
+  （`Enchantment.java:324-328`）。本附魔声明 `affected=VICTIM` → POST_ATTACK 路径 `@s` 是受击者、
+  `origin` 是受击者位置；HIT_BLOCK 路径 entity 是弹射物、`origin` 是
+  `hitResult.getBlockPos().clampLocationWithin(hitResult.getLocation())`
+  （`AbstractArrow.java:484-496`）。两条路径的 `@s` 都**不是**攻击者。
+- **`schedule function` 会持久化，`TickTask` 不会**：`ScheduleCommand` 把待执行函数写进
+  `overworldData().getScheduledEvents()`（`ScheduleCommand.java:101-113`），随存档保存、重启续跑；
+  `TickTask` 只是内存队列。这是用 `TickTask` 复刻 `schedule` 时的唯一语义差异，断链留下的霜冰由
+  下一条的清扫兜住（见 `enchantment-migrations.md`）。
+- **`EntityJoinLevelEvent#loadedFromDisk()` 是"从存档恢复"的可靠判据**：该标志为 true 只有两条
+  路径——区块实体反序列化（`PersistentEntitySectionManager.processPendingLoads`，
+  `PersistentEntitySectionManager.java:247`）与旧格式区块实体（同文件 `:114`）；自己
+  `addFreshEntity` 的走 `addNewEntity`（同文件 `:70-71`），标志为 false；客户端恒为 false。
+  该事件在实体**进入 `PersistentEntitySectionManager` 之前**触发且可取消
+  （`EntityJoinLevelEvent.java:30` 实现 `ICancellableEvent`），所以"取消加入"比事后 `discard()`
+  干净，也避开了它 javadoc 里"不要在此做世界交互，会与区块加载死锁"的警告——本仓库的霜冰残留
+  清扫（`event/freeze/FreezeShardCleanupEvents`）就是这么做的，无需任何静态状态。
+- 本批核对过签名的 API：`new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, Level)` 公开；
+  `Transformation(Vector3f, Quaternionf, Vector3f, Quaternionf)`；
+  `Quaternionf(float,float,float,float)`；
+  `ServerLevel#sendParticles(T,double,double,double,int,double,double,double,double)`
+  （对应 `particle … <delta> <speed> <count>`）；
+  `Level#playSound(Player,double,double,double,SoundEvent,SoundSource,float,float)`
+  （首参 `null` = 不排除任何玩家）；`SoundEvents.AMETHYST_BLOCK_STEP/BREAK/FALL`；
+  `SoundSource.MASTER`；`FrostedIceBlock.AGE`（= `BlockStateProperties.AGE_3`）；
+  `Entity#addTag(String)` / `kill()`。

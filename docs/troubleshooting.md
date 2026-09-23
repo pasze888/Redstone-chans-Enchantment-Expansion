@@ -7,6 +7,11 @@
 - **坑：`./gradlew runData build` 并行执行时 build 可能先于 runData 完成**，
   jar 会打进旧 JSON；runData 后单独再跑一次 build 确认。
 - 自定义 effect 忘注册会在 datagen 报 "Unregistered holder"。
+- **访问转换器（AT）要在 `build.gradle` 显式声明**：
+  `accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')`。
+  改动 AT 会让 `createMinecraftArtifacts` 重跑 `transformSources` + `recompile`（本机约 60s），
+  属正常；**AT 的描述符写错在这一步报错，而不是在编译期**，所以改完 AT 至少跑一次
+  `compileJava` 才算验证过。
 
 ## 定位弃用 API
 
