@@ -1,19 +1,16 @@
 package com.chinaex123.redstone_enchants.enchantment.effect;
 
+import com.chinaex123.redstone_enchants.util.TargetingUtil;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Snowball;
 import net.minecraft.world.item.enchantment.EnchantedItemInUse;
 import net.minecraft.world.item.enchantment.effects.EnchantmentEntityEffect;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.Comparator;
-import java.util.List;
 
 /**
  * 雪球（snowball）：穿戴者受到伤害时，从眼前 1 格处弹出一颗雪球，
@@ -35,12 +32,7 @@ public record SnowballBurstEffect() implements EnchantmentEntityEffect {
         if (!(entity instanceof LivingEntity victim)) {
             return;
         }
-        List<LivingEntity> candidates = level.getEntitiesOfClass(LivingEntity.class,
-                victim.getBoundingBox().inflate(RANGE),
-                e -> e != victim && !(e instanceof Player));
-        LivingEntity target = candidates.stream()
-                .min(Comparator.comparingDouble(e -> e.distanceToSqr(victim)))
-                .orElse(null);
+        LivingEntity target = TargetingUtil.nearestNonPlayer(level, victim, 0.0, RANGE);
         if (target == null) {
             return;
         }

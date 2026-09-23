@@ -1,18 +1,15 @@
 package com.chinaex123.redstone_enchants.enchantment.effect;
 
+import com.chinaex123.redstone_enchants.util.TargetingUtil;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.EnchantedItemInUse;
 import net.minecraft.world.item.enchantment.effects.EnchantmentEntityEffect;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.Comparator;
-import java.util.List;
 
 /**
  * 跳弹（ricochet）：箭矢命中后飞向 2~12 格内最近的非玩家生物。
@@ -32,15 +29,7 @@ public record RicochetEffect() implements EnchantmentEntityEffect {
 
     @Override
     public void apply(ServerLevel level, int enchantmentLevel, EnchantedItemInUse item, Entity entity, Vec3 origin) {
-        List<LivingEntity> candidates = level.getEntitiesOfClass(LivingEntity.class,
-                entity.getBoundingBox().inflate(MAX_RANGE),
-                e -> !(e instanceof Player) && e.distanceToSqr(entity) >= MIN_RANGE * MIN_RANGE);
-        if (candidates.isEmpty()) {
-            return;
-        }
-        LivingEntity target = candidates.stream()
-                .min(Comparator.comparingDouble(e -> e.distanceToSqr(entity)))
-                .orElse(null);
+        LivingEntity target = TargetingUtil.nearestNonPlayer(level, entity, MIN_RANGE, MAX_RANGE);
         if (target == null) {
             return;
         }

@@ -1,4 +1,4 @@
-// 1.21.1	2026-09-23T10:52:59.2830315	Registries
+// 1.21.1	2026-09-23T11:09:43.5091346	Registries
 367e5e28773dfc3f40c59c2dd3ac3abca6619964 data/redstone_enchants/enchantment/absorbent_shield.json
 d8c24a0e2c68358bbad8c3250a4298bb46bc505b data/redstone_enchants/enchantment/accuracy_shot.json
 913d5e1b80904ec058aa8021a1962c3c080f3440 data/redstone_enchants/enchantment/adaptive.json
@@ -8,7 +8,7 @@ b0a37f51f24776b5d9c3d679639ff238bf5c5e29 data/redstone_enchants/enchantment/agai
 e7fbadf4574badbf688a04ccb6e4992e38152308 data/redstone_enchants/enchantment/ambush.json
 8116d4cab23f5d8e00de0ffb4de6585c63ab9053 data/redstone_enchants/enchantment/angler.json
 628dafaba2d6f8c3c0297b41dcf5491037d5e835 data/redstone_enchants/enchantment/anti_camouflage.json
-f70f98f82feacec99fc5ddf035ab1a61911a4f8f data/redstone_enchants/enchantment/aura_burning.json
+4fbea98610fbf2f5bddb26dbdd059dbe2a00cac9 data/redstone_enchants/enchantment/aura_burning.json
 5823f2b8a775b2fdd968c08a2626d81f3a87b968 data/redstone_enchants/enchantment/aura_glowing.json
 0fbe060c092e47296a73068a11df2ab0cbc82d5e data/redstone_enchants/enchantment/aura_haste.json
 710658709741d7510a457c8177292c7a517d6cd8 data/redstone_enchants/enchantment/aura_infested.json

@@ -1,5 +1,6 @@
 package com.chinaex123.redstone_enchants.enchantment.effect;
 
+import com.chinaex123.redstone_enchants.util.TargetingUtil;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -10,14 +11,12 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantedItemInUse;
 import net.minecraft.world.item.enchantment.effects.EnchantmentEntityEffect;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -46,13 +45,7 @@ public record ChainBindEffect() implements EnchantmentEntityEffect {
         }
         bind(level, victim, MAIN_DURATION_TICKS);
 
-        List<LivingEntity> nearby = level.getEntitiesOfClass(LivingEntity.class,
-                        victim.getBoundingBox().inflate(SPREAD_RANGE),
-                        e -> e != victim && !(e instanceof Player))
-                .stream()
-                .sorted(Comparator.comparingDouble(e -> e.distanceToSqr(victim)))
-                .limit(SPREAD_TARGETS)
-                .toList();
+        List<LivingEntity> nearby = TargetingUtil.nearestNonPlayers(level, victim, 0.0, SPREAD_RANGE, SPREAD_TARGETS);
         for (LivingEntity target : nearby) {
             bind(level, target, SPREAD_DURATION_TICKS);
         }

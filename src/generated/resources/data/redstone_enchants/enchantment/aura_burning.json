@@ -9,7 +9,8 @@
       {
         "effect": {
           "type": "redstone_enchants:area_ignite",
-          "radius": 2.0
+          "radius": 2.0,
+          "target": "others_non_player"
         }
       },
       {

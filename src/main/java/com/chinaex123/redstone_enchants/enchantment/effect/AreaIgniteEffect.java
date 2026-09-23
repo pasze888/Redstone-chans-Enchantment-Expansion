@@ -12,27 +12,35 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * 光环（aura_*）：以触发实体为中心，点燃范围内生物（不含触发者自身，
- * 自身保护由光环附魔另行声明，如燃烧光环同时给穿戴者火焰抗性）。
+ * 光环（aura_*）：以触发实体为中心，点燃范围内生物。
  * <p>由 {@code minecraft:location_changed} 组件驱动，移动换格时反复触发；
  * {@code igniteForTicks} 每次重设剩余燃烧时间。
+ * <p>作用对象由 {@link AreaTarget} 声明（默认 {@code others}＝除触发者自己）。
+ * 燃烧光环（aura_burning）用 {@code others_non_player}：原 mcfunction 的
+ * {@code data merge entity {Fire:...}} 对玩家静默失败，本来就点不着玩家。
  */
-public record AreaIgniteEffect(float radius, int fireTicks) implements EnchantmentLocationBasedEffect {
+public record AreaIgniteEffect(float radius, int fireTicks, AreaTarget target) implements EnchantmentLocationBasedEffect {
 
     public static final MapCodec<AreaIgniteEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.floatRange(0.0F, 128.0F).fieldOf("radius").forGetter(AreaIgniteEffect::radius),
-            Codec.intRange(1, 72000).optionalFieldOf("fire_ticks", 80).forGetter(AreaIgniteEffect::fireTicks)
+            Codec.intRange(1, 72000).optionalFieldOf("fire_ticks", 80).forGetter(AreaIgniteEffect::fireTicks),
+            AreaTarget.CODEC.optionalFieldOf("target", AreaTarget.OTHERS).forGetter(AreaIgniteEffect::target)
     ).apply(instance, AreaIgniteEffect::new));
 
     @Override
     public void onChangedBlock(ServerLevel level, int enchantmentLevel, EnchantedItemInUse item, Entity entity, Vec3 pos,
                                boolean applyTransientEffects) {
-        AABB box = new AABB(pos, pos).inflate(this.radius);
-        for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, box)) {
-            if (target == entity) {
-                continue;
+        if (this.target == AreaTarget.SELF) {
+            if (entity instanceof LivingEntity self) {
+                self.igniteForTicks(this.fireTicks);
             }
-            target.igniteForTicks(this.fireTicks);
+            return;
+        }
+        AABB box = new AABB(pos, pos).inflate(this.radius);
+        for (LivingEntity candidate : level.getEntitiesOfClass(LivingEntity.class, box)) {
+            if (this.target.includes(entity, candidate)) {
+                candidate.igniteForTicks(this.fireTicks);
+            }
         }
     }
 
