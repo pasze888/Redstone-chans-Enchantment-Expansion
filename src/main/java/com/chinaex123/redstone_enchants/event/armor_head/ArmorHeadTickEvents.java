@@ -2,7 +2,6 @@ package com.chinaex123.redstone_enchants.event.armor_head;
 
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
 import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
-import com.chinaex123.redstone_enchants.init.ModEnchantments;
 import com.chinaex123.redstone_enchants.util.AttributeUtil;
 import com.chinaex123.redstone_enchants.util.EnchantmentUtil;
 import com.chinaex123.redstone_enchants.util.TickUtil;
