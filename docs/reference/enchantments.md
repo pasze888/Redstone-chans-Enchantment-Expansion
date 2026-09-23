@@ -78,9 +78,9 @@
 | 幻翼克星（`bane_phantom`）〔克星〕 | 5 | 伤害: [add] 值 = 2.5 + 2.5*(Lv-1)（条件触发） | 对幻翼造成额外伤害 |
 | 伏击（`ambush`） | 5 | ambush_bonus: [add] 值 = 0.2 + 0.2*(Lv-1) | 潜行时首次攻击增加伤害 |
 | 背刺（`backstab`） | 5 | backstab_behind_bonus: [add] 值 = 0.3 + 0.3*(Lv-1)；backstab_front_penalty: [add] 值 = 0.15 + 0.15*(Lv-1) | 从背后攻击时造成额外伤害，正面攻击则减少伤害 |
-| 福佑（`boons`） | 5 | 攻击后: [random_beneficial_mob_effect] 概率 = 0.05 + 0.05*(Lv-1) | 攻击时有概率获得随机一个正面效果 |
+| 福佑（`boons`） | 5 | 攻击后: [random_mob_effect] 概率 = 0.05 + 0.05*(Lv-1)，候选池 = beneficial | 攻击时有概率获得随机一个正面效果 |
 | 屠夫（`butcher`） | 5 | butcher_extra_drop: [add] 值 = 0.5 + 0.5*(Lv-1) | 击杀动物时增加其掉落物 |
-| 灾厄（`calamity`） | 5 | 攻击后: [random_harmful_mob_effect] 概率 = 0.05 + 0.05*(Lv-1) | 攻击时有概率让目标获得随机一个负面效果 |
+| 灾厄（`calamity`） | 5 | 攻击后: [random_mob_effect] 概率 = 0.05 + 0.05*(Lv-1)，候选池 = harmful | 攻击时有概率让目标获得随机一个负面效果 |
 | 锁链（`chains`） | 4 | 攻击后: [chain_bind] （条件触发） | 击中生物会导致自身和附近的多个生物在短时间内被眩晕 |
 | 斩首（`decapitation`） | 5 | decapitation_chance: [add] 值 = 0.2 + 0.2*(Lv-1) | 增加生物头颅的掉落概率 |
 | 吞噬（`devouring`） | 1 | 攻击后: [devouring] （条件触发） | 攻击生物时恢复饥饿值，满饥饿时转为生命恢复 |

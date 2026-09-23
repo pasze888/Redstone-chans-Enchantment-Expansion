@@ -9,12 +9,13 @@
       {
         "affected": "attacker",
         "effect": {
-          "type": "redstone_enchants:random_beneficial_mob_effect",
+          "type": "redstone_enchants:random_mob_effect",
           "chance": {
             "type": "minecraft:linear",
             "base": 0.05,
             "per_level_above_first": 0.05
-          }
+          },
+          "pool": "beneficial"
         },
         "enchanted": "attacker"
       }

@@ -17,8 +17,7 @@ import com.chinaex123.redstone_enchants.enchantment.effect.IgniteAreaEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.KillSelfEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.ParticleBurstEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.RainBlocksEffect;
-import com.chinaex123.redstone_enchants.enchantment.effect.RandomBeneficialMobEffect;
-import com.chinaex123.redstone_enchants.enchantment.effect.RandomHarmfulMobEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.RandomMobEffectEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.RemoveRandomBeneficialEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.RicochetEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.SnowballBurstEffect;
@@ -48,13 +47,9 @@ public final class ModEnchantmentEntityEffects {
     public static final DeferredHolder<MapCodec<? extends EnchantmentEntityEffect>, MapCodec<? extends EnchantmentEntityEffect>> SUMMON_ITEM =
             TYPES.register("summon_item", () -> SummonItemEffect.CODEC);
 
-    /** 恩赐（boons）：攻击时按概率给攻击者施加随机正面药水 */
-    public static final DeferredHolder<MapCodec<? extends EnchantmentEntityEffect>, MapCodec<? extends EnchantmentEntityEffect>> RANDOM_BENEFICIAL_MOB_EFFECT =
-            TYPES.register("random_beneficial_mob_effect", () -> RandomBeneficialMobEffect.CODEC);
-
-    /** 灾厄（calamity）：攻击时按概率给受害者施加随机负面药水 */
-    public static final DeferredHolder<MapCodec<? extends EnchantmentEntityEffect>, MapCodec<? extends EnchantmentEntityEffect>> RANDOM_HARMFUL_MOB_EFFECT =
-            TYPES.register("random_harmful_mob_effect", () -> RandomHarmfulMobEffect.CODEC);
+    /** 随机药水效果（恩赐 / 灾厄共用）：按概率给目标施加随机正面或负面药水，由 JSON 的 pool 选择 */
+    public static final DeferredHolder<MapCodec<? extends EnchantmentEntityEffect>, MapCodec<? extends EnchantmentEntityEffect>> RANDOM_MOB_EFFECT =
+            TYPES.register("random_mob_effect", () -> RandomMobEffectEffect.CODEC);
 
     /** 消解（nullify）：攻击时按概率移除受害者身上的一个正面药水 */
     public static final DeferredHolder<MapCodec<? extends EnchantmentEntityEffect>, MapCodec<? extends EnchantmentEntityEffect>> REMOVE_RANDOM_BENEFICIAL =

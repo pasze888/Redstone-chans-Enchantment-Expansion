@@ -9,8 +9,7 @@ import com.chinaex123.redstone_enchants.enchantment.effect.ChainBindEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.ClearMainHandEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.ParticleBurstEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.DevouringEffect;
-import com.chinaex123.redstone_enchants.enchantment.effect.RandomBeneficialMobEffect;
-import com.chinaex123.redstone_enchants.enchantment.effect.RandomHarmfulMobEffect;
+import com.chinaex123.redstone_enchants.enchantment.effect.RandomMobEffectEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.RemoveRandomBeneficialEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.ThrowWaterBottleEffect;
 import com.chinaex123.redstone_enchants.enchantment.effect.UnleashPotentialEffect;
@@ -499,7 +498,7 @@ final class MeleeEnchantments {
                 0xFFAA00)
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK,
                         EnchantmentTarget.ATTACKER, EnchantmentTarget.ATTACKER,
-                        new RandomBeneficialMobEffect(LevelBasedValue.perLevel(0.05F))));
+                        new RandomMobEffectEffect(LevelBasedValue.perLevel(0.05F), RandomMobEffectEffect.Pool.BENEFICIAL)));
 
         register(context, ModEnchantments.CALAMITY, colored(
                 Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 2, 5,
@@ -507,7 +506,7 @@ final class MeleeEnchantments {
                 0xFFAA00)
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK,
                         EnchantmentTarget.ATTACKER, EnchantmentTarget.VICTIM,
-                        new RandomHarmfulMobEffect(LevelBasedValue.perLevel(0.05F))));
+                        new RandomMobEffectEffect(LevelBasedValue.perLevel(0.05F), RandomMobEffectEffect.Pool.HARMFUL)));
 
         register(context, ModEnchantments.EQUALIZER, colored(
                 Enchantment.definition(items.getOrThrow(SWORDS_AND_AXES), items.getOrThrow(SWORDS), 3, 5,

@@ -59,6 +59,8 @@ def fmt_effect(e):
         parts.append(f"半径 = {fmt_num(e['radius'])}格")
     if 'target' in e and isinstance(e['target'], str):
         parts.append(f"目标 = {e['target']}")
+    if 'pool' in e and isinstance(e['pool'], str):
+        parts.append(f"候选池 = {e['pool']}")
     if 'effect' in e and isinstance(e['effect'], str):
         parts.append(f"效果: {strip_ns(e['effect'])}")
     if 'to_apply' in e:

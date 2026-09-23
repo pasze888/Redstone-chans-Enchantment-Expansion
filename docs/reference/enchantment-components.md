@@ -75,7 +75,8 @@
   **注册的是 MapCodec（不是实例）**：`DeferredRegister.create(Registries.X, MODID)` 后 `register("name", () -> X.CODEC)`。
 - 自定义实体效果：`implements EnchantmentEntityEffect`（方法签名 `apply(ServerLevel, int level, EnchantedItemInUse, Entity, Vec3 origin)` + `MapCodec<? extends EnchantmentEntityEffect> codec()`）。
   `EnchantedItemInUse` 是 record：`(ItemStack, @Nullable EquipmentSlot, @Nullable LivingEntity owner, Consumer<Item> onBreak)`。
-  模板见 `enchantment/effect/SummonItemEffect`（照 confluence 同款，1.21.1 签名核对过）。
+  模板见 `enchantment/effect/SummonItemEffect`（照 confluence 同款，1.21.1 签名核对过；
+  **至今没有附魔使用它**，只是模板——真正在用的同类是 `GiveItemEffect`（检索，箭入玩家背包））。
 - `TargetedConditionalEffect<T>(enchanted, affected, effect, requirements)`（record）+ `codec(S, LootContextParamSet)`；
   `Enchantment.Builder.withEffect(DataComponentType<List<TargetedConditionalEffect<E>>>, EnchantmentTarget, EnchantmentTarget, E[, requirements])`。
   `EnchantmentTarget` 枚举：`ATTACKER / DAMAGING_ENTITY / VICTIM`（StringRepresentable）。

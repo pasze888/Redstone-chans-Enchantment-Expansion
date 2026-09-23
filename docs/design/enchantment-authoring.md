@@ -98,15 +98,15 @@ P0 已全部处理完。新增状态照 §3 第 4 条走 `ModAttachments`；静�
 | P1-1 | `event/**` | `holder(...)` + `levelOn(...)` 两连已收成 `EnchantmentUtil.levelOf`。原文记的 7 处组成有误：`TeleportSwapEvents` 用的是原版 `EnchantmentHelper.getItemEnchantmentLevel`、`ArmorDamageEvents` 只有 `holder` 没有 `levelOn`（它要 Holder 本身做 `removeIf` 比对，保持不动），又漏了 `ToolBlockBreakEvents` 的 `fortuneLevel`。实际改动的 7 处：`ToolPlayerTickEvents:52`、`ToolBlockBreakEvents:184` 与 `:362`、`TeleportSwapEvents:51`、`ShearBlockInteractEvents:73`、`ArmorFootTickEvents:78`、`ShieldIncomingDamageEvents:57` |
 | P1-2 | 节流写法散落 | `tickCount % 20` 与自建 `PERIOD_TICKS` 已统一到 `util/TickUtil`（见 §3 第 2 条） |
 | P1-3 | `event/armor_foot/ArmorFootTickEvents.java` | `java.util.Random` 静态实例已删，逐格催熟判定改用 `serverLevel.random` |
+| P1-4 | `event/all_fishing/FishingHookTickEvents.java` | `STRUCK_ENTITIES` 静态集合有两个毛病：勾住状态下鱼钩消失（断竿/收线）时条目不清理，那生物**再也劈不到**；任意空钩 tick 又会把全局集合整个 `clear()`，把别的鱼钩的去重一起重置。已改为挂在鱼钩上的 `ModAttachments.CONDUCTIVE_LINE_STRUCK`（松钩即复位）。唯一行为差异：两条鱼钩同时勾住同一生物时旧版只劈 1 次、新版各劈 1 次。侧判断仍未加（客户端仍会放本地闪电），见 P2 |
+| P1-5 | 重复 effect 类 | `RandomBeneficialMobEffect` / `RandomHarmfulMobEffect` 已合并为 `RandomMobEffectEffect(chance, pool)`（注册名 `random_mob_effect`，JSON 多一个 `"pool": "beneficial"|"harmful"`，黑名单只留在 harmful 池里）。**另两项核实后不合并**：`IgniteAreaEffect` 是把命中点周围 3×3×3 的**空气方块**点燃（fire_arrows 的 `fill ... fire keep`），`AreaIgniteEffect` 是点燃**生物**，二者不同功能，清单原描述有误；`SummonItemEffect` 是"战斗类附魔基建"留下的模板类，**没有任何附魔在用**，`GiveItemEffect`（检索，箭入背包）与它语义不同（原地掉落 / 等级化数量），保持独立 |
 | P1-6 | `enchantment/effect/AreaMobEffectEffect.java:69-76` | `target=others` 对范围内**所有** `LivingEntity` 生效（含其他玩家），联机时无差别下负面。已新增 `Target.OTHERS_NON_PLAYER`（JSON `"others_non_player"`），中毒/缓慢/虚弱/凋零/寄生五个负面光环改用它；发光的 `others` 与增益类的 `all` 维持原样。原文建议的"加 requirement"走不通——`location_changed` 的 `requirements` 只在触发前对穿戴者求值一次，无法逐个筛目标（见 `../reference/enchantment-components.md`） |
 
 **待办**
 
 | # | 位置 | 问题 |
 |---|---|---|
-| P1-4 | `event/all_fishing/FishingHookTickEvents.java:28,77` | `STRUCK_ENTITIES` 只在"本次 tick 没勾住"时整体 `clear()`；鱼钩在勾住状态下消失则条目残留。去重 Set 应挂在鱼钩实体上或用 attachment |
-| P1-5 | 重复 effect 类 | `RandomBeneficialMobEffect` / `RandomHarmfulMobEffect`（`:46` 的 `isBeneficial()` 是唯一实质差异）应合并为带 filter 参数的一类；`IgniteAreaEffect.java:17`（写死 3×3×3 范围）的功能是 `AreaIgniteEffect`（radius / fireTicks 参数化）的特例，优先统一到后者；`GiveItemEffect` 与 `SummonItemEffect` 功能接近（待核实两者的调用方差异后再决定合并）。均属"触碰时顺手做"，不单独立项。 |
-| P1-7 | `event/armor_head/ArmorHeadTickEvents.java:75-76` | `adaptive`（矿工）在 Y≥0 时用 `removeEffect(NIGHT_VISION)` 无差别摘夜视，也会洗掉夜视药水（`../reference/enchantments.md:356` 已记此行为）。若要修，应判断效果来源再决定 |
+| P1-7 | `event/armor_head/ArmorHeadTickEvents.java:75-76` | `adaptive`（矿工）在 Y≥0 时用 `removeEffect(NIGHT_VISION)` 无差别摘夜视，也会洗掉夜视药水（`../reference/enchantments.md:356` 已记此行为）。当前决定：**先不动** |
 
 ### P2 — 观察项
 
@@ -117,8 +117,10 @@ P0 已全部处理完。新增状态照 §3 第 4 条走 `ModAttachments`；静�
   已被标记弃用（`event/tool/ToolBlockBreakEvents.java:100,:168,:191` 三处，对应自动熔炼/精通采集/伐木）；
   建议改成 `state.getDrops(...)` 形态，本次未动。
 - `aura_burning` 的 `AreaIgniteEffect(2.0F, 80)` 同样会对范围内其他玩家点火。P1-6 只处理了
-  `AreaMobEffectEffect`，若点火也要 PvP 安全，需要在 `AreaIgniteEffect` 上加同样的目标参数
-  （正好和 P1-5 的"统一到 `AreaIgniteEffect`"一起做）。
+  `AreaMobEffectEffect`，若点火也要 PvP 安全，需要在 `AreaIgniteEffect` 上加同样的目标参数。
+- `event/all_fishing/FishingHookTickEvents.java` 的导电鱼线没有侧判断：客户端自己的鱼钩也会在本地
+  生成一道闪电（旧版行为，与服务端同步过来的那道重叠）。本次只改了去重状态，没动这个，
+  要清掉需补 `instanceof ServerLevel` 守卫。
 
 ## 5. 与其他文档的分工
 

@@ -257,6 +257,19 @@ invisibility_cloak 附件标记精确移除、sturdy/indestructible 标记组件
   - 庄稼舞的潜行状态从 `ConcurrentHashMap<Player, Boolean>`（强引用 Player）改为
     `ModAttachments.CROP_DANCE_SNEAKING`；`EntityLeaveLevelEvent` 清理随之删除（不再需要）。
   - 诅咒的两个时间戳 Map 由 `TickUtil.isDue` 取代（见上一条）。
+- **effect 类合并**：`RandomBeneficialMobEffect` / `RandomHarmfulMobEffect` 合并为
+  `RandomMobEffectEffect(LevelBasedValue chance, Pool pool)`：注册名从
+  `random_beneficial_mob_effect` / `random_harmful_mob_effect` 改为 `random_mob_effect`，
+  JSON 多一个 `"pool": "beneficial" | "harmful"`；候选池过滤（`isBeneficial()` 的正反 +
+  不祥之兆 / 试炼之兆黑名单）搬进 `Pool` 枚举。**旧注册名不再注册**，引用旧名的第三方数据包会失效
+  （本仓库生成的 JSON 已同步重生成，效果与数值不变）。
+  另外两项经核实**不合并**：`IgniteAreaEffect`（点燃命中点周围的空气方块）与 `AreaIgniteEffect`
+  （点燃范围内生物）功能不同；`SummonItemEffect`（无任何附魔使用的模板类）与 `GiveItemEffect`
+  （检索，箭直接入玩家背包）语义不同。
+- **鱼钩去重状态**：导电鱼线的静态 `Set<UUID>` 改为挂在鱼钩上的附件
+  `ModAttachments.CONDUCTIVE_LINE_STRUCK`（松钩即复位），顺带修掉"勾住状态下鱼钩消失导致该生物
+  再也劈不到"与"任意空钩 tick 把全局去重集合整个清空"两个毛病。行为差异只剩一条：
+  两条鱼钩同时勾住同一生物时，旧版只劈 1 次、新版各劈 1 次。
 - **延迟代价**：节流带来 ≤1 秒的生效/失效延迟（昼夜切换、换装、怪数变化、诅咒首跳），
   本次有意接受。
 

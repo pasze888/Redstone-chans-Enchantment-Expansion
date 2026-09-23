@@ -9,12 +9,13 @@
       {
         "affected": "victim",
         "effect": {
-          "type": "redstone_enchants:random_harmful_mob_effect",
+          "type": "redstone_enchants:random_mob_effect",
           "chance": {
             "type": "minecraft:linear",
             "base": 0.05,
             "per_level_above_first": 0.05
-          }
+          },
+          "pool": "harmful"
         },
         "enchanted": "attacker"
       }
