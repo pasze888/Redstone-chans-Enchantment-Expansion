@@ -12,6 +12,9 @@
   下结论前先确认组件形态。
 - **沉淀内容会被后续批次纠正，纠正时要留痕**：revive_ward 判死时点曾误记为 `getNewDamage`
   （见 `../reference/enchantment-migrations.md` 怪癖清单），修正时保留删除线标注而不是直接抹掉。
+- **新增/修改附魔先读 `../design/enchantment-authoring.md`**：那里有分层决策树（L0 纯声明 → L1 组件+分发器
+  → L2 参数化 effect → L3 事件代码）与收尾流程，并附带 file:line 的 P0/P1 审查清单。
+  该清单的行号会随提交漂移，动工前重新读一遍代码再改，不要照抄。
 
 ## 查证 API 的坑
 
