@@ -2,6 +2,7 @@ package com.chinaex123.redstone_enchants.event.sword;
 
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
 import com.chinaex123.redstone_enchants.enchantment.component.GamblerData;
+import com.chinaex123.redstone_enchants.init.ModAttachments;
 import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
 import com.chinaex123.redstone_enchants.util.EnchantmentUtil;
 import net.minecraft.core.component.DataComponentType;
@@ -18,10 +19,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 /**
  * 剑类战斗附魔在伤害事件上的统一分发器。
  * <p>行为参数由附魔 JSON 声明（见 {@link ModEnchantmentEffectComponents}），
@@ -36,9 +33,6 @@ import java.util.UUID;
 @EventBusSubscriber(modid = RedstoneEnchants.MOD_ID)
 public final class SwordLivingDamageEvents {
     private static final EquipmentSlot[] HAND_SLOTS = { EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND };
-
-    /** 伏击每玩家状态（旧 handler 同款 Map）：记录已非潜行攻击过/已吃过潜行首击加成 */
-    private static final Map<UUID, Boolean> AMBUSH_HAS_ATTACKED = new HashMap<>();
 
     // LOW：武器族之一，排在锤/弓之后；各段以 getNewDamage() 连乘，处决段最后做绝对值覆盖
     @SubscribeEvent(priority = EventPriority.LOW)
@@ -62,10 +56,10 @@ public final class SwordLivingDamageEvents {
 
     @SubscribeEvent
     public static void onPlayerTick(PlayerTickEvent.Post event) {
-        // 如果玩家停止潜行，重置伏击标记（旧 handler 同款，双侧 tick 均执行）
+        // 如果玩家停止潜行，复位伏击标记（双侧 tick 均执行）
         Player player = event.getEntity();
         if (!player.isCrouching()) {
-            AMBUSH_HAS_ATTACKED.remove(player.getUUID());
+            player.setData(ModAttachments.AMBUSH_HAS_ATTACKED.get(), Boolean.FALSE);
         }
     }
 
@@ -109,17 +103,15 @@ public final class SwordLivingDamageEvents {
         if (!EnchantmentHelper.has(weapon, ModEnchantmentEffectComponents.AMBUSH_BONUS.get())) {
             return;
         }
-        UUID playerId = attacker.getUUID();
-
         // 检查是否在潜行
         if (!attacker.isCrouching()) {
             // 不在潜行，标记为已攻击过
-            AMBUSH_HAS_ATTACKED.put(playerId, true);
+            attacker.setData(ModAttachments.AMBUSH_HAS_ATTACKED.get(), Boolean.TRUE);
             return;
         }
 
         // 检查是否是潜行后的首次攻击
-        if (AMBUSH_HAS_ATTACKED.getOrDefault(playerId, false)) {
+        if (attacker.getData(ModAttachments.AMBUSH_HAS_ATTACKED.get())) {
             return;
         }
 
@@ -128,7 +120,7 @@ public final class SwordLivingDamageEvents {
         event.setNewDamage(event.getNewDamage() * (1 + bonus));
 
         // 标记为已攻击
-        AMBUSH_HAS_ATTACKED.put(playerId, true);
+        attacker.setData(ModAttachments.AMBUSH_HAS_ATTACKED.get(), Boolean.TRUE);
     }
 
     // ---- 背刺 ----

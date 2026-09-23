@@ -38,6 +38,11 @@ public final class ModAttachments {
             ATTACHMENT_TYPES.register("conductive_line_struck",
                     () -> AttachmentType.builder(() -> Boolean.FALSE).build());
 
+    /** 伏击（ambush）：该玩家当前是否已用掉潜行首击加成（脱离潜行或实体重建即复位） */
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> AMBUSH_HAS_ATTACKED =
+            ATTACHMENT_TYPES.register("ambush_has_attacked",
+                    () -> AttachmentType.builder(() -> Boolean.FALSE).build());
+
     /**
      * 保全（preservation）：玩家背包内各物品上一次见到的耐久（identityHashCode(stack) → damage）。
      * <p>只用于识别"刚达到最大耐久"那一次；每 tick 用本 tick 见到的物品裁剪一遍，容量随背包大小有界。

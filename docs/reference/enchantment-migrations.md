@@ -44,9 +44,13 @@
   改为 `SetValue(LevelBasedValue.perLevel(0.1F))` → 回血比例 10%×级（Lv5 = 50%）。此前 max_level 5
   但 `constant` 使 5 个等级全部恒为 10%（等级实际无效）；改后需重跑 runData 刷新生成 JSON。
 - 处决照旧实现语义：`setNewDamage(目标当前生命值)`（旧注释写"设为 0"但实现是设为当前血量，照实现）。
-- 伏击每玩家状态（Map<UUID,Boolean>：非潜行攻击置位/潜行首击 ×(1+0.2×级) 后置位/PlayerTickEvent.Post
-  非潜行重置）迁入分发器；组件求值需 ServerLevel，伏击/背刺/均衡器/生命吸取/屠夫/斩首均只服务端执行
+- 伏击每玩家状态（~~Map<UUID,Boolean>~~ → 见下方补记：非潜行攻击置位/潜行首击 ×(1+0.2×级) 后置位/
+  PlayerTickEvent.Post 非潜行重置）迁入分发器；组件求值需 ServerLevel，伏击/背刺/均衡器/生命吸取/屠夫/斩首均只服务端执行
   （旧版伏击在双侧维护 Map 副本，结果行为不变）。
+  - **补记（2026-09-23 后续批）**：那个静态 `Map<UUID, Boolean>` 是本家族最后一个 per-player 静态容器，
+    已换成 `ModAttachments.AMBUSH_HAS_ATTACKED` 附件（`init/ModAttachments.java`）。除上述语义外新增的行为差异：
+    潜行中下线时旧实现会把 `true` 留在 Map 里，该玩家重进后第一次潜行攻击被误判为"已攻击过"而**丢掉加成**；
+    附件随实体生灭，重进即复位（顺带：跨维度/重生也用新实体，同样复位）。数值与判定条件未动。
 - 背刺基数是 `getNewDamage()`（非 original，与其他附魔叠加方式不同，公式原样保留）。
 
 ## unbreaking 家族批次（2026-09 迁移验证，advanced_unbreaking/sacrifice/indestructible/sturdy/preservation 共 5 个）

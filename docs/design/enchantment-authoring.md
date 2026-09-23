@@ -84,10 +84,18 @@
 | P0-2 | `event/unbreaking/UnbreakingPlayerEvents.java:30-83` | `LAST_DAMAGE_MAP` 静态 `HashMap`（key = UUID + identityHashCode(stack)）无删除路径，随服务器时长无界增长；`:30` 也无侧判断（音效/粒子双侧跑两遍）。已改为按玩家的 `ModAttachments.PRESERVATION_LAST_DAMAGE` 附件存"上一次见到的耐久"，每 tick 用本 tick 见到的物品裁剪（容量随背包大小有界），并补服务端侧判断 |
 | P0-3 | `event/armor_foot/ArmorFootTickEvents.java` | `LAST_SNEAKING` 是 `ConcurrentHashMap<Player, Boolean>`，强引用 Player（原文"从不清理"已过时：`EntityLeaveLevelEvent` 清理在本批之前就有）。已整体换成 `ModAttachments.CROP_DANCE_SNEAKING` 附件，Map 与 `EntityLeaveLevelEvent` 清理一起删除 |
 | P0-4 | `event/curse/CurseTickEvents.java` | `LAST_DAMAGE_TIME` / `LAST_EFFECT_TIME` 两个静态 `Map<UUID, Long>` 无清理，玩家退出后条目永久驻留。已改用按 tickCount 对齐的 `TickUtil.isDue`，两个 Map 一起删除 |
+| P0-5 | `event/sword/SwordLivingDamageEvents.java:41` | 伏击的 `AMBUSH_HAS_ATTACKED`（`Map<UUID, Boolean>`）是同一批漏网的第 4 个静态 per-player 容器：潜行中下线会留下 `true`，该玩家重进后第一次潜行攻击被误判为"已攻击过"而丢掉加成。已改为 `ModAttachments.AMBUSH_HAS_ATTACKED` 附件（脱离潜行仍复位），Map 与 `UUID`/`HashMap` 导入一起删除 |
 
 **待办**
 
 P0 已全部处理完。新增状态照 §3 第 4 条走 `ModAttachments`；静态 Map 只允许存容量天然有界的全局量。
+另有**两个已知的静态 per-player 容器**尚未迁移（不属本批，先登记）：
+
+- `event/mace/MaceLivingDamageEvents.java:29` `LAST_STRIKE_TIME`（`Map<UUID, Long>`）：只有当 size > 100 时
+  整体 `clear()`，粗糙但对容量有界；用 `serverLevel.getGameTime()` 计时，退出后条目驻留到下次清空。
+- `event/tool/ToolBlockBreakEvents.java:70` `MINING_STREAKS`（`Map<UUID, MiningStreak>`）：由
+  `decayChainHaste` 在 2s 超时后删除，但只在玩家在线 tick 时跑到——挖完立刻下线会留下条目；
+  计时用的还是 `System.currentTimeMillis()` 而非 tickCount（§3 第 2 条）。
 
 ### P1 — 一致性与设计
 
