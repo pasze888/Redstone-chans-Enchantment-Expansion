@@ -57,6 +57,8 @@ def fmt_effect(e):
         parts.append(f"概率 = {fmt_value(e['chance'])}")
     if 'radius' in e:
         parts.append(f"半径 = {fmt_num(e['radius'])}格")
+    if 'target' in e and isinstance(e['target'], str):
+        parts.append(f"目标 = {e['target']}")
     if 'effect' in e and isinstance(e['effect'], str):
         parts.append(f"效果: {strip_ns(e['effect'])}")
     if 'to_apply' in e:
@@ -230,7 +232,7 @@ header = """# Redstone 附魔扩展 · 附魔全表
 > **数值公式约定**：效果量 = 首级基础值 + 每级增量 × (Lv − 1)，形如 `0.5 + 0.5*(Lv-1)`
 > 表示 Lv1 为 0.5，此后每提升 1 级再加 0.5（即 Lv1~5 = 0.5/1.0/1.5/2.0/2.5）。
 > 对应 JSON 的线性 LevelBasedValue（`base` + `per_level_above_first`）。
-> 时长单位为 tick（20 tick = 1 秒）。"条件触发"表示带 entity_requirements 谓词，详见 JSON。
+> 时长单位为 tick（20 tick = 1 秒）。"条件触发"表示该效果带 `requirements` 谓词，详见 JSON。
 > 标记型附魔（如自动熔炼）无参数，行为由事件代码实现，见「机制备注」。
 
 """.format(n=len(enchs))
@@ -250,9 +252,10 @@ APPENDIX = """
 | 地质学 / 点石成金 | 额外掉落独立于原版掉落，走时运计数加成（`rand(时运+2)-1`，最小 1 倍） |
 | 矿工（`adaptive`） | 每 tick 检查：Y<0 时施加 12 秒夜视（隐藏效果，无粒子），每 tick 重置所以无闪烁；Y≥0 时**无差别移除夜视**（会洗掉夜视药水）；摘头盔不立即移除 |
 | 反伪装（`anti_camouflage`） | 服务端 tick：潜行中给 16 格内所有 `Monster`（接口级，含 mod 生物）上发光 2.5 秒（40+10×级 tick），无粒子；中立怪（猪灵/狼/铁傀儡非 `Monster`）不点亮；停止潜行后残留≤2.5 秒 |
-| 光环系（`aura_*`） | 挂 `location_changed`，**跨方块格触发**；时长默认 60 tick（3 秒）持续重刷；效果隐藏（ambient+无粒子），但 HUD 图标仍显示；15 个全部互斥（`exclusive_set/aura`），一件装备只能一个 |
+| 光环系（`aura_*`） | 挂 `location_changed`，**跨方块格触发**；时长默认 60 tick（3 秒）持续重刷；效果隐藏（ambient+无粒子），但 HUD 图标仍显示；13 个全部互斥（`exclusive_set/aura`），一件装备只能一个。施加对象由 JSON 的 `target` 决定：`all` 含穿戴者、`others` 除穿戴者、`others_non_player` 再排除玩家、`self` 仅自身；中毒 / 缓慢 / 虚弱 / 凋零 / 寄生五个负面光环用 `others_non_player`，联机时不会波及路过的玩家 |
 | 斩首（`decapitation`） | `LivingDropsEvent` 上按实体 ID 猜头颅物品（`<type>_head/_skull/head_/skull_`，先原版后全注册表）；**找不到头颅物品则完全不掷骰**；主手武器判定，远程击杀也有效 |
 | 绝境逆袭 / 以寡敌众 | 属性修饰符（transient/permanent）按 tick 重算，`ADD_MULTIPLIED_BASE` 乘区 |
+| 昼夜流转（`daynight_cycle`） | 服务端每 20 tick 收敛一次属性：白天给攻击伤害、夜晚给移动速度（`ADD_MULTIPLIED_BASE`），**每件**带该附魔的盔甲 +5%（代码常量 `0.05`，非 JSON 数值）；没有附魔时两个修饰符都移除；值没变不重写属性 |
 | 高级耐久（`advanced_unbreaking`） | 二项分布概率减免耐久（4/5 概率免耗），应用在 `item_damage` 组件，非原版 Unbreaking 机制 |
 | 基岩破坏者 / 幻岩转化 | 数据包函数 `run_function` + `replace_block` 实现，分别消耗 1.5K / 1K 耐久，均无掉落 |
 

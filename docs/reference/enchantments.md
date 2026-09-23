@@ -6,7 +6,7 @@
 > **数值公式约定**：效果量 = 首级基础值 + 每级增量 × (Lv − 1)，形如 `0.5 + 0.5*(Lv-1)`
 > 表示 Lv1 为 0.5，此后每提升 1 级再加 0.5（即 Lv1~5 = 0.5/1.0/1.5/2.0/2.5）。
 > 对应 JSON 的线性 LevelBasedValue（`base` + `per_level_above_first`）。
-> 时长单位为 tick（20 tick = 1 秒）。"条件触发"表示带 entity_requirements 谓词，详见 JSON。
+> 时长单位为 tick（20 tick = 1 秒）。"条件触发"表示该效果带 `requirements` 谓词，详见 JSON。
 > 标记型附魔（如自动熔炼）无参数，行为由事件代码实现，见「机制备注」。
 
 
@@ -248,19 +248,19 @@
 
 | 附魔 | 最大等级 | 数值/公式 | 描述 |
 |---|---|---|---|
-| 燃烧光环（`aura_burning`）〔光环〕 | 1 | 换格触发: [area_ignite] 半径 = 2格；换格触发: [area_mob_effect] 半径 = 2格，效果: fire_resistance | 移动过程中，自身的2格范围内产生火焰(同时获得火焰抗性) |
-| 发光光环（`aura_glowing`）〔光环〕 | 1 | 换格触发: [area_mob_effect] 半径 = 4格，效果: glowing | 移动过程中，自身的4格范围内产生发光效果 |
+| 燃烧光环（`aura_burning`）〔光环〕 | 1 | 换格触发: [area_ignite] 半径 = 2格；换格触发: [area_mob_effect] 半径 = 2格，目标 = self，效果: fire_resistance | 移动过程中，自身的2格范围内产生火焰(同时获得火焰抗性) |
+| 发光光环（`aura_glowing`）〔光环〕 | 1 | 换格触发: [area_mob_effect] 半径 = 4格，目标 = others，效果: glowing | 移动过程中，自身的4格范围内产生发光效果 |
 | 急迫光环（`aura_haste`）〔光环〕 | 1 | 换格触发: [area_mob_effect] 半径 = 4格，效果: haste | 移动过程中，自身的4格范围内产生急迫效果 |
-| 寄生光环（`aura_infested`）〔光环〕 | 1 | 换格触发: [area_mob_effect] 半径 = 4格，效果: infested | 移动过程中，自身的4格范围内产生寄生效果 |
+| 寄生光环（`aura_infested`）〔光环〕 | 1 | 换格触发: [area_mob_effect] 半径 = 4格，目标 = others_non_player，效果: infested | 移动过程中，自身的4格范围内产生寄生效果 |
 | 跳跃光环（`aura_jump_boost`）〔光环〕 | 1 | 换格触发: [area_mob_effect] 半径 = 4格，效果: jump_boost | 移动过程中，自身的4格范围内产生跳跃提升效果 |
-| 中毒光环（`aura_poison`）〔光环〕 | 1 | 换格触发: [area_mob_effect] 半径 = 4格，效果: poison | 移动过程中，自身的4格范围内产生中毒效果 |
+| 中毒光环（`aura_poison`）〔光环〕 | 1 | 换格触发: [area_mob_effect] 半径 = 4格，目标 = others_non_player，效果: poison | 移动过程中，自身的4格范围内产生中毒效果 |
 | 生命光环（`aura_regeneration`）〔光环〕 | 1 | 换格触发: [area_mob_effect] 半径 = 4格，效果: regeneration | 移动过程中，自身的4格范围内产生生命恢复效果 |
 | 抗性光环（`aura_resistance`）〔光环〕 | 1 | 换格触发: [area_mob_effect] 半径 = 4格，效果: resistance | 移动过程中，自身的4格范围内产生抗性提升效果 |
-| 缓慢光环（`aura_slowness`）〔光环〕 | 1 | 换格触发: [area_mob_effect] 半径 = 4格，效果: slowness | 移动过程中，自身的4格范围内产生缓慢效果 |
+| 缓慢光环（`aura_slowness`）〔光环〕 | 1 | 换格触发: [area_mob_effect] 半径 = 4格，目标 = others_non_player，效果: slowness | 移动过程中，自身的4格范围内产生缓慢效果 |
 | 迅捷光环（`aura_speed`）〔光环〕 | 1 | 换格触发: [area_mob_effect] 半径 = 4格，效果: speed | 移动过程中，自身的4格范围内产生迅捷效果 |
 | 力量光环（`aura_strength`）〔光环〕 | 1 | 换格触发: [area_mob_effect] 半径 = 4格，效果: strength | 移动过程中，自身的4格范围内产生力量效果 |
-| 虚弱光环（`aura_weakness`）〔光环〕 | 1 | 换格触发: [area_mob_effect] 半径 = 4格，效果: weakness | 移动过程中，自身的4格范围内产生虚弱效果 |
-| 凋零光环（`aura_wither`）〔光环〕 | 1 | 换格触发: [area_mob_effect] 半径 = 4格，效果: wither | 移动过程中，自身的4格范围内产生凋零效果 |
+| 虚弱光环（`aura_weakness`）〔光环〕 | 1 | 换格触发: [area_mob_effect] 半径 = 4格，目标 = others_non_player，效果: weakness | 移动过程中，自身的4格范围内产生虚弱效果 |
+| 凋零光环（`aura_wither`）〔光环〕 | 1 | 换格触发: [area_mob_effect] 半径 = 4格，目标 = others_non_player，效果: wither | 移动过程中，自身的4格范围内产生凋零效果 |
 | 重力诅咒（`curse_of_gravity`）〔诅咒〕 | 3 | 属性: 数值 = 0.02 + 0.06*(Lv-1)，属性 generic.gravity（加值） | 增加坠落速度和伤害 |
 | 草皮行者（`walker_grass`）〔行者〕 | 2 | damage_immunity: （条件触发）；换格触发: [replace_disk] 半径 = clamp(3 + 1*(Lv-1)，0~16)格（条件触发）；换格触发: [spawn_particles] speed=1.0 | 行走时将泥土变为草方块 |
 | 熔岩行者（`walker_magma`）〔行者〕 | 2 | damage_immunity: （条件触发）；换格触发: [replace_disk] 半径 = clamp(3 + 1*(Lv-1)，0~16)格（条件触发） | 行走时生成将熔岩变为玄武岩 |
@@ -355,9 +355,10 @@
 | 地质学 / 点石成金 | 额外掉落独立于原版掉落，走时运计数加成（`rand(时运+2)-1`，最小 1 倍） |
 | 矿工（`adaptive`） | 每 tick 检查：Y<0 时施加 12 秒夜视（隐藏效果，无粒子），每 tick 重置所以无闪烁；Y≥0 时**无差别移除夜视**（会洗掉夜视药水）；摘头盔不立即移除 |
 | 反伪装（`anti_camouflage`） | 服务端 tick：潜行中给 16 格内所有 `Monster`（接口级，含 mod 生物）上发光 2.5 秒（40+10×级 tick），无粒子；中立怪（猪灵/狼/铁傀儡非 `Monster`）不点亮；停止潜行后残留≤2.5 秒 |
-| 光环系（`aura_*`） | 挂 `location_changed`，**跨方块格触发**；时长默认 60 tick（3 秒）持续重刷；效果隐藏（ambient+无粒子），但 HUD 图标仍显示；15 个全部互斥（`exclusive_set/aura`），一件装备只能一个 |
+| 光环系（`aura_*`） | 挂 `location_changed`，**跨方块格触发**；时长默认 60 tick（3 秒）持续重刷；效果隐藏（ambient+无粒子），但 HUD 图标仍显示；13 个全部互斥（`exclusive_set/aura`），一件装备只能一个。施加对象由 JSON 的 `target` 决定：`all` 含穿戴者、`others` 除穿戴者、`others_non_player` 再排除玩家、`self` 仅自身；中毒 / 缓慢 / 虚弱 / 凋零 / 寄生五个负面光环用 `others_non_player`，联机时不会波及路过的玩家 |
 | 斩首（`decapitation`） | `LivingDropsEvent` 上按实体 ID 猜头颅物品（`<type>_head/_skull/head_/skull_`，先原版后全注册表）；**找不到头颅物品则完全不掷骰**；主手武器判定，远程击杀也有效 |
 | 绝境逆袭 / 以寡敌众 | 属性修饰符（transient/permanent）按 tick 重算，`ADD_MULTIPLIED_BASE` 乘区 |
+| 昼夜流转（`daynight_cycle`） | 服务端每 20 tick 收敛一次属性：白天给攻击伤害、夜晚给移动速度（`ADD_MULTIPLIED_BASE`），**每件**带该附魔的盔甲 +5%（代码常量 `0.05`，非 JSON 数值）；没有附魔时两个修饰符都移除；值没变不重写属性 |
 | 高级耐久（`advanced_unbreaking`） | 二项分布概率减免耐久（4/5 概率免耗），应用在 `item_damage` 组件，非原版 Unbreaking 机制 |
 | 基岩破坏者 / 幻岩转化 | 数据包函数 `run_function` + `replace_block` 实现，分别消耗 1.5K / 1K 耐久，均无掉落 |
 

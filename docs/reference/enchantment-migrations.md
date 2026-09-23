@@ -127,9 +127,11 @@ pack_leader/tracker）、armor_horse 2（pasture/spirit）。
   sword Pre `赌徒 → 伏击 → 背刺 → 均衡器 → 处决`，armor_wolf Pre `pack_leader → tracker`，
   armor_horse tick `pasture → spirit`。
 - **仅服务端执行**（旧版双侧跑，行为不变）：所有 itemValue 段（armor 全家族、berserk/bulletproof、
-  snipe/volt、fishing 3、shear 4、sea_breeze/searing、potential_conversion、echoes_battle、daynight_cycle、
+  snipe/volt、fishing 3、shear 4、sea_breeze/searing、potential_conversion、echoes_battle、~~daynight_cycle~~、
   revive_ward）。纯标记/纯事件段保真双侧：tactical_knee（客户端取消本地坠落预测）、
   invisibility_cloak（本地效果预览）。
+  > ~~daynight_cycle 属此列~~ → 2026-09-23 订正：当时 `ArmorEntityTickEvents` **并没有侧判断**
+  > （只判了 `Player`），客户端确实整套跑；侧判断是 2026-09-23 那批才补上的。
 - 怪癖清单（迁移时原样照抄，2026-09 修复批次处理结果见本文件「怪癖修复批次」小节）：
   - ~~armor_foot `LAST_SNEAKING` 泄漏~~ → 已修（EntityLeaveLevelEvent 清理）；
   - ~~invisibility_cloak 移除隐身不分来源~~ → 已修（附件标记精确移除）；
@@ -137,8 +139,9 @@ pack_leader/tracker）、armor_horse 2（pasture/spirit）。
     （用户决定：数值与注释均不动，矛盾已知）~~ → 2026-09-20 用户改判：**数值不动，注释改为 50%**
     （`ArmorWolfDamageEvents` 计算处 / `ModEnchantmentEffectComponents` 组件声明处，详见
     `enchantment-pack-leader.md`）；
-  - spirit 用 `addPermanentModifier` 且每 tick 先 `removeModifier(spirit_speed)` 再加（非临时修饰符，
-    摘除马铠靠 LivingEquipmentChangeEvent 清理，modifier id `spirit_speed` 照抄）；
+  - spirit 用永久修饰符（摘除马铠靠 LivingEquipmentChangeEvent 清理，modifier id `spirit_speed` 照抄）；
+    ~~每 tick 先 `removeModifier(spirit_speed)` 再加~~ → 2026-09-23 改为值变了才写
+    （`AttributeUtil.applyPermanent`）；
   - armor_head 的 AAO_DAMAGE/AAO_ARMOR attribute modifier id 照抄；~~against_all_odds 不过滤
     死亡生物~~ → 已修（isAlive 谓词）；
   - ~~revive_ward 判死时点~~（迁移时实际用的是 Pre + `getOriginalDamage()`，先前沉淀误记为
@@ -220,3 +223,47 @@ invisibility_cloak 附件标记精确移除、sturdy/indestructible 标记组件
   改连乘后**会叠加**——同一把剑的赌徒×伏击×背刺×均衡器、同一张弓的狙击×伏特。
   与狂战士/狼群领袖的连乘段相乘也保持原意（那些段本来就是连乘）。
 - **上游语义偏离**：这几处原注释写着"公式原样"（照搬 fork 前上游行为），本批有意偏离。
+
+## tick 与属性写入收敛批次（2026-09-23）
+
+审查清单（`../design/enchantment-authoring.md` §4）的 P0-1 与 P1-1/2/3/6 落地，外加清单漏记的同类项：
+
+- **属性修饰符改为"值变了才写"**：21.1.219 的 `AttributeInstance.addPermanentModifier` 走
+  `addModifier`（`putIfAbsent`，同 id 重复即抛 `IllegalArgumentException`），所以每 tick 改值只能
+  "先 remove 再加"——而每次 add 都 `setDirty()`，触发属性重算并向客户端刷同步包。新增
+  `util/AttributeUtil.applyPermanent(entity, attribute, id, amount, op)`：`amount` 传 `null` 表示
+  "不该有该修饰符"（存在则移除），数值/运算都相同则完全不碰。落点三处：`ArmorEntityTickEvents`
+  （昼夜流转）、`ArmorHorseTickEvents` 精神段、`ArmorHeadTickEvents` 的以寡敌众/绝境逆袭。
+- **节流统一**：新增 `util/TickUtil`（`ONE_SECOND = 20`、`isDue(entity, period)`，按实体 `tickCount`
+  对齐，不需要自存时间戳）。`ArmorEntityTickEvents`（同时补上服务端侧判断）、
+  `ArmorHeadTickEvents.againstAllOdds`（原先每 tick 一次 8 格 AABB 实体查询）改为每秒一次；
+  `ArmorHorseTickEvents.pasture` 的 `tickCount % 20` 换成同一写法。`CurseTickEvents` 顺带删掉
+  `LAST_DAMAGE_TIME` / `LAST_EFFECT_TIME` 两个无清理路径的静态 Map（P0-4）。
+- **每件 5% 的昼夜流转**：`BONUS_PER_LEVEL = 0.05` 仍是代码常量（附魔 JSON 只有 `daynight_cycle`
+  标记组件，没有数值组件），已登记进 `enchantments.md` 的机制备注。
+- **等级读取入口**：`EnchantmentUtil` 增 `levelOf(registryAccess, stack, key)`，替换 7 处手写
+  `holder(...) + levelOn(...)`；`levelOn` 从 `EnchantmentHelper.getItemEnchantmentLevel` 换成
+  `ItemStack#getEnchantmentLevel`（NeoForge 已弃用前者，其实现就是委托到后者，含
+  `GetEnchantmentLevelEvent` 钩子）。
+- **随机源**：庄稼舞的逐格判定从类内静态 `java.util.Random` 改为 `serverLevel.random`。
+- **负面光环不再作用于玩家**：`AreaMobEffectEffect.Target` 增 `OTHERS_NON_PLAYER`（JSON
+  `"others_non_player"`），中毒/缓慢/虚弱/凋零/寄生五个光环改用它（寄生已核对为 `HARMFUL` 类）；
+  发光的 `others`、增益类的 `all` 不变。**行为变更**：联机时这些光环不再波及路过的玩家。
+- **延迟代价**：节流带来 ≤1 秒的生效/失效延迟（昼夜切换、换装、怪数变化、诅咒首跳），
+  本次有意接受。
+
+已验证的 API 事实：
+
+- `AttributeInstance`：`getModifier(ResourceLocation)`（无则 null）、`hasModifier(ResourceLocation)`、
+  `addOrReplacePermanentModifier(AttributeModifier)`、`removeModifier(ResourceLocation)` 在 21.1.219
+  都存在（`javap` 核对 `compiledWithNeoForge_50f69430…jar`，即本仓库实际使用的版本）。
+  `addOrReplacePermanentModifier` 内部先 `removeModifier(id)` 再 `addModifier`，可以在同一 id 上反复收敛。
+- `ItemStack#getEnchantmentLevel(Holder)` 是 NeoForge 在 `IItemStackExtension` 上的默认方法，会触发
+  `GetEnchantmentLevelEvent`（`api-sources/net/neoforged/neoforge/common/extensions/IItemStackExtension.java:162`）。
+- `MobEffects.INFESTED` 的构造参数是 `MobEffectCategory.HARMFUL`（`javap` 核对静态初始化器）。
+- `location_changed` 的 `requirements` 只在 `onChangedBlock` **之前**对穿戴者求值一次
+  （`Enchantment.java:490-512`、`locationContext:453-461`），`LootContextParamSets.ENCHANTED_LOCATION`
+  只带 `THIS_ENTITY / ENCHANTMENT_LEVEL / ORIGIN / ENCHANTMENT_ACTIVE`，**无法逐个筛选范围内的目标实体**——
+  逐目标过滤只能写在 effect 里（本次 `AreaMobEffectEffect` 就是这么做的）。
+- `Block.getDrops(BlockState, ServerLevel, BlockPos, BlockEntity, Entity, ItemStack)` 在 21.1.219 已弃用
+  （`ToolBlockBreakEvents` 三处仍在用，见设计文档 §4 P2 观察项）。

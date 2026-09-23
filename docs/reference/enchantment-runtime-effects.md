@@ -29,10 +29,12 @@
 
 - 已删除 13 个 `function/enchantment/aura/*.mcfunction`，改用两个自定义
   location-based effect：`AreaMobEffectEffect`（radius/effect/duration_ticks/
-  amplifier/target=all|others|self，编码 `redstone_enchants:area_mob_effect`）与
+  amplifier/target=all|others|others_non_player|self，编码 `redstone_enchants:area_mob_effect`）与
   `AreaIgniteEffect`（radius/fire_ticks，`redstone_enchants:area_ignite`），
   注册在 `Registries.ENCHANTMENT_LOCATION_BASED_EFFECT_TYPE`（NeoForge
   DeferredRegister 即可，见 `ModEnchantmentLocationBasedEffects`）。
+  `others_non_player` 是 2026-09-23 为"负面光环不碰玩家"加的（见
+  `enchantment-migrations.md` 同批记录）；`AreaIgniteEffect` 仍只排除自己，点火会波及玩家。
 - 关键接口事实：`location_changed` 组件反序列化走
   `EnchantmentLocationBasedEffect` 注册表，自定义类直接实现
   `onChangedBlock(level, enchLevel, item, entity, pos, applyTransientEffects)`；

@@ -32,9 +32,11 @@
 - datagen `exclusiveWith`：`context.lookup(Registries.ENCHANTMENT).getOrThrow(TagKey<Enchantment>)` 能解析
   main/resources 下手写 tag JSON（runData 实测通过，无需先把 tag 也迁入 datagen）。
 - `@EventBusSubscriber(modid)`（无 bus 参数）在 21.1 可同时收 mod bus 的 `GatherDataEvent`（实测 runData 生效）。
-- `Enchantments.FORTUNE` 在 1.21.1 是 `ResourceKey<Enchantment>`，取 Holder：
-  `level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE)`，
-  再 `EnchantmentHelper.getItemEnchantmentLevel(holder, stack)`。
+- `Enchantments.FORTUNE` 在 1.21.1 是 `ResourceKey<Enchantment>`；取等级直接用
+  `EnchantmentUtil.levelOf(level.registryAccess(), stack, Enchantments.FORTUNE)`。
+  （~~取 Holder 再 `EnchantmentHelper.getItemEnchantmentLevel(holder, stack)`~~ → 2026-09-23：
+  该方法已被 NeoForge 弃用，实现就是委托到 `ItemStack#getEnchantmentLevel`，见
+  `enchantment-migrations.md` 的 tick 与属性写入收敛批次。）
 
 ## 本次重构确立的架构（后续批次照此迁移）
 
@@ -104,3 +106,22 @@ gambler 双分支随机）。迁移它们 = 每个附魔写自定义 effect 类�
 > （boons/calamity/nullify 用自定义实体效果 + 原版 POST_ATTACK；其余 8 个用
 > `unit()`/`value()`/`special()` 组件 + `SwordLivingDamageEvents`/`SwordDropsEvents` 分发器），
 > 未再新增 effect 类。组件求值需 `ServerLevel` 的效果只在服务端执行。
+
+## requirements 的求值时机（2026-09-23 核对）
+
+- `ConditionalEffect<T>(effect, Optional<LootItemCondition> requirements)` 的 `requirements` 在效果执行
+  **之前**按该组件自己的 context 求值一次，**不是**逐目标求值：
+  - `location_changed`（`List<ConditionalEffect<EnchantmentLocationBasedEffect>>`）用
+    `LootContextParamSets.ENCHANTED_LOCATION`，参数只有 `THIS_ENTITY`（= 触发实体/穿戴者）、
+    `ENCHANTMENT_LEVEL`、`ORIGIN`、`ENCHANTMENT_ACTIVE`（`Enchantment.java:453-461`），
+    在进入 `onChangedBlock` 之前对穿戴者判一次（`Enchantment.java:490-512`）。
+  - 所以"只对某类目标生效"（如光环不碰玩家）**无法用 JSON requirements 表达**，必须在 effect 内部
+    逐目标过滤，或把过滤维度做成 effect 的参数——本次就是后者
+    （`AreaMobEffectEffect.Target.OTHERS_NON_PLAYER`，见 `enchantment-migrations.md` 同批记录）。
+  - 反过来，`post_attack` 的 `TargetedConditionalEffect` 带 `EnchantmentTarget`
+    （attacker / damaging_entity / victim），requirements 才能针对"某个目标角色"判定。
+- 本仓库已有的 requirements 用例都在穿戴者/攻击者/受害者角色上判定，如
+  `MeleeEnchantments.java:290-296` 的 `committed`（排除玩家受害者）、`BootsEnchantments.java:89-100`
+  的 walker 系（`THIS` `setOnGround(true)`）、`ShieldEnchantments.java:44-45`（`periodicTick(200)`）。
+- JSON 层字段名就是 `requirements`（没有 `entity_requirements` 这个字段）；datagen 侧用
+  `Enchantment.Builder.withEffect(组件, 效果, LootItemCondition.Builder)` 重载。
