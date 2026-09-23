@@ -11,6 +11,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.EnchantedItemInUse;
 import net.minecraft.world.item.enchantment.effects.EnchantmentLocationBasedEffect;
 import net.minecraft.world.phys.AABB;
@@ -21,6 +22,7 @@ import net.minecraft.world.phys.Vec3;
  * <p>由 {@code minecraft:location_changed} 组件驱动，穿戴者移动换格时反复触发，
  * 因此时长取 3 秒（60 tick）：移动中持续重刷，停下后约 3 秒渐退。
  * <p>target 含义：{@code all}=范围内所有生物（含穿戴者）；{@code others}=除穿戴者外的生物；
+ * {@code others_non_player}=除穿戴者外且不含玩家（负面光环用，避免 PvP 语境无差别下负面）；
  * {@code self}=仅穿戴者自己。
  * <p>效果以 ambient（无屏幕抖动）+ 隐藏粒子施加，来源实体记为施加者
  * （可被 /effect 时间轴与统计正确归属）。
@@ -29,7 +31,7 @@ public record AreaMobEffectEffect(float radius, Holder<MobEffect> effect, int du
         implements EnchantmentLocationBasedEffect {
 
     public enum Target implements StringRepresentable {
-        ALL("all"), OTHERS("others"), SELF("self");
+        ALL("all"), OTHERS("others"), OTHERS_NON_PLAYER("others_non_player"), SELF("self");
 
         public static final Codec<Target> CODEC = StringRepresentable.fromEnum(Target::values);
 
@@ -64,7 +66,11 @@ public record AreaMobEffectEffect(float radius, Holder<MobEffect> effect, int du
         }
         AABB box = new AABB(pos, pos).inflate(this.radius);
         for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, box)) {
-            if (this.target == Target.OTHERS && target == entity) {
+            if (this.target != Target.ALL && target == entity) {
+                // others / others_non_player 都不含穿戴者自己
+                continue;
+            }
+            if (this.target == Target.OTHERS_NON_PLAYER && target instanceof Player) {
                 continue;
             }
             this.addEffectTo(target, entity);

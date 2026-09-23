@@ -11,7 +11,7 @@
           "type": "redstone_enchants:area_mob_effect",
           "effect": "minecraft:slowness",
           "radius": 4.0,
-          "target": "others"
+          "target": "others_non_player"
         }
       }
     ]

@@ -199,7 +199,7 @@ final class BootsEnchantments {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new AreaMobEffectEffect(4.0F, MobEffects.INFESTED, 60, 0, AreaMobEffectEffect.Target.OTHERS))
+                        new AreaMobEffectEffect(4.0F, MobEffects.INFESTED, 60, 0, AreaMobEffectEffect.Target.OTHERS_NON_PLAYER))
                 .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
 
         register(context, ModEnchantments.AURA_JUMP_BOOST, colored(
@@ -215,7 +215,7 @@ final class BootsEnchantments {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new AreaMobEffectEffect(4.0F, MobEffects.POISON, 60, 0, AreaMobEffectEffect.Target.OTHERS))
+                        new AreaMobEffectEffect(4.0F, MobEffects.POISON, 60, 0, AreaMobEffectEffect.Target.OTHERS_NON_PLAYER))
                 .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
 
         register(context, ModEnchantments.AURA_REGENERATION, colored(
@@ -239,7 +239,7 @@ final class BootsEnchantments {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new AreaMobEffectEffect(4.0F, MobEffects.MOVEMENT_SLOWDOWN, 60, 0, AreaMobEffectEffect.Target.OTHERS))
+                        new AreaMobEffectEffect(4.0F, MobEffects.MOVEMENT_SLOWDOWN, 60, 0, AreaMobEffectEffect.Target.OTHERS_NON_PLAYER))
                 .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
 
         register(context, ModEnchantments.AURA_SPEED, colored(
@@ -263,7 +263,7 @@ final class BootsEnchantments {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new AreaMobEffectEffect(4.0F, MobEffects.WEAKNESS, 60, 0, AreaMobEffectEffect.Target.OTHERS))
+                        new AreaMobEffectEffect(4.0F, MobEffects.WEAKNESS, 60, 0, AreaMobEffectEffect.Target.OTHERS_NON_PLAYER))
                 .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
 
         register(context, ModEnchantments.AURA_WITHER, colored(
@@ -271,7 +271,7 @@ final class BootsEnchantments {
                         Enchantment.dynamicCost(12, 6), Enchantment.dynamicCost(24, 12), 8, EquipmentSlotGroup.FEET),
                 0xFF55FF)
                 .withEffect(EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new AreaMobEffectEffect(4.0F, MobEffects.WITHER, 60, 0, AreaMobEffectEffect.Target.OTHERS))
+                        new AreaMobEffectEffect(4.0F, MobEffects.WITHER, 60, 0, AreaMobEffectEffect.Target.OTHERS_NON_PLAYER))
                 .exclusiveWith(enchantments.getOrThrow(AURA_EXCLUSIVE)));
 
         register(context, ModEnchantments.CROP_DANCE, colored(
