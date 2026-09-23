@@ -359,3 +359,11 @@ A/B/C 三批之后剩下的最后 5 个 mcfunction（`function/enchantment/etern
   `Level#playSound(Player, double, double, double, SoundEvent, SoundSource, float, float)`；
   `SoundEvents.AMETHYST_BLOCK_STEP/BREAK/FALL`；`SoundSource.MASTER`；
   `FrostedIceBlock.AGE`（= `BlockStateProperties.AGE_3`）；`Entity#addTag(String)` / `kill()`。
+
+## auto_smelt 改用 BlockDropsEvent（2026-09-23）
+
+- `ToolBlockBreakEvents` 不再在 `BlockEvent.BreakEvent` 中取消破坏、手动调用 `BlockState#getDrops`、生成掉落并手动扣除 1 点耐久。
+- 自动熔炼改在 `BlockDropsEvent` 中处理已经确定的掉落；这样保留方块经验、时运结果、精准采集结果以及其他模组的掉落修改。
+- 配方查找改为 `RecipeManager#getRecipeFor(RecipeType.SMELTING, SingleRecipeInput, Level)`，按 `输入数量 × 配方产出数量` 生成结果，并在超过物品最大堆叠数时拆成多个 `ItemEntity`。
+- 启用 `auto_smelt` 时仍跳过本分发器的地质学、点石成金、精通采集、伐木和挖掘机效果，保持原有附魔组合语义；创造模式不触发自动熔炼。
+- 未复制 Apotheosis 或 AnvilCraft 的实现代码；仅参考公开的“破坏后处理掉落”思路，使用 NeoForge/Minecraft 公共 API 独立实现。

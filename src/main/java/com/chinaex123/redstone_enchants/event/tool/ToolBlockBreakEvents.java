@@ -27,16 +27,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.level.BlockDropsEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
-import net.minecraft.world.item.crafting.SmeltingRecipe;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,8 +50,8 @@ import java.util.UUID;
 /**
  * 挖掘钩子上附魔效果的统一分发器。
  * <p>各效果的行为参数由附魔 JSON 声明（见 {@link ModEnchantmentEffectComponents}），
- * 这里只负责在方块破坏事件上按固定顺序驱动各效果：
- * 连锁急迫 → 自动熔炼 → 概率加成掉落（地质学 / 点石成金 / 精通采集）→ 连锁砍树 → 区域挖掘。
+ * 这里负责方块破坏前后的挖掘效果：
+ * 连锁急迫 → 自动熔炼（由 {@link BlockDropsEvent} 处理；启用时跳过本分发器其它效果）→ 概率加成掉落（地质学 / 点石成金 / 精通采集）→ 连锁砍树 → 区域挖掘。
  * 旧实现是每个附魔一个独立订阅者，执行顺序取决于注册顺序、且互相之间会因事件取消而不确定。
  */
 @EventBusSubscriber(modid = RedstoneEnchants.MOD_ID)
@@ -85,44 +85,86 @@ public final class ToolBlockBreakEvents {
 
         updateChainHaste(player, level, tool, event.getPos(), event.getState());
 
-        if (!player.isCreative()
-                && EnchantmentHelper.has(tool, ModEnchantmentEffectComponents.AUTO_SMELT.get())) {
-            autoSmeltBreak(event, player, level, tool);
+        boolean autoSmelt = !player.isCreative()
+                && EnchantmentHelper.has(tool, ModEnchantmentEffectComponents.AUTO_SMELT.get());
+        // 自动熔炼在 BlockDropsEvent 中处理；保持旧行为，启用时不执行本分发器的其它挖掘效果。
+        if (!autoSmelt) {
+            geologyBonusDrop(event, player, level, tool);
+            goldfingerBonusDrop(event, player, level, tool);
+            masterGathererDoubleDrop(event, player, level, tool);
+            timberChainBreak(event, player, level, tool);
+            excavatorAreaBreak(event, player, level, tool);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void onBlockDrops(BlockDropsEvent event) {
+        if (!(event.getBreaker() instanceof Player player) || player.level().isClientSide()) {
+            return;
+        }
+        if (player.isCreative()) {
+            return;
+        }
+        ItemStack tool = event.getTool();
+        if (tool.isEmpty() || !EnchantmentHelper.has(tool, ModEnchantmentEffectComponents.AUTO_SMELT.get())) {
             return;
         }
 
-        geologyBonusDrop(event, player, level, tool);
-        goldfingerBonusDrop(event, player, level, tool);
-        masterGathererDoubleDrop(event, player, level, tool);
-        timberChainBreak(event, player, level, tool);
-        excavatorAreaBreak(event, player, level, tool);
+        List<ItemEntity> drops = event.getDrops();
+        if (drops.isEmpty()) {
+            return;
+        }
+        List<ItemEntity> originalDrops = new ArrayList<>(drops);
+        drops.clear();
+        for (ItemEntity drop : originalDrops) {
+            appendSmeltedDrop(drops, drop, smelt(drop.getItem(), event.getLevel()));
+        }
     }
 
     // ---- 自动熔炼 ----
 
-    private static void autoSmeltBreak(BlockEvent.BreakEvent event, Player player, ServerLevel level, ItemStack tool) {
-        event.setCanceled(true);
-        BlockPos pos = event.getPos();
-        List<ItemStack> drops = blockDrops(event.getState(), level, pos, level.getBlockEntity(pos), player, tool);
-        level.destroyBlock(pos, false, player);
-        for (ItemStack drop : drops) {
-            spawnItem(level, pos, smelt(drop, level));
+    private static void appendSmeltedDrop(List<ItemEntity> drops, ItemEntity drop, ItemStack smelted) {
+        ItemStack input = drop.getItem();
+        if (smelted.isEmpty()
+                || (ItemStack.isSameItemSameComponents(input, smelted) && input.getCount() == smelted.getCount())) {
+            drops.add(drop);
+            return;
         }
-        tool.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
+
+        int maxStackSize = Math.max(1, smelted.getMaxStackSize());
+        int remaining = smelted.getCount();
+        int firstCount = Math.min(maxStackSize, remaining);
+        drop.setItem(smelted.copyWithCount(firstCount));
+        drops.add(drop);
+        remaining -= firstCount;
+
+        while (remaining > 0) {
+            int extraCount = Math.min(maxStackSize, remaining);
+            ItemEntity extra = drop.copy();
+            extra.setItem(smelted.copyWithCount(extraCount));
+            if (drop.hasPickUpDelay()) {
+                extra.setDefaultPickUpDelay();
+            }
+            drops.add(extra);
+            remaining -= extraCount;
+        }
     }
 
     private static ItemStack smelt(ItemStack input, ServerLevel level) {
         if (input.isEmpty()) {
             return ItemStack.EMPTY;
         }
-        SingleRecipeInput recipeInput = new SingleRecipeInput(input);
-        for (RecipeHolder<SmeltingRecipe> holder : level.getRecipeManager().getAllRecipesFor(RecipeType.SMELTING)) {
-            SmeltingRecipe recipe = holder.value();
-            if (recipe.matches(recipeInput, level)) {
-                return recipe.getResultItem(level.registryAccess()).copy();
-            }
-        }
-        return input.copy();
+        return level.getRecipeManager()
+                .getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(input), level)
+                .map(holder -> {
+                    ItemStack result = holder.value().getResultItem(level.registryAccess()).copy();
+                    if (result.isEmpty()) {
+                        return input.copy();
+                    }
+                    result.setCount(input.getCount() * result.getCount());
+                    return result;
+                })
+                .orElseGet(input::copy);
     }
 
     // ---- 地质学：挖石头概率掉矿石 ----

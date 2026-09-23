@@ -348,7 +348,7 @@
 
 | 附魔 | 机制要点 |
 |---|---|
-| 自动熔炼（`auto_smelt`） | 监听 `BreakEvent`：取消原版破坏 → `Block.getDrops` 重算掉落（时运等照常生效）→ 每个掉落物查熔炼配方表替换成品 → 重新生成掉落物，额外扣 1 耐久。**创造模式不生效**（守卫已加）。有此附魔时跳过同分发器上的其它挖掘效果 |
+| 自动熔炼（`auto_smelt`） | 监听 `BlockDropsEvent`：在原版/其他模组已计算掉落、经验仍由 NeoForge 正常处理后，逐个查找 `RecipeType.SMELTING` 配方并替换；按输入数量 × 配方产出数量计算，超过最大堆叠时拆分掉落。不再取消 `BreakEvent` 或手动重算掉落/扣耐久。**创造模式不生效**（守卫已加）。启用时仍跳过同分发器上的其它挖掘效果 |
 | 伐木（`timber`） | BFS 搜索相邻同种原木（6 向），上限 `ToolBlockBreakEvents.TIMBER_CHAIN_LIMIT`（代码常量 512，原配置项已移除），逐个破坏并掉落，每方块扣 1 耐久 |
 | 挖掘机（`excavator`） | 按玩家朝向（含俯仰角定上下）取 (2r+1)² 区域，要求 `tool.isCorrectToolForDrops` 且非不可破坏方块；创造模式跳过 |
 | 精通采集（`master_gatherer`） | 掉落物属 `#c:ores` 时按概率把**全部掉落**复制一份（时运加成过的也会翻倍），`setPickUpDelay(0)`；概率 `min(chance, 1.0)` 封顶 |

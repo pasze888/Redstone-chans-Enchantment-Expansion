@@ -17,7 +17,7 @@
 | L0 纯声明 | 原版组件能完整表达：`attributes`、`tick`、`post_attack`、`hit_block`、`location_changed`、`damage_protection`、`item_damage`、`projectile_*` 等，必要时加 `requirements` | 只改 `data/provider/*.java` | `vitality`、`fortress_stance`、`retrieval` |
 | L1 数值/标记组件 + 现有分发器 | 只是"条件成立时给个按等级变化的数"或"有无此附魔"，现有 `event/**` 分发器已挂好钩子 | provider + `ModEnchantmentEffectComponents` 的一类组件；分发器读值 | `magnet`、`snipe`、`life_steal` |
 | L2 参数化自定义 effect | 需要新"行为"，但同族会出现第二个成员（看不见也按出现算） | 一个 `record + MapCodec` 的 `EnchantmentEntityEffect` / `EnchantmentLocationBasedEffect` / `LevelBasedValue`，在 `ModEnchantment*Effects` 注册 codec | `AreaMobEffectEffect`（撑起 13 个 `aura_*`）、`SplashCloudEffect`（14 个 `splash_*`） |
-| L3 事件代码 | 需要跨 tick 状态、连带破坏多个方块、取消并重跑破坏掉落流程、改附魔等级本身 | `event/**` 分发器；必要时 Mixin | `timber`、`auto_smelt`、`preservation`（Mixin） |
+| L3 事件代码 | 需要跨 tick 状态、连带破坏多个方块、在方块掉落阶段取消/重跑/转换掉落、改附魔等级本身 | `event/**` 分发器；必要时 Mixin | `timber`、`auto_smelt`、`preservation`（Mixin） |
 
 **家族优先，禁止一魔一类。** L2 的范式是 `AreaMobEffectEffect`：13 个光环附魔共用它，
 只有 provider 里传的 `radius / effect / target` 不同（`data/provider/BootsEnchantments.java:171-275`，
@@ -126,8 +126,8 @@ P0 已全部处理完。新增状态照 §3 第 4 条走 `ModAttachments`；静�
 - **范围索敌**：三个类（`ChainBindEffect` / `RicochetEffect` / `SnowballBurstEffect`）各自的"找最近的
   N 个非玩家生物"已收进 `util/TargetingUtil`。原文把第三个记成 `ChainArrowsEffect`——那只是朝 6 个
   固定方向射箭、根本不索敌，实际第三个成员是 `SnowballBurstEffect`。
-- **`Block.getDrops(...)` 弃用**：`ToolBlockBreakEvents` 里其实有**四处**（原文只记了三处，漏了区域挖掘的
-  `:245`），已改用 `BlockState#getDrops(LootParams.Builder)`，收在私有 helper `blockDrops` 里。
+- **`Block.getDrops(...)` 弃用**：当时 `ToolBlockBreakEvents` 里有**四处**（原文只记了三处，漏了区域挖掘的调用点），已改用 `BlockState#getDrops(LootParams.Builder)`，收在私有 helper `blockDrops` 里。
+  本次 `auto_smelt` 改用 `BlockDropsEvent` 后，当前剩余**三处**调用点：精通采集、伐木、区域挖掘。
 - **`aura_burning` 点火波及玩家**：`AreaMobEffectEffect.Target` 提成顶层枚举 `AreaTarget`，
   `AreaIgniteEffect` 也带上 `target` 字段（默认 `others`，保持既有行为），燃烧光环声明
   `others_non_player`——原 mcfunction 的 `data merge entity {Fire:...}` 对玩家本来就静默失败，
