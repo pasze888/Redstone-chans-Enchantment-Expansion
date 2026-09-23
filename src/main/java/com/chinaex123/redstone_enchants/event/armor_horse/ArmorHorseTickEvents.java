@@ -4,6 +4,7 @@ import com.chinaex123.redstone_enchants.RedstoneEnchants;
 import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
 import com.chinaex123.redstone_enchants.util.AttributeUtil;
 import com.chinaex123.redstone_enchants.util.EnchantmentUtil;
+import com.chinaex123.redstone_enchants.util.TickUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -64,14 +65,12 @@ public final class ArmorHorseTickEvents {
         BlockPos pos = horse.blockPosition();
         BlockPos belowPos = pos.below();
 
-        if (horse.level().getBlockState(belowPos).is(Blocks.GRASS_BLOCK)) {
-            // 每 20 tick（1 秒）恢复一次生命值
-            if (horse.tickCount % 20 == 0) {
-                // 每级恢复 0.5 点生命值
-                float healPerLevel = EnchantmentUtil.itemValue(serverLevel, armor,
-                        ModEnchantmentEffectComponents.PASTURE_HEAL.get());
-                horse.heal(healPerLevel);
-            }
+        if (horse.level().getBlockState(belowPos).is(Blocks.GRASS_BLOCK)
+                && TickUtil.isDue(horse, TickUtil.ONE_SECOND)) {
+            // 每秒（20 tick）恢复一次生命值：每级 0.5 点
+            float healPerLevel = EnchantmentUtil.itemValue(serverLevel, armor,
+                    ModEnchantmentEffectComponents.PASTURE_HEAL.get());
+            horse.heal(healPerLevel);
         }
     }
 

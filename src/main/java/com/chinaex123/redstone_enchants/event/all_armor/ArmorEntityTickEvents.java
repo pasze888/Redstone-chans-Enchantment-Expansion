@@ -3,6 +3,7 @@ package com.chinaex123.redstone_enchants.event.all_armor;
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
 import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
 import com.chinaex123.redstone_enchants.util.AttributeUtil;
+import com.chinaex123.redstone_enchants.util.TickUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -40,6 +41,10 @@ public final class ArmorEntityTickEvents {
         }
         if (!(player.level() instanceof ServerLevel)) {
             // 属性修饰符以服务端为准，客户端由属性同步获得
+            return;
+        }
+        if (!TickUtil.isDue(player, TickUtil.ONE_SECOND)) {
+            // 每秒收敛一次：昼夜切换与换装的生效延迟 ≤1 秒
             return;
         }
 

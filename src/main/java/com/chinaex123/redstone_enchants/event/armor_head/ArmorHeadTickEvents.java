@@ -5,6 +5,7 @@ import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
 import com.chinaex123.redstone_enchants.init.ModEnchantments;
 import com.chinaex123.redstone_enchants.util.AttributeUtil;
 import com.chinaex123.redstone_enchants.util.EnchantmentUtil;
+import com.chinaex123.redstone_enchants.util.TickUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -85,6 +86,10 @@ public final class ArmorHeadTickEvents {
         }
         if (!(player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel)) {
             // 属性修饰符以服务端为准，客户端由属性同步获得
+            return;
+        }
+        if (!TickUtil.isDue(player, TickUtil.ONE_SECOND)) {
+            // 每秒重算一次附近的敌对生物数量（8 格实体查询不必每 tick 做）
             return;
         }
 

@@ -3,6 +3,7 @@ package com.chinaex123.redstone_enchants.event.curse;
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
 import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
 import com.chinaex123.redstone_enchants.util.EnchantmentUtil;
+import com.chinaex123.redstone_enchants.util.TickUtil;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -14,10 +15,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 /**
  * 诅咒附魔在玩家 tick 事件上的统一分发器。
  * <p>行为参数由附魔 JSON 组件声明，这里按固定顺序驱动各效果。
@@ -25,9 +22,6 @@ import java.util.UUID;
  */
 @EventBusSubscriber(modid = RedstoneEnchants.MOD_ID)
 public final class CurseTickEvents {
-    private static final Map<UUID, Long> LAST_DAMAGE_TIME = new HashMap<>();
-    private static final Map<UUID, Long> LAST_EFFECT_TIME = new HashMap<>();
-    private static final long PERIOD_TICKS = 20; // 每秒执行一次（20 tick）
     private static final int POISON_DURATION_TICKS = 40; // 中毒效果时长
 
     @SubscribeEvent
@@ -54,16 +48,10 @@ public final class CurseTickEvents {
             return;
         }
 
-        UUID entityId = player.getUUID();
-        long currentTime = serverLevel.getGameTime();
-        Long lastTime = LAST_DAMAGE_TIME.get(entityId);
-
         // 每秒执行一次（20 tick）
-        if (lastTime != null && currentTime - lastTime < PERIOD_TICKS) {
+        if (!TickUtil.isDue(player, TickUtil.ONE_SECOND)) {
             return;
         }
-
-        LAST_DAMAGE_TIME.put(entityId, currentTime);
 
         // 检查所有装备槽（旧版同款：含主手/副手/BODY）
         for (EquipmentSlot slot : EquipmentSlot.values()) {
@@ -89,7 +77,7 @@ public final class CurseTickEvents {
 
     private static void curseOfWaterSource(PlayerTickEvent.Post event) {
         LivingEntity player = event.getEntity();
-        if (!(player.level() instanceof ServerLevel serverLevel)) {
+        if (!(player.level() instanceof ServerLevel)) {
             // 仅服务端执行（旧版双侧跑，客户端效果写无效，结果行为不变）
             return;
         }
@@ -107,16 +95,10 @@ public final class CurseTickEvents {
             return;
         }
 
-        UUID entityId = player.getUUID();
-        long currentTime = serverLevel.getGameTime();
-        Long lastTime = LAST_EFFECT_TIME.get(entityId);
-
         // 每秒执行一次（20 tick）
-        if (lastTime != null && currentTime - lastTime < PERIOD_TICKS) {
+        if (!TickUtil.isDue(player, TickUtil.ONE_SECOND)) {
             return;
         }
-
-        LAST_EFFECT_TIME.put(entityId, currentTime);
 
         // 检查所有装备槽（旧版同款：含主手/副手/BODY）
         for (EquipmentSlot slot : EquipmentSlot.values()) {
