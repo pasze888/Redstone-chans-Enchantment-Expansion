@@ -1,6 +1,7 @@
 package com.chinaex123.redstone_enchants.event.armor_foot;
 
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
+import com.chinaex123.redstone_enchants.init.ModAttachments;
 import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
 import com.chinaex123.redstone_enchants.init.ModEnchantments;
 import com.chinaex123.redstone_enchants.util.EnchantmentUtil;
@@ -21,11 +22,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 靴子（armors_foot）附魔在实体 tick 事件上的统一分发器。
@@ -36,9 +33,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class ArmorFootTickEvents {
     private static final int CROP_DANCE_GROWTH_RANGE = 3; // 生效范围基础值
     private static final double CROP_DANCE_GROWTH_CHANCE_CAP = 0.99; // 概率封顶
-
-    // 记录每个玩家上一次的潜行状态（旧版同款：Map 从不清理已退出玩家）
-    private static final Map<Player, Boolean> LAST_SNEAKING = new ConcurrentHashMap<>();
 
     @SubscribeEvent
     public static void onEntityTick(EntityTickEvent.Post event) {
@@ -68,7 +62,7 @@ public final class ArmorFootTickEvents {
         }
 
         boolean isSneaking = player.isShiftKeyDown();
-        boolean lastSneaking = LAST_SNEAKING.getOrDefault(player, false);
+        boolean lastSneaking = player.getData(ModAttachments.CROP_DANCE_SNEAKING.get());
 
         // 检查是否刚刚开始潜行（从非潜行状态变为潜行状态）
         if (isSneaking && !lastSneaking) {
@@ -79,16 +73,8 @@ public final class ArmorFootTickEvents {
             executeCropGrowth(player, serverLevel, enchantLevel, growthChance);
         }
 
-        // 更新潜行状态记录
-        LAST_SNEAKING.put(player, isSneaking);
-    }
-
-    @SubscribeEvent
-    public static void onEntityLeaveLevel(EntityLeaveLevelEvent event) {
-        // 修复：实体离开关卡（退出/换维度）时清理潜行状态记录，消除旧版 Map 泄漏
-        if (event.getEntity() instanceof Player player) {
-            LAST_SNEAKING.remove(player);
-        }
+        // 更新潜行状态（附件随玩家实体生命周期走，退出/换维度无需额外清理）
+        player.setData(ModAttachments.CROP_DANCE_SNEAKING.get(), isSneaking);
     }
 
     private static void executeCropGrowth(Player player, ServerLevel serverLevel, int enchantLevel, double growthChance) {

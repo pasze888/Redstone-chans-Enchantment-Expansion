@@ -249,6 +249,14 @@ invisibility_cloak 附件标记精确移除、sturdy/indestructible 标记组件
 - **负面光环不再作用于玩家**：`AreaMobEffectEffect.Target` 增 `OTHERS_NON_PLAYER`（JSON
   `"others_non_player"`），中毒/缓慢/虚弱/凋零/寄生五个光环改用它（寄生已核对为 `HARMFUL` 类）；
   发光的 `others`、增益类的 `all` 不变。**行为变更**：联机时这些光环不再波及路过的玩家。
+- **静态状态全部改走附件**（P0-2/P0-3/P0-4 收尾）：
+  - 保全的"上一次耐久"从静态 `Map<String,Integer>`（key = UUID + identityHashCode(stack)、无删除路径）
+    改为按玩家的 `ModAttachments.PRESERVATION_LAST_DAMAGE`；每 tick 用本 tick 见到的物品
+    `retainAll` 裁剪一次，条目数随背包大小有界。**行为变更**：该段补了服务端侧判断，
+    破损音效/粒子不再双侧各放一遍。
+  - 庄稼舞的潜行状态从 `ConcurrentHashMap<Player, Boolean>`（强引用 Player）改为
+    `ModAttachments.CROP_DANCE_SNEAKING`；`EntityLeaveLevelEvent` 清理随之删除（不再需要）。
+  - 诅咒的两个时间戳 Map 由 `TickUtil.isDue` 取代（见上一条）。
 - **延迟代价**：节流带来 ≤1 秒的生效/失效延迟（昼夜切换、换装、怪数变化、诅咒首跳），
   本次有意接受。
 
@@ -261,6 +269,12 @@ invisibility_cloak 附件标记精确移除、sturdy/indestructible 标记组件
 - `ItemStack#getEnchantmentLevel(Holder)` 是 NeoForge 在 `IItemStackExtension` 上的默认方法，会触发
   `GetEnchantmentLevelEvent`（`api-sources/net/neoforged/neoforge/common/extensions/IItemStackExtension.java:162`）。
 - `MobEffects.INFESTED` 的构造参数是 `MobEffectCategory.HARMFUL`（`javap` 核对静态初始化器）。
+- 附件的默认值是**每个持有者惰性创建**的：`getData` 在没存过值时调用
+  `defaultValueSupplier.apply(holder)` 并写进该持有者自己的表
+  （`api-sources/net/neoforged/neoforge/attachment/AttachmentHolder.java:74-83`），
+  所以 `AttachmentType.builder(() -> new HashMap<>())` 每个实体拿到独立实例，可以安全地就地改。
+  注意 `builder(Supplier)` 与 `builder(Function<IAttachmentHolder,T>)` 在传构造器引用
+  （如 `HashMap::new`）时会"reference to builder is ambiguous"，写成零参 lambda 即可消歧。
 - `location_changed` 的 `requirements` 只在 `onChangedBlock` **之前**对穿戴者求值一次
   （`Enchantment.java:490-512`、`locationContext:453-461`），`LootContextParamSets.ENCHANTED_LOCATION`
   只带 `THIS_ENTITY / ENCHANTMENT_LEVEL / ORIGIN / ENCHANTMENT_ACTIVE`，**无法逐个筛选范围内的目标实体**——

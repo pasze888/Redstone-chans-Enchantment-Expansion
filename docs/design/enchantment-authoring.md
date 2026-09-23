@@ -5,7 +5,7 @@
 > `../reference/enchantment-migrations.md`；JSON 迁 datagen 见 `../reference/enchantment-datagen.md`；
 > 全表与行为备注见 `../reference/enchantments.md`。
 >
-> **本文中的 file:line 核对到 2026-09-23 的提交 `e492129`**（含 P0/P1 清单）。行号会随提交漂移，
+> **本文中的 file:line 于 2026-09-23 逐份读源码核对过**（含 P0/P1 清单）。行号会随提交漂移，
 > 动工前重新读一遍对应片段再改。§4 已区分「已修」与「待办」。
 
 ## 1. 先分层：这个行为该落在哪一层
@@ -63,15 +63,16 @@
    并向客户端刷同步包（反例见 §4 P0-1）。统一写法是把修饰符"收敛"到目标值：
    `AttributeUtil.applyPermanent(entity, Attributes.X, MODIFIER_ID, amount /* null = 不该有 */, op)`
    （`util/AttributeUtil.java`），只有数值/运算不同或需要移除时才动属性。
-4. **per-player 状态不用静态容器**：要用 `ModAttachments`，见 §4 P0-2/3。
+4. **per-player 状态不用静态容器**：要用 `ModAttachments`（`init/ModAttachments.java`，不带
+   `serialize` 就是随实体生灭的 transient 值）。静态 Map 只允许存容量天然有界的全局量。
 
 另外：随机数统一用 `RandomSource`（范式 `enchantment/effect/RandomBeneficialMobEffect.java:53`），
 不要用 `java.util.Random` 静态实例。
 
 ## 4. 审查待办清单
 
-> 「已修」是 2026-09-23 那批改动（提交 `2f839b6`…`e492129`）处理掉的，保留当时的描述与出处，
-> 方便回看结论是怎么来的；「待办」是仍未动的。
+> 「已修」是 2026-09-23 那批改动处理掉的，保留当时的描述与出处，方便回看结论是怎么来的；
+> 「待办」是仍未动的。
 
 ### P0 — 正确性 / 资源
 
@@ -80,17 +81,13 @@
 | # | 位置 | 当时的描述与处置 |
 |---|---|---|
 | P0-1 | `event/all_armor/ArmorEntityTickEvents.java:39-76` | 每 tick 无条件 `removeModifier` + `addPermanentModifier`（原 `:68,:80,:88`），且**无侧判断**（原 `:37` 只判了 `Player`）。已补 ServerLevel 侧判断 + `TickUtil.isDue` 每秒收敛一次 + `AttributeUtil.applyPermanent` 值变了才写。**同一写法还在马铠精神段（`event/armor_horse/ArmorHorseTickEvents.java:111`）与头盔的以寡敌众/绝境逆袭（`event/armor_head/ArmorHeadTickEvents.java`），本次一并改掉** |
-| P0-3 | `event/armor_foot/ArmorFootTickEvents.java:41` | `LAST_SNEAKING` 是 `ConcurrentHashMap<Player, Boolean>`，强引用 Player。原文"从不清理"已过时：`EntityLeaveLevelEvent` 清理（`:87-90`）在本批之前就有，只剩键类型（Player → UUID 或 attachment）可继续优化 |
+| P0-2 | `event/unbreaking/UnbreakingPlayerEvents.java:30-83` | `LAST_DAMAGE_MAP` 静态 `HashMap`（key = UUID + identityHashCode(stack)）无删除路径，随服务器时长无界增长；`:30` 也无侧判断（音效/粒子双侧跑两遍）。已改为按玩家的 `ModAttachments.PRESERVATION_LAST_DAMAGE` 附件存"上一次见到的耐久"，每 tick 用本 tick 见到的物品裁剪（容量随背包大小有界），并补服务端侧判断 |
+| P0-3 | `event/armor_foot/ArmorFootTickEvents.java` | `LAST_SNEAKING` 是 `ConcurrentHashMap<Player, Boolean>`，强引用 Player（原文"从不清理"已过时：`EntityLeaveLevelEvent` 清理在本批之前就有）。已整体换成 `ModAttachments.CROP_DANCE_SNEAKING` 附件，Map 与 `EntityLeaveLevelEvent` 清理一起删除 |
 | P0-4 | `event/curse/CurseTickEvents.java` | `LAST_DAMAGE_TIME` / `LAST_EFFECT_TIME` 两个静态 `Map<UUID, Long>` 无清理，玩家退出后条目永久驻留。已改用按 tickCount 对齐的 `TickUtil.isDue`，两个 Map 一起删除 |
 
 **待办**
 
-| # | 位置 | 问题 |
-|---|---|---|
-| P0-2 | `event/unbreaking/UnbreakingPlayerEvents.java:27-45` | `LAST_DAMAGE_MAP` 静态 `HashMap`，key = `UUID + identityHashCode(stack)`，**无删除路径**，随服务器时长无界增长；`:30` 也无侧判断 |
-
-> P0-2 的改法：状态随实体生命周期走 `ModAttachments`，或在 `EntityLeaveLevel` /
-> `PlayerEvent.PlayerLoggedOutEvent` 上清理。静态 Map 只允许存容量天然有界的全局量。
+P0 已全部处理完。新增状态照 §3 第 4 条走 `ModAttachments`；静态 Map 只允许存容量天然有界的全局量。
 
 ### P1 — 一致性与设计
 
