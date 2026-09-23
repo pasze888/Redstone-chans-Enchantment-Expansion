@@ -365,5 +365,41 @@ A/B/C 三批之后剩下的最后 5 个 mcfunction（`function/enchantment/etern
 - `ToolBlockBreakEvents` 不再在 `BlockEvent.BreakEvent` 中取消破坏、手动调用 `BlockState#getDrops`、生成掉落并手动扣除 1 点耐久。
 - 自动熔炼改在 `BlockDropsEvent` 中处理已经确定的掉落；这样保留方块经验、时运结果、精准采集结果以及其他模组的掉落修改。
 - 配方查找改为 `RecipeManager#getRecipeFor(RecipeType.SMELTING, SingleRecipeInput, Level)`，按 `输入数量 × 配方产出数量` 生成结果，并在超过物品最大堆叠数时拆成多个 `ItemEntity`。
-- 启用 `auto_smelt` 时仍跳过本分发器的地质学、点石成金、精通采集、伐木和挖掘机效果，保持原有附魔组合语义；创造模式不触发自动熔炼。
+- 启用 `auto_smelt` 时仍跳过本分发器的地质学、点石成金、伐木和挖掘机效果，保持原有附魔组合语义；创造模式不触发自动熔炼。
+  （精通采集后来改排在自动熔炼之前，不再被跳过——见下节「挖掘加成掉落批次」，该条为 2026-09-24 的有意行为变更。）
 - 未复制 Apotheosis 或 AnvilCraft 的实现代码；仅参考公开的“破坏后处理掉落”思路，使用 NeoForge/Minecraft 公共 API 独立实现。
+
+## 挖掘加成掉落批次（2026-09-24，geology / goldfinger / master_gatherer）
+
+三项从 `BlockEvent.BreakEvent`（取消破坏 → 自行 `Block.getDrops` 重算 → 手动生成掉落物）迁到
+`BlockDropsEvent`，处理**已经算好的掉落列表**。数值、掉落池与判定条件一律不变（用户选定方案 1）。
+
+- **地质学（geology）**：命中石块后仍按 `stone_to_ore_chance` 掷骰，从 `#c:ores` 方块清单里随机取一项、
+  过时运计数、作为**追加**掉落项放进事件列表。方块清单与旧实现同为 `#c:ores` 方块标签的 `asItem()`，
+  只是不再经过 `Block.getDrops`。
+- **点石成金（goldfinger）**：同上，判定标签为 `#c:stones`，掉落为 1~3 个金粒。
+- **精通采集（master_gatherer）**：改为**复制已有掉落**（`ItemEntity#copy()`，位置与初速度随副本保留），
+  不再重新调用方块掉落表。旧实现把 `setPickUpDelay(0)` 用在重算出来的掉落上；迁移后掉落项的拾取延迟
+  由原版流程决定，副本与原项一致——旧实现的"0 延迟"本就是重算路径的副作用，不是附魔意图。
+- 触发顺序：**精通采集 → 自动熔炼 →（未启用自动熔炼时）地质学 → 点石成金**；创造模式仍全部跳过。
+  - 精通采集排最前是**有意的行为变更**（用户 2026-09-24 指定）：同时附自动熔炼与精通采集时，先复制掉落、
+    再把复制出的原矿一起熔炼，即"先结算双倍掉落，再熔炼双倍的数量"。旧实现是自动熔炼启用时跳过精通采集，
+    只会熔炼单份。
+  - 地质学 / 点石成金仍排在自动熔炼之后，因此自动熔炼启用时它们不追加掉落（这条保持旧语义）。
+- **仍未采用**：神化的数据驱动 loot table（`BoonData.lootTable` + 精准采集分支）会让掉落池与数量
+  脱离现有 `stone_to_ore_chance` / `stone_to_gold_chance` 数值体系，本次不做。
+
+### 参考出处（均为只读参考仓库，未复制其代码）
+
+查阅的是各仓库的 `origin/1.21` 分支（MC 1.21.1），不是本地检出的 26.1 工作分支。两份上游都是 MIT。
+
+| 用途 | 仓库 | 提交 | 文件与行号 |
+|---|---|---|---|
+| 在 `BlockDropsEvent` 中追加额外掉落、用事件已有掉落的位置生成新 `ItemEntity` | `Shadows-of-Fire/Apothic-Enchanting` | `origin/1.21` `00fbcf0` | `enchantments/components/BoonComponent.java:43-73` |
+| 该分发器的订阅优先级与挂载点 | 同上 | 同上 | `ApothEnchEvents.java:272-276`（`@SubscribeEvent(priority = EventPriority.HIGH)`） |
+| 方块类别 → loot table 与等级概率的声明形态（了解其数据驱动程度） | 同上 | 同上 | `data/ApothEnchantmentProvider.java`（Boon of the Earth 条目） |
+| 复制已有掉落列表、而不是重算掉落 | 同上 | 同上 | `enchantments/ShearsEnchantments.java:57-65`（`applyExploitation`） |
+| 命中后逐项替换已有掉落并保留数量 | `Shadows-of-Fire/Apotheosis` | `origin/1.21` `ad719e8` | `socket/gem/bonus/special/DropTransformBonus.java:78-91` |
+| 在已有掉落上增加数量、处理小数随机与最大堆叠拆分（本次**未**采用，见上） | 同上 | 同上 | `socket/gem/bonus/special/FrozenDropsBonus.java:66-115` |
+
+本批代码全部按上述思路重写，未搬运上游 Java 片段；上游与本项目同为 MIT，若将来搬运需连带保留其许可声明。

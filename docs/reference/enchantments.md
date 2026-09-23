@@ -348,11 +348,11 @@
 
 | 附魔 | 机制要点 |
 |---|---|
-| 自动熔炼（`auto_smelt`） | 监听 `BlockDropsEvent`：在原版/其他模组已计算掉落、经验仍由 NeoForge 正常处理后，逐个查找 `RecipeType.SMELTING` 配方并替换；按输入数量 × 配方产出数量计算，超过最大堆叠时拆分掉落。不再取消 `BreakEvent` 或手动重算掉落/扣耐久。**创造模式不生效**（守卫已加）。启用时仍跳过同分发器上的其它挖掘效果 |
+| 自动熔炼（`auto_smelt`） | 监听 `BlockDropsEvent`：在原版/其他模组已计算掉落、经验仍由 NeoForge 正常处理后，逐个查找 `RecipeType.SMELTING` 配方并替换；按输入数量 × 配方产出数量计算，超过最大堆叠时拆分掉落。不再取消 `BreakEvent` 或手动重算掉落/扣耐久。**创造模式不生效**（守卫已加）。启用时不再追加地质学 / 点石成金的加成掉落，但**精通采集的翻倍先于熔炼结算**——同附两者时先复制掉落再熔炼双份 |
 | 伐木（`timber`） | BFS 搜索相邻同种原木（6 向），上限 `ToolBlockBreakEvents.TIMBER_CHAIN_LIMIT`（代码常量 512，原配置项已移除），逐个破坏并掉落，每方块扣 1 耐久 |
 | 挖掘机（`excavator`） | 按玩家朝向（含俯仰角定上下）取 (2r+1)² 区域，要求 `tool.isCorrectToolForDrops` 且非不可破坏方块；创造模式跳过 |
-| 精通采集（`master_gatherer`） | 掉落物属 `#c:ores` 时按概率把**全部掉落**复制一份（时运加成过的也会翻倍），`setPickUpDelay(0)`；概率 `min(chance, 1.0)` 封顶 |
-| 地质学 / 点石成金 | 额外掉落独立于原版掉落，走时运计数加成（`rand(时运+2)-1`，最小 1 倍） |
+| 精通采集（`master_gatherer`） | 方块属 `#c:ores` 时按概率把 `BlockDropsEvent` 里**已有掉落**逐项复制一份（`ItemEntity#copy()`，位置/初速度随副本保留；时运加成过的也会翻倍）；概率 `min(chance, 1.0)` 封顶 |
+| 地质学 / 点石成金 | 在 `BlockDropsEvent` 中向掉落列表**追加**一项，独立于原版掉落；走时运计数加成（`rand(时运+2)-1`，最小 1 倍）；判定为石块（地质学：石头/安山岩/闪长岩/花岗岩；点石成金：`#c:stones`） |
 | 矿工（`adaptive`） | 每 tick 检查：Y<0 时施加 12 秒夜视（隐藏效果，无粒子），每 tick 重置所以无闪烁；Y≥0 时**无差别移除夜视**（会洗掉夜视药水）；摘头盔不立即移除 |
 | 反伪装（`anti_camouflage`） | 服务端 tick：潜行中给 16 格内所有 `Monster`（接口级，含 mod 生物）上发光 2.5 秒（40+10×级 tick），无粒子；中立怪（猪灵/狼/铁傀儡非 `Monster`）不点亮；停止潜行后残留≤2.5 秒 |
 | 光环系（`aura_*`） | 挂 `location_changed`，**跨方块格触发**；时长默认 60 tick（3 秒）持续重刷；效果隐藏（ambient+无粒子），但 HUD 图标仍显示；13 个全部互斥（`exclusive_set/aura`），一件装备只能一个。施加对象由 JSON 的 `target` 决定：`all` 含穿戴者、`others` 除穿戴者、`others_non_player` 再排除玩家、`self` 仅自身；中毒 / 缓慢 / 虚弱 / 凋零 / 寄生五个负面光环用 `others_non_player`，联机时不会波及路过的玩家 |

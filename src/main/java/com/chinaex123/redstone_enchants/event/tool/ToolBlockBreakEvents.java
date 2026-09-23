@@ -27,7 +27,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
@@ -51,7 +50,8 @@ import java.util.UUID;
  * 挖掘钩子上附魔效果的统一分发器。
  * <p>各效果的行为参数由附魔 JSON 声明（见 {@link ModEnchantmentEffectComponents}），
  * 这里负责方块破坏前后的挖掘效果：
- * 连锁急迫 → 自动熔炼（由 {@link BlockDropsEvent} 处理；启用时跳过本分发器其它效果）→ 概率加成掉落（地质学 / 点石成金 / 精通采集）→ 连锁砍树 → 区域挖掘。
+ * 连锁急迫在破坏前结算；{@link BlockDropsEvent} 上先跑精通采集复制掉落，再由自动熔炼熔炼（启用时跳过地质学 / 点石成金），
+ * 未启用自动熔炼时则追加地质学 / 点石成金的加成掉落；连锁砍树与区域挖掘仍在破坏前发起。
  * 旧实现是每个附魔一个独立订阅者，执行顺序取决于注册顺序、且互相之间会因事件取消而不确定。
  */
 @EventBusSubscriber(modid = RedstoneEnchants.MOD_ID)
@@ -87,17 +87,23 @@ public final class ToolBlockBreakEvents {
 
         boolean autoSmelt = !player.isCreative()
                 && EnchantmentHelper.has(tool, ModEnchantmentEffectComponents.AUTO_SMELT.get());
-        // 自动熔炼在 BlockDropsEvent 中处理；保持旧行为，启用时不执行本分发器的其它挖掘效果。
+        // 掉落相关效果（精通采集 / 自动熔炼 / 地质学 / 点石成金）全在 BlockDropsEvent 中处理；
+        // 这里保持旧行为，自动熔炼启用时不发起连锁砍树与区域挖掘。
         if (!autoSmelt) {
-            geologyBonusDrop(event, player, level, tool);
-            goldfingerBonusDrop(event, player, level, tool);
-            masterGathererDoubleDrop(event, player, level, tool);
             timberChainBreak(event, player, level, tool);
             excavatorAreaBreak(event, player, level, tool);
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW)
+    /**
+     * 方块掉落的统一后处理：精通采集复制掉落项 → 自动熔炼替换掉落项（启用时跳过地质学 / 点石成金）
+     * → 地质学 / 点石成金追加掉落项。
+     * <p>这些加成掉落都放在这里而不是破坏前的 {@link BlockEvent.BreakEvent}，是为了让它们作用于原版（含
+     * 时运、精准采集与其它模组）已经算好的掉落列表，而不是自行重算一遍。
+     * <p>精通采集排在自动熔炼之前：两者同时存在时先把掉落复制一份，复制出的原矿随后一起进熔炼，
+     * 也就是"先结算双倍掉落，再熔炼双倍的数量"。
+     */
+    @SubscribeEvent
     public static void onBlockDrops(BlockDropsEvent event) {
         if (!(event.getBreaker() instanceof Player player) || player.level().isClientSide()) {
             return;
@@ -106,14 +112,24 @@ public final class ToolBlockBreakEvents {
             return;
         }
         ItemStack tool = event.getTool();
-        if (tool.isEmpty() || !EnchantmentHelper.has(tool, ModEnchantmentEffectComponents.AUTO_SMELT.get())) {
+        if (tool.isEmpty()) {
             return;
         }
-
         List<ItemEntity> drops = event.getDrops();
         if (drops.isEmpty()) {
             return;
         }
+        masterGathererDuplicateDrops(event, drops);
+        // 保持旧行为：自动熔炼启用时不追加地质学 / 点石成金的加成掉落（精通采集已在上一步结算）。
+        if (EnchantmentHelper.has(tool, ModEnchantmentEffectComponents.AUTO_SMELT.get())) {
+            smeltDrops(event, drops);
+            return;
+        }
+        geologyBonusDrop(event, tool);
+        goldfingerBonusDrop(event, tool);
+    }
+
+    private static void smeltDrops(BlockDropsEvent event, List<ItemEntity> drops) {
         List<ItemEntity> originalDrops = new ArrayList<>(drops);
         drops.clear();
         for (ItemEntity drop : originalDrops) {
@@ -169,10 +185,11 @@ public final class ToolBlockBreakEvents {
 
     // ---- 地质学：挖石头概率掉矿石 ----
 
-    private static void geologyBonusDrop(BlockEvent.BreakEvent event, Player player, ServerLevel level, ItemStack tool) {
+    private static void geologyBonusDrop(BlockDropsEvent event, ItemStack tool) {
         if (!GEOLOGY_STONES.contains(event.getState().getBlock())) {
             return;
         }
+        ServerLevel level = event.getLevel();
         float chance = EnchantmentUtil.itemValue(level, tool, ModEnchantmentEffectComponents.STONE_TO_ORE_CHANCE.get());
         if (chance <= 0 || level.getRandom().nextFloat() >= chance) {
             return;
@@ -183,42 +200,44 @@ public final class ToolBlockBreakEvents {
         }
         ItemStack oreDrop = pool.get(level.getRandom().nextInt(pool.size())).copy();
         applyFortuneCount(oreDrop, level, tool);
-        spawnItem(level, event.getPos(), oreDrop);
+        addBonusDrop(event, oreDrop);
     }
 
     // ---- 点石成金：挖石头概率掉金粒 ----
 
-    private static void goldfingerBonusDrop(BlockEvent.BreakEvent event, Player player, ServerLevel level, ItemStack tool) {
+    private static void goldfingerBonusDrop(BlockDropsEvent event, ItemStack tool) {
         if (!event.getState().is(CONVENTIONAL_STONES)) {
             return;
         }
+        ServerLevel level = event.getLevel();
         float chance = EnchantmentUtil.itemValue(level, tool, ModEnchantmentEffectComponents.STONE_TO_GOLD_CHANCE.get());
         if (chance <= 0 || level.getRandom().nextFloat() >= chance) {
             return;
         }
         ItemStack goldNuggets = new ItemStack(Items.GOLD_NUGGET, 1 + level.getRandom().nextInt(3));
         applyFortuneCount(goldNuggets, level, tool);
-        spawnItem(level, event.getPos(), goldNuggets);
+        addBonusDrop(event, goldNuggets);
     }
 
     // ---- 精通采集：挖矿石概率双倍掉落 ----
 
-    private static void masterGathererDoubleDrop(BlockEvent.BreakEvent event, Player player, ServerLevel level, ItemStack tool) {
+    private static void masterGathererDuplicateDrops(BlockDropsEvent event, List<ItemEntity> drops) {
         if (!Item.byBlock(event.getState().getBlock()).builtInRegistryHolder().is(CONVENTIONAL_ORE_ITEMS)) {
             return;
         }
+        ServerLevel level = event.getLevel();
+        ItemStack tool = event.getTool();
         float chance = Math.min(EnchantmentUtil.itemValue(level, tool,
                 ModEnchantmentEffectComponents.ORE_DOUBLE_DROP_CHANCE.get()), 1.0F);
         if (chance <= 0 || level.getRandom().nextFloat() >= chance) {
             return;
         }
-        BlockPos pos = event.getPos();
-        for (ItemStack drop : blockDrops(event.getState(), level, pos, null, player, tool)) {
-            if (!drop.isEmpty()) {
-                ItemEntity itemEntity = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop.copy());
-                itemEntity.setPickUpDelay(0);
-                level.addFreshEntity(itemEntity);
-            }
+        // 复制已经算好的掉落项，而不是重新计算一遍：时运、精准采集与其它模组的改动都随之翻倍。
+        // 副本由 ItemEntity#copy() 生成，位置与初速度与原掉落一致，堆叠数不超上限。
+        // 本步排在自动熔炼之前，所以同时附两者时复制出的原矿会一起进熔炼。
+        int originalCount = drops.size();
+        for (int i = 0; i < originalCount; i++) {
+            drops.add(drops.get(i).copy());
         }
     }
 
@@ -435,11 +454,22 @@ public final class ToolBlockBreakEvents {
         }
     }
 
+    /** 直接在世界里生成掉落物，位置取方块中心（连锁砍树 / 区域挖掘使用，它们不走方块掉落事件） */
     private static void spawnItem(ServerLevel level, BlockPos pos, ItemStack stack) {
         if (stack.isEmpty()) {
             return;
         }
         level.addFreshEntity(new ItemEntity(level,
+                pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack));
+    }
+
+    /** 把追加掉落放进 {@link BlockDropsEvent} 的掉落列表，位置取方块中心 */
+    private static void addBonusDrop(BlockDropsEvent event, ItemStack stack) {
+        if (stack.isEmpty()) {
+            return;
+        }
+        BlockPos pos = event.getPos();
+        event.getDrops().add(new ItemEntity(event.getLevel(),
                 pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack));
     }
 

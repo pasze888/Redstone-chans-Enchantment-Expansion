@@ -127,7 +127,7 @@ P0 已全部处理完。新增状态照 §3 第 4 条走 `ModAttachments`；静�
   N 个非玩家生物"已收进 `util/TargetingUtil`。原文把第三个记成 `ChainArrowsEffect`——那只是朝 6 个
   固定方向射箭、根本不索敌，实际第三个成员是 `SnowballBurstEffect`。
 - **`Block.getDrops(...)` 弃用**：当时 `ToolBlockBreakEvents` 里有**四处**（原文只记了三处，漏了区域挖掘的调用点），已改用 `BlockState#getDrops(LootParams.Builder)`，收在私有 helper `blockDrops` 里。
-  本次 `auto_smelt` 改用 `BlockDropsEvent` 后，当前剩余**三处**调用点：精通采集、伐木、区域挖掘。
+  `auto_smelt` 与挖掘加成掉落（地质学 / 点石成金 / 精通采集）相继改用 `BlockDropsEvent` 后，当前剩余**两处**调用点：伐木、区域挖掘。
 - **`aura_burning` 点火波及玩家**：`AreaMobEffectEffect.Target` 提成顶层枚举 `AreaTarget`，
   `AreaIgniteEffect` 也带上 `target` 字段（默认 `others`，保持既有行为），燃烧光环声明
   `others_non_player`——原 mcfunction 的 `data merge entity {Fire:...}` 对玩家本来就静默失败，
