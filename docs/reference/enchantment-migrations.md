@@ -270,6 +270,18 @@ invisibility_cloak 附件标记精确移除、sturdy/indestructible 标记组件
   `ModAttachments.CONDUCTIVE_LINE_STRUCK`（松钩即复位），顺带修掉"勾住状态下鱼钩消失导致该生物
   再也劈不到"与"任意空钩 tick 把全局去重集合整个清空"两个毛病。行为差异只剩一条：
   两条鱼钩同时勾住同一生物时，旧版只劈 1 次、新版各劈 1 次。
+- **范围效果的作用对象提成共用枚举**：`AreaMobEffectEffect.Target` → 顶层 `enchantment/effect/AreaTarget`
+  （含 `includes(source, candidate)` 判定），`AreaIgniteEffect` 也带上 `target` 字段
+  （可选，默认 `others`＝除触发者自己，保持既有行为）。燃烧光环（aura_burning）声明
+  `others_non_player`：原 mcfunction 的 `data merge entity {Fire:...}` 对玩家静默失败，
+  Java 化时用 `igniteForTicks` 才意外变成对玩家也生效，本次是回到原行为。
+- **范围索敌收进 `util/TargetingUtil`**：`nearestNonPlayers(level, source, minRange, maxRange, limit)`
+  与 `nearestNonPlayer(...)` 统一"排除玩家 + 按距离取前 N"，`ChainBindEffect` / `RicochetEffect` /
+  `SnowballBurstEffect` 三处改用（语义逐条核对过：索敌范围、最小距离、数量上限都不变）。
+- **`Block.getDrops(...)` 弃用**：改成 `BlockState#getDrops(LootParams.Builder)`，参数与原调用一一对应
+  （ORIGIN / TOOL / 可选 THIS_ENTITY / 可选 BLOCK_ENTITY）；`ToolBlockBreakEvents` 四处统一走私有
+  helper `blockDrops`。
+- **导电鱼线补侧判断**：客户端不再本地生成闪电。
 - **延迟代价**：节流带来 ≤1 秒的生效/失效延迟（昼夜切换、换装、怪数变化、诅咒首跳），
   本次有意接受。
 

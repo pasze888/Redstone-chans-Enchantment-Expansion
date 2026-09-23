@@ -248,7 +248,7 @@
 
 | 附魔 | 最大等级 | 数值/公式 | 描述 |
 |---|---|---|---|
-| 燃烧光环（`aura_burning`）〔光环〕 | 1 | 换格触发: [area_ignite] 半径 = 2格；换格触发: [area_mob_effect] 半径 = 2格，目标 = self，效果: fire_resistance | 移动过程中，自身的2格范围内产生火焰(同时获得火焰抗性) |
+| 燃烧光环（`aura_burning`）〔光环〕 | 1 | 换格触发: [area_ignite] 半径 = 2格，目标 = others_non_player；换格触发: [area_mob_effect] 半径 = 2格，目标 = self，效果: fire_resistance | 移动过程中，自身的2格范围内产生火焰(同时获得火焰抗性) |
 | 发光光环（`aura_glowing`）〔光环〕 | 1 | 换格触发: [area_mob_effect] 半径 = 4格，目标 = others，效果: glowing | 移动过程中，自身的4格范围内产生发光效果 |
 | 急迫光环（`aura_haste`）〔光环〕 | 1 | 换格触发: [area_mob_effect] 半径 = 4格，效果: haste | 移动过程中，自身的4格范围内产生急迫效果 |
 | 寄生光环（`aura_infested`）〔光环〕 | 1 | 换格触发: [area_mob_effect] 半径 = 4格，目标 = others_non_player，效果: infested | 移动过程中，自身的4格范围内产生寄生效果 |

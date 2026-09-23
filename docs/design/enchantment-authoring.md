@@ -100,7 +100,7 @@ P0 已全部处理完。新增状态照 §3 第 4 条走 `ModAttachments`；静�
 | P1-3 | `event/armor_foot/ArmorFootTickEvents.java` | `java.util.Random` 静态实例已删，逐格催熟判定改用 `serverLevel.random` |
 | P1-4 | `event/all_fishing/FishingHookTickEvents.java` | `STRUCK_ENTITIES` 静态集合有两个毛病：勾住状态下鱼钩消失（断竿/收线）时条目不清理，那生物**再也劈不到**；任意空钩 tick 又会把全局集合整个 `clear()`，把别的鱼钩的去重一起重置。已改为挂在鱼钩上的 `ModAttachments.CONDUCTIVE_LINE_STRUCK`（松钩即复位）。唯一行为差异：两条鱼钩同时勾住同一生物时旧版只劈 1 次、新版各劈 1 次。侧判断仍未加（客户端仍会放本地闪电），见 P2 |
 | P1-5 | 重复 effect 类 | `RandomBeneficialMobEffect` / `RandomHarmfulMobEffect` 已合并为 `RandomMobEffectEffect(chance, pool)`（注册名 `random_mob_effect`，JSON 多一个 `"pool": "beneficial"|"harmful"`，黑名单只留在 harmful 池里）。**另两项核实后不合并**：`IgniteAreaEffect` 是把命中点周围 3×3×3 的**空气方块**点燃（fire_arrows 的 `fill ... fire keep`），`AreaIgniteEffect` 是点燃**生物**，二者不同功能，清单原描述有误；`SummonItemEffect` 是"战斗类附魔基建"留下的模板类，**没有任何附魔在用**，`GiveItemEffect`（检索，箭入背包）与它语义不同（原地掉落 / 等级化数量），保持独立 |
-| P1-6 | `enchantment/effect/AreaMobEffectEffect.java:69-76` | `target=others` 对范围内**所有** `LivingEntity` 生效（含其他玩家），联机时无差别下负面。已新增 `Target.OTHERS_NON_PLAYER`（JSON `"others_non_player"`），中毒/缓慢/虚弱/凋零/寄生五个负面光环改用它；发光的 `others` 与增益类的 `all` 维持原样。原文建议的"加 requirement"走不通——`location_changed` 的 `requirements` 只在触发前对穿戴者求值一次，无法逐个筛目标（见 `../reference/enchantment-components.md`） |
+| P1-6 | `enchantment/effect/AreaMobEffectEffect.java:39-51` | `target=others` 对范围内**所有** `LivingEntity` 生效（含其他玩家），联机时无差别下负面。已新增 `AreaTarget.OTHERS_NON_PLAYER`（JSON `"others_non_player"`，枚举后来提到顶层，见 P2），中毒/缓慢/虚弱/凋零/寄生五个负面光环改用它；发光的 `others` 与增益类的 `all` 维持原样。原文建议的"加 requirement"走不通——`location_changed` 的 `requirements` 只在触发前对穿戴者求值一次，无法逐个筛目标（见 `../reference/enchantment-components.md`） |
 
 **待办**
 
@@ -110,17 +110,26 @@ P0 已全部处理完。新增状态照 §3 第 4 条走 `ModAttachments`；静�
 
 ### P2 — 观察项
 
+**已处理（2026-09-23 第二批）**
+
+- **范围索敌**：三个类（`ChainBindEffect` / `RicochetEffect` / `SnowballBurstEffect`）各自的"找最近的
+  N 个非玩家生物"已收进 `util/TargetingUtil`。原文把第三个记成 `ChainArrowsEffect`——那只是朝 6 个
+  固定方向射箭、根本不索敌，实际第三个成员是 `SnowballBurstEffect`。
+- **`Block.getDrops(...)` 弃用**：`ToolBlockBreakEvents` 里其实有**四处**（原文只记了三处，漏了区域挖掘的
+  `:245`），已改用 `BlockState#getDrops(LootParams.Builder)`，收在私有 helper `blockDrops` 里。
+- **`aura_burning` 点火波及玩家**：`AreaMobEffectEffect.Target` 提成顶层枚举 `AreaTarget`，
+  `AreaIgniteEffect` 也带上 `target` 字段（默认 `others`，保持既有行为），燃烧光环声明
+  `others_non_player`——原 mcfunction 的 `data merge entity {Fire:...}` 对玩家本来就静默失败，
+  等于回到原行为。
+- **导电鱼线补侧判断**：客户端不再放一道本地闪电。
+
+**待观察**
+
 - `enchantment/effect/**` 目前 25 个 `EnchantmentEntityEffect` + 4 个 location-based（共 29 个类），
-  其中 3 个（`ChainBindEffect` / `RicochetEffect` / `ChainArrowsEffect`）都做"范围索敌"，
-  是否可以共用取目标部分的 helper，留待下次触碰时判断。
-- `Block.getDrops(BlockState, ServerLevel, BlockPos, BlockEntity, Entity, ItemStack)` 在 21.1.219
-  已被标记弃用（`event/tool/ToolBlockBreakEvents.java:100,:168,:191` 三处，对应自动熔炼/精通采集/伐木）；
-  建议改成 `state.getDrops(...)` 形态，本次未动。
-- `aura_burning` 的 `AreaIgniteEffect(2.0F, 80)` 同样会对范围内其他玩家点火。P1-6 只处理了
-  `AreaMobEffectEffect`，若点火也要 PvP 安全，需要在 `AreaIgniteEffect` 上加同样的目标参数。
-- `event/all_fishing/FishingHookTickEvents.java` 的导电鱼线没有侧判断：客户端自己的鱼钩也会在本地
-  生成一道闪电（旧版行为，与服务端同步过来的那道重叠）。本次只改了去重状态，没动这个，
-  要清掉需补 `instanceof ServerLevel` 守卫。
+  除索敌外没有别的明显可合并族。
+- 21.1.219 里另外三处弃用 API 仍未处理（`-Xlint:deprecation` 实测）：`EntityType.builtInRegistryHolder()`
+  （`data/provider/RangedEnchantments.java:577,:595`）、`Item.byBlock(Block)` 与
+  `Item.builtInRegistryHolder()`（`event/tool/ToolBlockBreakEvents.java:165`）。
 
 ## 5. 与其他文档的分工
 
