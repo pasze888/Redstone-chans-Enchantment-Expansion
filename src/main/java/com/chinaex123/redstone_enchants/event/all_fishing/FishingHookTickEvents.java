@@ -3,6 +3,7 @@ package com.chinaex123.redstone_enchants.event.all_fishing;
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
 import com.chinaex123.redstone_enchants.init.ModAttachments;
 import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
@@ -32,6 +33,10 @@ public final class FishingHookTickEvents {
 
     private static void conductiveLine(EntityTickEvent.Pre event) {
         if (!(event.getEntity() instanceof FishingHook hook)) {
+            return;
+        }
+        if (!(hook.level() instanceof ServerLevel)) {
+            // 闪电以服务端为准（旧版客户端也放一道本地闪电，与服务端同步来的那道重叠）
             return;
         }
 
