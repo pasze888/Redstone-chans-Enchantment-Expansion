@@ -4,13 +4,11 @@ import com.chinaex123.redstone_enchants.RedstoneEnchants;
 import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
 import com.chinaex123.redstone_enchants.init.ModEnchantments;
 import com.chinaex123.redstone_enchants.util.EnchantmentUtil;
-import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -51,8 +49,7 @@ public final class ToolPlayerTickEvents {
         }
         range = (float) Math.min(range, MAGNET_RANGE_CAP);
 
-        Holder<Enchantment> magnet = EnchantmentUtil.holder(level.registryAccess(), ModEnchantments.MAGNET);
-        int enchantLevel = EnchantmentUtil.levelOn(magnet, source);
+        int enchantLevel = EnchantmentUtil.levelOf(level.registryAccess(), source, ModEnchantments.MAGNET);
         if (enchantLevel <= 0) {
             return;
         }

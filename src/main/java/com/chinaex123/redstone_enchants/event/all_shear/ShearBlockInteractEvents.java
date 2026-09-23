@@ -70,8 +70,7 @@ public final class ShearBlockInteractEvents {
         double probability = EnchantmentUtil.itemValue(serverLevel, stack, ModEnchantmentEffectComponents.SHEPHERD_EXTRA_CHANCE.get());
 
         if (probability >= 1.0 || random.nextDouble() < probability) {
-            int enchantLevel = EnchantmentUtil.levelOn(
-                    EnchantmentUtil.holder(level.registryAccess(), ModEnchantments.SHEPHERD), stack);
+            int enchantLevel = EnchantmentUtil.levelOf(level.registryAccess(), stack, ModEnchantments.SHEPHERD);
             ItemStack extraDrop = honeycomb.copyWithCount(enchantLevel);
             ItemEntity extraEntity = new ItemEntity(level, event.getPos().getX() + 0.5, event.getPos().getY() + 0.5, event.getPos().getZ() + 0.5, extraDrop);
             level.addFreshEntity(extraEntity);

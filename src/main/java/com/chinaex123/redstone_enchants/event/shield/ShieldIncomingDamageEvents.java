@@ -54,8 +54,7 @@ public final class ShieldIncomingDamageEvents {
         attribute.removeModifier(ECHOES_BATTLE_MODIFIER_ID);
 
         // 添加新 modifier（每级 +20%）
-        int level = EnchantmentUtil.levelOn(
-                EnchantmentUtil.holder(player.level().registryAccess(), ModEnchantments.ECHOES_BATTLE), shield);
+        int level = EnchantmentUtil.levelOf(player.level().registryAccess(), shield, ModEnchantments.ECHOES_BATTLE);
         double bonus = 0.2 * level;
         AttributeModifier modifier = new AttributeModifier(
                 ECHOES_BATTLE_MODIFIER_ID,

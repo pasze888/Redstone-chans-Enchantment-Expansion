@@ -47,9 +47,21 @@ public final class EnchantmentUtil {
         return found.isEmpty() ? null : found.get(0);
     }
 
-    /** 物品上该附魔的等级 */
+    /**
+     * 物品上该附魔的等级（NeoForge 的 gameplay 入口，会走 GetEnchantmentLevelEvent）。
+     * <p>{@code EnchantmentHelper.getItemEnchantmentLevel} 已被 NeoForge 标记弃用并委托到同一处，
+     * 这里直接用 {@code ItemStack#getEnchantmentLevel}。
+     */
     public static int levelOn(Holder<Enchantment> enchantment, ItemStack stack) {
-        return EnchantmentHelper.getItemEnchantmentLevel(enchantment, stack);
+        return stack.getEnchantmentLevel(enchantment);
+    }
+
+    /**
+     * 物品上该附魔的等级（需要确切等级时的入口：注册表 + key 一步到位）。
+     * <p>只取存在性/数值的场景应改走标记组件 + {@link #itemValue}。
+     */
+    public static int levelOf(RegistryAccess registryAccess, ItemStack stack, ResourceKey<Enchantment> key) {
+        return levelOn(holder(registryAccess, key), stack);
     }
 
     public static Holder<Enchantment> holder(RegistryAccess registryAccess, ResourceKey<Enchantment> key) {

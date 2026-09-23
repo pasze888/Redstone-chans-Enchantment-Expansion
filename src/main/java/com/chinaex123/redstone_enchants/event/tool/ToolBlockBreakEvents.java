@@ -6,7 +6,6 @@ import com.chinaex123.redstone_enchants.init.ModEnchantments;
 import com.chinaex123.redstone_enchants.util.EnchantmentUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -18,7 +17,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;import net.minecraft.world.level.block.Blocks;
@@ -183,8 +181,7 @@ public final class ToolBlockBreakEvents {
         if (!startState.is(BlockTags.LOGS)) {
             return;
         }
-        Holder<Enchantment> timber = EnchantmentUtil.holder(level.registryAccess(), ModEnchantments.TIMBER);
-        if (EnchantmentUtil.levelOn(timber, tool) <= 0) {
+        if (EnchantmentUtil.levelOf(level.registryAccess(), tool, ModEnchantments.TIMBER) <= 0) {
             return;
         }
         int limit = TIMBER_CHAIN_LIMIT;
@@ -362,8 +359,7 @@ public final class ToolBlockBreakEvents {
     // ---- 公共 ----
 
     private static int fortuneLevel(ServerLevel level, ItemStack tool) {
-        Holder<Enchantment> fortune = EnchantmentUtil.holder(level.registryAccess(), Enchantments.FORTUNE);
-        return EnchantmentUtil.levelOn(fortune, tool);
+        return EnchantmentUtil.levelOf(level.registryAccess(), tool, Enchantments.FORTUNE);
     }
 
     /** 时运加成：与原实现一致，bonus = rand(fortune + 2) - 1，最小 1 */

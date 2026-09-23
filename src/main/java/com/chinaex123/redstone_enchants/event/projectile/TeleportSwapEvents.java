@@ -12,7 +12,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
@@ -48,8 +47,8 @@ public final class TeleportSwapEvents {
         ItemStack weapon = projectile instanceof ThrownTrident trident
                 ? trident.getPickupItemStackOrigin()
                 : shooter.getMainHandItem();
-        if (weapon.isEmpty() || EnchantmentHelper.getItemEnchantmentLevel(
-                EnchantmentUtil.holder(level.registryAccess(), ModEnchantments.TELEPORT), weapon) <= 0) {
+        if (weapon.isEmpty()
+                || EnchantmentUtil.levelOf(level.registryAccess(), weapon, ModEnchantments.TELEPORT) <= 0) {
             return;
         }
 

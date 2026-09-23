@@ -78,8 +78,7 @@ public final class ArmorFootTickEvents {
             // 执行一次催熟（概率 0.1 + 0.1×级，封顶 0.99）
             float growthChance = EnchantmentUtil.itemValue(serverLevel, boots,
                     ModEnchantmentEffectComponents.CROP_DANCE_GROWTH_CHANCE.get());
-            int enchantLevel = EnchantmentUtil.levelOn(
-                    EnchantmentUtil.holder(serverLevel.registryAccess(), ModEnchantments.CROP_DANCE), boots);
+            int enchantLevel = EnchantmentUtil.levelOf(serverLevel.registryAccess(), boots, ModEnchantments.CROP_DANCE);
             executeCropGrowth(player, serverLevel, enchantLevel, growthChance);
         }
 
