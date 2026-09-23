@@ -48,9 +48,13 @@ public record RandomMobEffectEffect(LevelBasedValue chance, Pool pool) implement
             if (this == BENEFICIAL) {
                 return effect.value().isBeneficial();
             }
-            return !effect.value().isBeneficial()
-                    && !effect.is(MobEffects.BAD_OMEN)
-                    && !effect.is(MobEffects.TRIAL_OMEN);
+            return !effect.value().isBeneficial() && !isOmen(effect);
+        }
+
+        /** 不祥之兆 / 试炼之兆不在负面池里（旧版黑名单） */
+        private static boolean isOmen(Holder<MobEffect> effect) {
+            // Holder#is(Holder) 已弃用；这两个是注册表单例，直接比实例
+            return effect.value() == MobEffects.BAD_OMEN.value() || effect.value() == MobEffects.TRIAL_OMEN.value();
         }
 
         @Override

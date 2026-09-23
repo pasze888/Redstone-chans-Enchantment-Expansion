@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -19,8 +20,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.block.Block;import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.BlockEvent;
@@ -97,7 +103,7 @@ public final class ToolBlockBreakEvents {
     private static void autoSmeltBreak(BlockEvent.BreakEvent event, Player player, ServerLevel level, ItemStack tool) {
         event.setCanceled(true);
         BlockPos pos = event.getPos();
-        List<ItemStack> drops = Block.getDrops(event.getState(), level, pos, level.getBlockEntity(pos), player, tool);
+        List<ItemStack> drops = blockDrops(event.getState(), level, pos, level.getBlockEntity(pos), player, tool);
         level.destroyBlock(pos, false, player);
         for (ItemStack drop : drops) {
             spawnItem(level, pos, smelt(drop, level));
@@ -165,7 +171,7 @@ public final class ToolBlockBreakEvents {
             return;
         }
         BlockPos pos = event.getPos();
-        for (ItemStack drop : Block.getDrops(event.getState(), level, pos, null, player, tool)) {
+        for (ItemStack drop : blockDrops(event.getState(), level, pos, null, player, tool)) {
             if (!drop.isEmpty()) {
                 ItemEntity itemEntity = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop.copy());
                 itemEntity.setPickUpDelay(0);
@@ -188,7 +194,7 @@ public final class ToolBlockBreakEvents {
         BlockPos pos = event.getPos();
         for (BlockPos logPos : findConnectedLogs(level, pos, startState, limit)) {
             BlockState state = level.getBlockState(logPos);
-            List<ItemStack> drops = Block.getDrops(state, level, logPos, level.getBlockEntity(logPos), player, tool);
+            List<ItemStack> drops = blockDrops(state, level, logPos, level.getBlockEntity(logPos), player, tool);
             level.destroyBlock(logPos, false, player);
             for (ItemStack drop : drops) {
                 spawnItem(level, logPos, drop);
@@ -242,7 +248,7 @@ public final class ToolBlockBreakEvents {
             if (targetState.getDestroySpeed(level, pos) < 0 || !tool.isCorrectToolForDrops(targetState)) {
                 continue;
             }
-            List<ItemStack> drops = Block.getDrops(targetState, level, pos, level.getBlockEntity(pos), player, tool);
+            List<ItemStack> drops = blockDrops(targetState, level, pos, level.getBlockEntity(pos), player, tool);
             level.destroyBlock(pos, false, player);
             for (ItemStack drop : drops) {
                 spawnItem(level, pos, drop);
@@ -357,6 +363,19 @@ public final class ToolBlockBreakEvents {
     }
 
     // ---- 公共 ----
+
+    /**
+     * 方块掉落计算：等价于已弃用的 {@code Block.getDrops(state, level, pos, blockEntity, entity, tool)}
+     * （它的实现就是下面的写法），改走 {@code BlockState#getDrops(LootParams.Builder)}。
+     */
+    private static List<ItemStack> blockDrops(BlockState state, ServerLevel level, BlockPos pos,
+                                             BlockEntity blockEntity, Entity entity, ItemStack tool) {
+        return state.getDrops(new LootParams.Builder(level)
+                .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
+                .withParameter(LootContextParams.TOOL, tool)
+                .withOptionalParameter(LootContextParams.THIS_ENTITY, entity)
+                .withOptionalParameter(LootContextParams.BLOCK_ENTITY, blockEntity));
+    }
 
     private static int fortuneLevel(ServerLevel level, ItemStack tool) {
         return EnchantmentUtil.levelOf(level.registryAccess(), tool, Enchantments.FORTUNE);
