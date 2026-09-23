@@ -25,7 +25,6 @@ import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -35,8 +34,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @EventBusSubscriber(modid = RedstoneEnchants.MOD_ID)
 public final class ArmorFootTickEvents {
-    private static final Random RANDOM = new Random(); // 旧版同款 java.util.Random 静态实例
-
     private static final int CROP_DANCE_GROWTH_RANGE = 3; // 生效范围基础值
     private static final double CROP_DANCE_GROWTH_CHANCE_CAP = 0.99; // 概率封顶
 
@@ -107,7 +104,7 @@ public final class ArmorFootTickEvents {
 
             if (state.getBlock() instanceof BonemealableBlock bonemealable) {
                 // 使用百分比判断
-                if (RANDOM.nextDouble() < cappedChance) {
+                if (serverLevel.random.nextDouble() < cappedChance) {
                     if (bonemealable.isValidBonemealTarget(serverLevel, pos, state)) {
                         bonemealable.performBonemeal(serverLevel, serverLevel.random, pos, state);
 
