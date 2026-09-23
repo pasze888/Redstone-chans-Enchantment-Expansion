@@ -3,12 +3,12 @@ package com.chinaex123.redstone_enchants.event.armor_head;
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
 import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
 import com.chinaex123.redstone_enchants.init.ModEnchantments;
+import com.chinaex123.redstone_enchants.util.AttributeUtil;
 import com.chinaex123.redstone_enchants.util.EnchantmentUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
@@ -110,34 +110,13 @@ public final class ArmorHeadTickEvents {
         );
         int enemyCount = nearbyEnemies.size();
 
-        // 获取属性
-        AttributeInstance attackDamageAttribute = player.getAttribute(Attributes.ATTACK_DAMAGE);
-        AttributeInstance armorAttribute = player.getAttribute(Attributes.ARMOR);
-
-        if (attackDamageAttribute != null && armorAttribute != null) {
-            // 移除旧的修饰符
-            attackDamageAttribute.removeModifier(AAO_DAMAGE_MODIFIER_ID);
-            armorAttribute.removeModifier(AAO_ARMOR_MODIFIER_ID);
-
-            if (enemyCount > 0) {
-                // 每多一个敌人，伤害/护甲 +2%（每级）
-                double bonus = enemyCount * bonusPerEnemy;
-
-                AttributeModifier damageModifier = new AttributeModifier(
-                        AAO_DAMAGE_MODIFIER_ID,
-                        bonus,
-                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE
-                );
-                attackDamageAttribute.addPermanentModifier(damageModifier);
-
-                AttributeModifier armorModifier = new AttributeModifier(
-                        AAO_ARMOR_MODIFIER_ID,
-                        bonus,
-                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE
-                );
-                armorAttribute.addPermanentModifier(armorModifier);
-            }
-        }
+        // 每多一个敌人，伤害/护甲 +2%（每级）；没有敌人时两个修饰符都不该存在。
+        // 值没变就不写（见 AttributeUtil）
+        Double bonus = enemyCount > 0 ? enemyCount * (double) bonusPerEnemy : null;
+        AttributeUtil.applyPermanent(player, Attributes.ATTACK_DAMAGE, AAO_DAMAGE_MODIFIER_ID, bonus,
+                AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        AttributeUtil.applyPermanent(player, Attributes.ARMOR, AAO_ARMOR_MODIFIER_ID, bonus,
+                AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
     }
 
     // ---- 反伪装 ----
@@ -203,26 +182,13 @@ public final class ArmorHeadTickEvents {
         boolean hasBlindness = player.hasEffect(MobEffects.BLINDNESS);
         boolean hasDarkness = player.hasEffect(MobEffects.DARKNESS);
 
-        // 获取攻击伤害属性
-        AttributeInstance attackDamageAttribute = player.getAttribute(Attributes.ATTACK_DAMAGE);
-        if (attackDamageAttribute == null) {
-            return;
-        }
-
-        // 移除旧的修饰符
-        attackDamageAttribute.removeModifier(DC_DAMAGE_MODIFIER_ID);
-
-        // 如果有失明或黑暗，添加伤害加成（0.25×级）
-        if (hasBlindness || hasDarkness) {
-            float damagePerLevel = EnchantmentUtil.itemValue(serverLevel, helmet,
-                    ModEnchantmentEffectComponents.DESPERATE_COUNTER_DAMAGE.get());
-            AttributeModifier modifier = new AttributeModifier(
-                    DC_DAMAGE_MODIFIER_ID,
-                    damagePerLevel,
-                    AttributeModifier.Operation.ADD_MULTIPLIED_BASE
-            );
-            attackDamageAttribute.addPermanentModifier(modifier);
-        }
+        // 有失明或黑暗时加伤害（0.25×级），否则不该有该修饰符；值没变就不写
+        Double damagePerLevel = hasBlindness || hasDarkness
+                ? (double) EnchantmentUtil.itemValue(serverLevel, helmet,
+                        ModEnchantmentEffectComponents.DESPERATE_COUNTER_DAMAGE.get())
+                : null;
+        AttributeUtil.applyPermanent(player, Attributes.ATTACK_DAMAGE, DC_DAMAGE_MODIFIER_ID, damagePerLevel,
+                AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
     }
 
     private ArmorHeadTickEvents() {

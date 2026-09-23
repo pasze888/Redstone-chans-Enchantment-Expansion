@@ -2,12 +2,12 @@ package com.chinaex123.redstone_enchants.event.armor_horse;
 
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
 import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
+import com.chinaex123.redstone_enchants.util.AttributeUtil;
 import com.chinaex123.redstone_enchants.util.EnchantmentUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
@@ -104,26 +104,13 @@ public final class ArmorHorseTickEvents {
         long dayTime = horse.level().getDayTime() % 24000;
         boolean isNight = dayTime >= 13000 && dayTime < 23000;
 
-        // 获取移动速度属性
-        AttributeInstance speedAttribute = horse.getAttribute(Attributes.MOVEMENT_SPEED);
-        if (speedAttribute == null) {
-            return;
-        }
-
-        // 移除旧的修饰符
-        speedAttribute.removeModifier(SPIRIT_SPEED_MODIFIER_ID);
-
-        // 如果是夜晚，添加速度加成（0.25×级）
-        if (isNight) {
-            float speedPerLevel = EnchantmentUtil.itemValue(serverLevel, armor,
-                    ModEnchantmentEffectComponents.SPIRIT_SPEED_BONUS.get());
-            AttributeModifier modifier = new AttributeModifier(
-                    SPIRIT_SPEED_MODIFIER_ID,
-                    speedPerLevel,
-                    AttributeModifier.Operation.ADD_MULTIPLIED_BASE
-            );
-            speedAttribute.addPermanentModifier(modifier);
-        }
+        // 夜晚加移速（0.25×级），白天不该有该修饰符；值没变就不写（见 AttributeUtil）
+        Double speedPerLevel = isNight
+                ? (double) EnchantmentUtil.itemValue(serverLevel, armor,
+                        ModEnchantmentEffectComponents.SPIRIT_SPEED_BONUS.get())
+                : null;
+        AttributeUtil.applyPermanent(horse, Attributes.MOVEMENT_SPEED, SPIRIT_SPEED_MODIFIER_ID, speedPerLevel,
+                AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
     }
 
     private ArmorHorseTickEvents() {
