@@ -1,6 +1,7 @@
 package com.chinaex123.redstone_enchants.event.all_fishing;
 
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
+import com.chinaex123.redstone_enchants.init.ModAttachments;
 import com.chinaex123.redstone_enchants.init.ModEnchantmentEffectComponents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -15,17 +16,12 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
 /**
  * 钓鱼竿（all_fishing）附魔在鱼钩 tick 事件上的统一分发器（导电鱼线：雷雨天勾住生物召唤闪电）。
  * <p>行为参数由附魔 JSON 组件声明。旧实现是单个订阅者类。
  */
 @EventBusSubscriber(modid = RedstoneEnchants.MOD_ID)
 public final class FishingHookTickEvents {
-    private static final Set<UUID> STRUCK_ENTITIES = new HashSet<>();
 
     @SubscribeEvent
     public static void onEntityTickPre(EntityTickEvent.Pre event) {
@@ -60,11 +56,10 @@ public final class FishingHookTickEvents {
         // 检查是否勾住生物
         Entity hookedEntity = hook.getHookedIn();
         if (hookedEntity instanceof LivingEntity livingEntity) {
-            UUID entityId = livingEntity.getUUID();
-
-            // 防止重复召唤（旧版同款：双侧执行，客户端本地生成的闪电为无效副本，保留原样）
-            if (!STRUCK_ENTITIES.contains(entityId)) {
-                STRUCK_ENTITIES.add(entityId);
+            // 去重状态挂在鱼钩上：勾住期间只劈一次，松钩或鱼钩消失后随之复位
+            // （旧的静态 UUID 集合在"勾住状态下鱼钩消失"时会永久残留，导致该生物再也劈不到）
+            if (!hook.getData(ModAttachments.CONDUCTIVE_LINE_STRUCK.get())) {
+                hook.setData(ModAttachments.CONDUCTIVE_LINE_STRUCK.get(), Boolean.TRUE);
 
                 LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(livingEntity.level());
                 if (lightning != null) {
@@ -73,8 +68,8 @@ public final class FishingHookTickEvents {
                 }
             }
         } else {
-            // 没有勾住时清除所有记录
-            STRUCK_ENTITIES.clear();
+            // 没有勾住时复位，允许下次勾住时再劈
+            hook.setData(ModAttachments.CONDUCTIVE_LINE_STRUCK.get(), Boolean.FALSE);
         }
     }
 

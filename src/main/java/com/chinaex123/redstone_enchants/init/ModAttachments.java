@@ -33,6 +33,11 @@ public final class ModAttachments {
             ATTACHMENT_TYPES.register("crop_dance_sneaking",
                     () -> AttachmentType.builder(() -> Boolean.FALSE).build());
 
+    /** 导电鱼线（conductive_line）：该鱼钩已对它当前勾住的生物劈过闪电（松钩/鱼钩消失即复位） */
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> CONDUCTIVE_LINE_STRUCK =
+            ATTACHMENT_TYPES.register("conductive_line_struck",
+                    () -> AttachmentType.builder(() -> Boolean.FALSE).build());
+
     /**
      * 保全（preservation）：玩家背包内各物品上一次见到的耐久（identityHashCode(stack) → damage）。
      * <p>只用于识别"刚达到最大耐久"那一次；每 tick 用本 tick 见到的物品裁剪一遍，容量随背包大小有界。
