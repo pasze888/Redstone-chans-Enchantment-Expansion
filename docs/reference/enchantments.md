@@ -86,7 +86,7 @@
 | 吞噬（`devouring`） | 1 | 攻击后: [devouring] （条件触发） | 攻击生物时恢复饥饿值，满饥饿时转为生命恢复 |
 | 发电机（`dynamo`） | 4 | 伤害: [add] 值 = 1 + 1*(Lv-1)（条件触发）；knockback: [add] 值 = 0.5 + 0.5*(Lv-1)（条件触发） | 冲刺时增加攻击力 |
 | 均衡器（`equalizer`） | 5 | equalizer_bonus: [add] 值 = 0.2 + 0.2*(Lv-1) | 伤害根据目标血量百分比变化；目标血量越高，伤害越高 |
-| 处决（`execution`） | 1 | （纯标记型，行为见代码） | 对生命值低于25%的目标直接秒杀 |
+| 处决（`execution`） | 1 | （纯标记型，行为见代码） | 这一刀结算后目标血量低于 25% 时清空血量（一击补刀；被重生护盾克制） |
 | 生命吸取（`life_steal`） | 5 | life_steal_ratio: [set] 值 = 0.1 + 0.1*(Lv-1) | 攻击时恢复造成伤害10%×等级的生命值 |
 | 消解（`nullify`） | 5 | 攻击后: [remove_random_beneficial] 概率 = 0.05 + 0.05*(Lv-1) | 攻击时有概率移除目标身上的一个正面效果 |
 | 抗击之盾（`resilience_shield`） | 4 | 属性: 数值 = 0.2 + 0.1*(Lv-1)，属性 generic.knockback_resistance（乘基数） | 提升击退抗性 |

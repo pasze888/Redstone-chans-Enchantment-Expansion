@@ -34,7 +34,7 @@
 
 - **旧 11 个 handler 是独立订阅者**：执行顺序取决于注册顺序，且"以 original 为基数"的附魔互相
   覆盖（实际只有一个生效）。新分发器按**固定顺序**执行、每条公式原样保留（基数语义不动）：
-  Pre `赌徒 → 伏击 → 背刺 → 均衡器 → 处决`，Post `生命吸取`，Drops `屠夫 → 斩首`。
+  Pre `赌徒 → 伏击 → 背刺 → 均衡器`，Post `处决 → 生命吸取`，Drops `屠夫 → 斩首`（处决原在 Pre 末段，2026-09-24 移入 Post，见下方补记）。
 - 攻击者解析照抄各旧 handler：伏击/均衡器 = `getDirectEntity() instanceof Player`（投射物不触发）；
   赌徒/处决/背刺/生命吸取/屠夫/斩首 = `getEntity() instanceof LivingEntity`。
   **用户决定**：不添加 Player 限制——接受持械 Mob 攻击者也触发（原版 POST_ATTACK 对 Mob 攻击同样生效）。
@@ -44,6 +44,9 @@
   改为 `SetValue(LevelBasedValue.perLevel(0.1F))` → 回血比例 10%×级（Lv5 = 50%）。此前 max_level 5
   但 `constant` 使 5 个等级全部恒为 10%（等级实际无效）；改后需重跑 runData 刷新生成 JSON。
 - 处决照旧实现语义：`setNewDamage(目标当前生命值)`（旧注释写"设为 0"但实现是设为当前血量，照实现）。
+  - **补记（2026-09-24）**：处决改为在 `LivingDamageEvent.Post` 里清血（门槛 = 这一刀结算后血量 <25%，`setHealth(0)`），
+    Pre 顺序变为 `赌徒 → 伏击 → 背刺 → 均衡器`、Post 顺序 `处决 → 生命吸取`；语义由"两刀"变"一击补刀"，
+    吸收不再能救，图腾/死亡消息/经验/掉落仍走原版。详见 `../design/enchantment-authoring.md` 的 P1-8。
 - 伏击每玩家状态（~~Map<UUID,Boolean>~~ → 见下方补记：非潜行攻击置位/潜行首击 ×(1+0.2×级) 后置位/
   PlayerTickEvent.Post 非潜行重置）迁入分发器；组件求值需 ServerLevel，伏击/背刺/均衡器/生命吸取/屠夫/斩首均只服务端执行
   （旧版伏击在双侧维护 Map 副本，结果行为不变）。
@@ -128,7 +131,7 @@ pack_leader/tracker）、armor_horse 2（pasture/spirit）。
 - 逐附魔 handler 全删；每家族分发器固定顺序（旧版为多个独立订阅者，顺序未定义）：
   armor_head tick `adaptive → against_all_odds → anti_camouflage → desperate_counter`，
   armor_foot tick `crop_dance → flame_walker → pegasus → wave_walker`，
-  sword Pre `赌徒 → 伏击 → 背刺 → 均衡器 → 处决`，armor_wolf Pre `pack_leader → tracker`，
+  sword Pre `赌徒 → 伏击 → 背刺 → 均衡器`（处决 2026-09-24 移入 Post），armor_wolf Pre `pack_leader → tracker`，
   armor_horse tick `pasture → spirit`。
 - **仅服务端执行**（旧版双侧跑，行为不变）：所有 itemValue 段（armor 全家族、berserk/bulletproof、
   snipe/volt、fishing 3、shear 4、sea_breeze/searing、potential_conversion、echoes_battle、~~daynight_cycle~~、
@@ -198,7 +201,7 @@ invisibility_cloak 附件标记精确移除、sturdy/indestructible 标记组件
 | HIGH | `MaceLivingDamageEvents` | 势能转化 | getNewDamage（连乘） |
 | NORMAL | `BowDamageEvents` | 狙击 / 伏特 | getNewDamage（连乘） |
 | LOW | `SwordLivingDamageEvents` | 赌徒/伏击/背刺/均衡器 | getNewDamage（连乘） |
-| LOW | `SwordLivingDamageEvents` | 处决 | 绝对值覆盖（设为目标当前生命） |
+| LOW | `SwordLivingDamageEvents` | ~~处决~~ | ~~绝对值覆盖（设为目标当前生命）~~ → 2026-09-24 移入 Post（`setHealth(0)`），不再参与 Pre 定序，见下补记 |
 | LOWEST | `ArmorChestLivingDamageEvents` | 狂战士 | getNewDamage（连乘） |
 | LOWEST | `ArmorWolfDamageEvents` | 狼群领袖 | getNewDamage（连乘） |
 
@@ -211,12 +214,16 @@ invisibility_cloak 附件标记精确移除、sturdy/indestructible 标记组件
 - **行为变化**：狂战士 / 狼群领袖现在**必定**吃到武器段的加成结果（此前取决于注册顺序）。
 - 本批只定序 Pre；Post 侧（`life_steal` / `revive_ward` / `sea_breeze` / `TeleportSwapEvents` /
   `UnbreakingDamageEvents` Post）不改伤害数值，顺序问题留待观察。
+  > **补记（2026-09-24）**：Post 侧顺序问题已处理一次——处决移入 Post 后与 `revive_ward`（`ArmorDamageEvents`）
+  > 同挂 `LivingDamageEvent.Post`，跨类顺序原本未定义。定为处决 `HIGHEST`（先执行，把血量归零）、
+  > `revive_ward` `LOWEST`（最后执行）→ **重生护盾救得下被处决的目标**（护盾看到濒死状态后拉回 0.5 血并消耗附魔）。
+  > 注：初版把护盾标成 `HIGHEST`——那是**最早**执行（见本节优先级方向），护盾先跑、处决后跑再归零，结果与预期相反。
 
 ## Pre 伤害基数统一批次（2026-09-20）
 
 武器族 5 段从"以 `getOriginalDamage()` 覆盖"改为"以 `getNewDamage()` 连乘"：赌徒（`SwordLivingDamageEvents`）、
-伏击、均衡器、狙击 / 伏特（`BowDamageEvents`）、势能转化（`MaceLivingDamageEvents`）。处决保持绝对值语义
-（设为目标当前生命），与基数无关。
+伏击、均衡器、狙击 / 伏特（`BowDamageEvents`）、势能转化（`MaceLivingDamageEvents`）。处决当时保持绝对值语义
+（设为目标当前生命），与基数无关（2026-09-24 改为 Post 清血，见上文补记）。
 
 - **为什么必须改**：`originalDamage` 是 `hurt()` 收到的原始伤害（`DamageContainer` 创建时定格），
   而 Pre 之前已算进 `newDamage` 的东西会被覆盖式写入整段抹掉——神化系的暴击正是如此

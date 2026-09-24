@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
@@ -28,6 +29,9 @@ import java.util.List;
 /**
  * 全身盔甲（all_armor）附魔在伤害事件上的统一分发器（重生护盾：致命伤时保留 0.5 血）。
  * <p>行为参数由附魔 JSON 组件声明。旧实现是单个订阅者类。
+ * <p>Post 监听器标 {@code LOWEST}（晚于其它 Post 订阅者执行）：处决（{@code SwordLivingDamageEvents}，
+ * HIGHEST）先把血量归零，本段最后看到濒死状态并拉回 0.5 血 → **重生护盾救得下被处决的目标**。
+ * 2026-09-24 用户决定；此前两者同为 NORMAL，跨类顺序取决于监听器注册顺序（未定义）。
  */
 @EventBusSubscriber(modid = RedstoneEnchants.MOD_ID)
 public final class ArmorDamageEvents {
@@ -38,7 +42,8 @@ public final class ArmorDamageEvents {
             EquipmentSlot.FEET
     };
 
-    @SubscribeEvent
+    // LOWEST：必须晚于 SwordLivingDamageEvents 的处决段，才能抢救被处决的目标（见类注释）
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onLivingDamagePost(LivingDamageEvent.Post event) {
         reviveWard(event);
     }

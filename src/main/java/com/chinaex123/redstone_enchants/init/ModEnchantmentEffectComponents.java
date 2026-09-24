@@ -73,7 +73,7 @@ public final class ModEnchantmentEffectComponents {
     /** 湿润（moist）：锄地后耕地保持最大湿度 */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> MOIST =
             unit("moist");
-    /** 处决（execution）：目标当前生命占比低于 25% 时直接击杀 */
+    /** 处决（execution）：这一刀结算后目标生命占比低于 25% 时清空血量（Post 阶段，见 SwordLivingDamageEvents） */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> EXECUTION =
             unit("execution");
     /** 战斗回响（echoes_battle）：盾牌格挡后提升下一次攻击伤害 */

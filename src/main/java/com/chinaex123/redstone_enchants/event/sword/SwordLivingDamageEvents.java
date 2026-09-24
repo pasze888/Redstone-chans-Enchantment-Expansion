@@ -24,33 +24,38 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
  * <p>行为参数由附魔 JSON 声明（见 {@link ModEnchantmentEffectComponents}），
  * 这里按固定顺序驱动各效果。旧实现是每个附魔一个独立订阅者，
  * 执行顺序取决于注册顺序且互相覆盖（均以原始伤害为基数的附魔只有一个生效），
- * 分发器固定执行顺序：赌徒 → 伏击 → （后续）背刺 → 均衡器 → 处决，生命吸取在 Post 阶段，
+ * 分发器固定执行顺序：Pre {@code 赌徒 → 伏击 → 背刺 → 均衡器}，Post {@code 处决 → 生命吸取}，
  * 沿用各旧公式与攻击者解析（各段自行按旧版语义判定）。
  * <p>伤害基数统一为 {@code getNewDamage()} 连乘：以 {@code getOriginalDamage()} 覆盖会抹掉
  * Pre 之前已算入 newDamage 的暴击（Apothic Attributes 在 {@code LivingIncomingDamageEvent} 结算）
- * 与护甲/抗性/保护减伤。处决是"设为目标当前生命"的绝对值语义，与基数无关，保持 {@code setNewDamage(health)}。
+ * 与护甲/抗性/保护减伤。
+ * <p>处决（2026-09-24 改）：从 Pre 的 {@code setNewDamage(当前生命)} 改为 Post 判"这一刀结算后血量 < 25%"
+ * 并 {@code setHealth(0)}。Post 在 {@code die()} 之前触发，原版随后照常走图腾判定与死亡处理，
+ * 因此图腾/死亡消息/击杀归属/经验/掉落全部保持原版；代价是语义由"两刀"变为"一击补刀"。
  */
 @EventBusSubscriber(modid = RedstoneEnchants.MOD_ID)
 public final class SwordLivingDamageEvents {
     private static final EquipmentSlot[] HAND_SLOTS = { EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND };
 
-    // LOW：武器族之一，排在锤/弓之后；各段以 getNewDamage() 连乘，处决段最后做绝对值覆盖
+    // LOW：武器族之一，排在锤/弓之后；各段以 getNewDamage() 连乘
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onLivingDamagePre(LivingDamageEvent.Pre event) {
-        // 固定顺序：赌徒 → 伏击 → 背刺 → 均衡器 → 处决（各段按旧版语义自行解析攻击者）
+        // 固定顺序：赌徒 → 伏击 → 背刺 → 均衡器（各段按旧版语义自行解析攻击者）
         gamblerRoll(event);
         ambushStrike(event);
         backstab(event);
         equalizer(event);
-        executionKill(event);
     }
 
-    @SubscribeEvent
+    // HIGHEST：处决须先于 ArmorDamageEvents 的重生护盾（LOWEST）执行；生命吸取只治疗攻击者，顺序无影响
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onLivingDamagePost(LivingDamageEvent.Post event) {
         LivingEntity attacker = event.getSource().getEntity() instanceof LivingEntity living ? living : null;
         if (attacker == null) {
             return;
         }
+        // 固定顺序：处决 → 生命吸取（处决只清血，不改写本次伤害）
+        executionKill(event, attacker);
         lifeSteal(event, attacker);
     }
 
@@ -192,20 +197,26 @@ public final class SwordLivingDamageEvents {
 
     // ---- 处决 ----
 
-    private static void executionKill(LivingDamageEvent.Pre event) {
-        LivingEntity attacker = event.getSource().getEntity() instanceof LivingEntity living ? living : null;
-        if (attacker == null) {
+    /**
+     * 处决：这一刀结算后目标血量占比低于 25% 时清空血量。
+     * <p>判在 {@link LivingDamageEvent.Post}——此时血量已扣、{@code die()} 尚未调用，所以门槛是"扣血后的真实血量"，
+     * 剩余吸收也救不了（吸收已在 Post 之前结算完）。{@code setHealth(0)} 之后原版会自己走
+     * {@code checkTotemDeathProtection} → {@code die()}，图腾/死亡消息/击杀归属/经验/掉落均为原版行为。
+     * <p>与挂在同一事件上的重生护盾（{@code ArmorDamageEvents}，标 LOWEST）配合：处决先把血量归零，
+     * 护盾最后执行、看到濒死状态后拉回 0.5 血并消耗附魔，即**重生护盾救得下被处决的目标**。
+     */
+    private static void executionKill(LivingDamageEvent.Post event, LivingEntity attacker) {
+        LivingEntity target = event.getEntity();
+        // 这一刀已经打死则交给原版；扣血为 0（如完全被盾牌格挡且无敌帧已过）不算命中
+        if (target.isDeadOrDying() || event.getNewDamage() <= 0.0F) {
             return;
         }
         ItemStack weapon = attacker.getMainHandItem();
         if (!EnchantmentHelper.has(weapon, ModEnchantmentEffectComponents.EXECUTION.get())) {
             return;
         }
-        LivingEntity target = event.getEntity();
-        // 旧版公式原样：目标当前生命占比 < 25% 时，把伤害设为目标当前生命值（必死）
-        float healthPercent = target.getHealth() / target.getMaxHealth();
-        if (healthPercent < 0.25F) {
-            event.setNewDamage(target.getHealth());
+        if (target.getHealth() / target.getMaxHealth() < 0.25F) {
+            target.setHealth(0.0F);
         }
     }
 

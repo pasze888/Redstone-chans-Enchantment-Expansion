@@ -111,13 +111,13 @@ P0 已全部处理完。新增状态照 §3 第 4 条走 `ModAttachments`；静�
 | P1-4 | `event/all_fishing/FishingHookTickEvents.java` | `STRUCK_ENTITIES` 静态集合有两个毛病：勾住状态下鱼钩消失（断竿/收线）时条目不清理，那生物**再也劈不到**；任意空钩 tick 又会把全局集合整个 `clear()`，把别的鱼钩的去重一起重置。已改为挂在鱼钩上的 `ModAttachments.CONDUCTIVE_LINE_STRUCK`（松钩即复位）。唯一行为差异：两条鱼钩同时勾住同一生物时旧版只劈 1 次、新版各劈 1 次。侧判断仍未加（客户端仍会放本地闪电），见 P2 |
 | P1-5 | 重复 effect 类 | `RandomBeneficialMobEffect` / `RandomHarmfulMobEffect` 已合并为 `RandomMobEffectEffect(chance, pool)`（注册名 `random_mob_effect`，JSON 多一个 `"pool": "beneficial"|"harmful"`，黑名单只留在 harmful 池里）。**另两项核实后不合并**：`IgniteAreaEffect` 是把命中点周围 3×3×3 的**空气方块**点燃（fire_arrows 的 `fill ... fire keep`），`AreaIgniteEffect` 是点燃**生物**，二者不同功能，清单原描述有误；`SummonItemEffect` 是"战斗类附魔基建"留下的模板类，**没有任何附魔在用**，`GiveItemEffect`（检索，箭入背包）与它语义不同（原地掉落 / 等级化数量），保持独立 |
 | P1-6 | `enchantment/effect/AreaMobEffectEffect.java:39-51` | `target=others` 对范围内**所有** `LivingEntity` 生效（含其他玩家），联机时无差别下负面。已新增 `AreaTarget.OTHERS_NON_PLAYER`（JSON `"others_non_player"`，枚举后来提到顶层，见 P2），中毒/缓慢/虚弱/凋零/寄生五个负面光环改用它；发光的 `others` 与增益类的 `all` 维持原样。原文建议的"加 requirement"走不通——`location_changed` 的 `requirements` 只在触发前对穿戴者求值一次，无法逐个筛目标（见 `../reference/enchantment-components.md`） |
+| P1-8 | `event/sword/SwordLivingDamageEvents.java` | `execution`（处决）原在 `LivingDamageEvent.Pre` 里 `setNewDamage(目标当前生命)`：①门槛用受伤前血量且严格 <25% → 要两刀；②Pre 在吸收之前，带吸收的目标秒不掉（`DamageContainer.setReduction` 里 `newDamage -= amount`）；③排在 dispatcher 最后做绝对覆盖，丢弃赌徒/伏击/背刺/均衡器的连乘。**2026-09-24 已修**：挪到 `LivingDamageEvent.Post`，判"这一刀结算后血量 <25%"后 `setHealth(0)`——Post 在 `die()` 之前触发，原版随后照常 `checkTotemDeathProtection` → `die()`，图腾/死亡消息/击杀归属/经验/掉落全保持原版，也不需要自定义 DamageType 或 invoker mixin（对照 `Apotheosis/.../ExecutingAffix.java`，那份是 MC 26.1.2 代码，`setLastHurtByPlayer(p, 100)` 等 API 在 1.21.1 不存在）；另加 `getNewDamage() <= 0` 守卫（盾牌完全格挡且无敌帧已过时 Post 仍会触发）。代价：语义由"两刀"变"一击补刀"，吸收不再能救。同一提交里处决段标 `HIGHEST`、`ArmorDamageEvents.onLivingDamagePost` 标 `LOWEST`，用户决定**重生护盾救得下被处决的目标**（护盾最后执行，看到濒死状态后拉回 0.5 血并消耗附魔） |
 
 **待办**
 
 | # | 位置 | 问题 |
 |---|---|---|
 | P1-7 | `event/armor_head/ArmorHeadTickEvents.java:75-76` | `adaptive`（矿工）在 Y≥0 时用 `removeEffect(NIGHT_VISION)` 无差别摘夜视，也会洗掉夜视药水（`../reference/enchantments.md:356` 已记此行为）。当前决定：**先不动** |
-| P1-8 | `event/sword/SwordLivingDamageEvents.java:195-210` | `execution`（处决）是"把伤害设成目标当前血量"的绝对值语义，**不是真 kill**：①门槛用**受伤前**血量且严格 <25%，所以要两刀（先打到 25% 以下，下一刀才处决）；②`LivingDamageEvent.Pre` 的结算顺序是 护甲 → 保护/抗性 → **Pre** → **吸收** → 扣血（`LivingEntity.java:1787-1794`，`DamageContainer.setReduction` 里 `newDamage -= amount`），所以**吸收会按 `min(吸收量, 伤害)` 抵扣掉这次伤害，带吸收的目标秒不掉**；③走的是普通扣血流，不死图腾照常救（`:1260-1261` 的 `checkTotemDeathProtection`）；④排在 dispatcher 最后做绝对覆盖，会丢弃赌徒/伏击/背刺/均衡器的连乘。已知改法：最小改是 `setNewDamage(getHealth() + getAbsorptionAmount())`（残余伤害正好等于血量）；更彻底的是照 `Apotheosis/.../ExecutingAffix.java:69-89` 改成 POST_ATTACK + 自定义 DamageType + `die()` 的单刀处决（会改变玩家感知，且改动涉及是否绕过护甲/图腾）。当前决定：**维持现状，不动** |
 
 ### P2 — 观察项
 
