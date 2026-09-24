@@ -329,7 +329,8 @@ A/B/C 三批之后剩下的最后 5 个 mcfunction（`function/enchantment/etern
 结构对应：`summon` → `new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, level)` +
 `setBlockState`/`setTransformation`/`setPos`/`addFreshEntity`；`data merge` → `setTransformation` +
 `setTransformationInterpolationDuration` + `setTransformationInterpolationDelay`；
-`schedule function ... Nt` → `server.tell(new TickTask(server.getTickCount() + N, ...))`；
+`schedule function ... Nt` → `DelayedTasks.schedule(level, N, ...)`（`util/DelayedTasks`，按 `Level#getGameTime()` 到期；
+不要用 `server.tell(new TickTask(...))`，那不是定时器，见 `enchantment-runtime-effects.md`）；
 `kill @e[tag=...]` → 逐个体 `kill()`。13 组手调四元数/缩放/两段插值时长逐行照搬到 `KEYFRAMES` 表。
 
 ### 行为变更备忘（本批，有意为之）
@@ -343,7 +344,7 @@ A/B/C 三批之后剩下的最后 5 个 mcfunction（`function/enchantment/etern
   `kill @e[tag=redstone_enchants.block_display.animation.finished]`，全局匹配——两次动画时间重叠时
   先结束的那次会把后一次的霜冰一起杀掉。现在每片霜冰由本次调用的闭包持有，只清自己的 13 片。
 - **重启不再续播，但残留会被清扫**：`schedule function` 会把待执行函数写进
-  `overworldData().getScheduledEvents()` 并随存档保存、重启后继续；`TickTask` 是纯内存队列，
+  `overworldData().getScheduledEvents()` 并随存档保存、重启后继续；`DelayedTasks` 是纯内存队列，
   服务器在动画的约 50 tick 内重启（或区块在此期间卸载）会断链，13 片霜冰会以存档里的目标变换
   永久留在原地。为此新增 `event/freeze/FreezeShardCleanupEvents`：实体**从存档**加入世界时
   （`EntityJoinLevelEvent#loadedFromDisk()`）若带霜冰 tag 就取消加入——这个标志天然区分

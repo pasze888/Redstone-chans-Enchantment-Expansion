@@ -1,11 +1,11 @@
 package com.chinaex123.redstone_enchants.enchantment.effect;
 
+import com.chinaex123.redstone_enchants.util.DelayedTasks;
 import com.mojang.math.Transformation;
 import com.mojang.serialization.MapCodec;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -26,8 +26,8 @@ import org.joml.Vector3f;
  * <p>替代原 {@code run_function} + {@code libs/animation/freeze_pic/*} 那 5 个 mcfunction：原实现
  * {@code summon} 13 个 block_display（scale.y=0 的扁平霜冰）→ 用 {@code data merge} 改
  * transformation + interpolation_duration 做两段插值 → {@code kill}。Java 侧走 AT 放开的
- * {@code Display#setTransformation} 等 setter，语义与 {@code data merge} 一一对应；三段延时用服务器
- * {@link TickTask}，等价 mcfunction 的 {@code schedule function}。
+ * {@code Display#setTransformation} 等 setter，语义与 {@code data merge} 一一对应；三段延时用
+ * {@link DelayedTasks}（真正的 N tick 后执行），等价 mcfunction 的 {@code schedule function}。
  * <p>13 组手调四元数/缩放与各自的插值时长是美术数据（不是伤害/概率/半径这类平衡数值），
  * 故按原样留在代码里，见 docs/reference/enchantment-runtime-effects.md。
  * <p>与原实现的行为差异（详见 docs/reference/enchantment-migrations.md）：
@@ -40,7 +40,7 @@ import org.joml.Vector3f;
  *       HIT_BLOCK 路径下是弹射物，实际几乎不响；本次改为命中点附近所有玩家可闻。</li>
  *   <li>清理只针对本次生成的 13 片霜冰，不再像原 {@code finished} 那样按 tag 全局 kill
  *       （原实现里同时触发的两次动画会互相提前清掉）。</li>
- *   <li>原 {@code schedule function} 会把待执行函数写进存档，重启后仍继续；{@link TickTask}
+ *   <li>原 {@code schedule function} 会把待执行函数写进存档，重启后仍继续；{@link DelayedTasks}
  *       是内存队列，服务器在动画的 50 tick 内重启（或区块在此期间卸载）会留下未清理的霜冰。
  *       这批残留由 {@code event/freeze/FreezeShardCleanupEvents} 在实体从存档加入世界时清掉，
  *       手工兜底仍是 {@code /kill @e[tag=redstone_enchants.block_display.freezing]}。</li>
@@ -170,7 +170,7 @@ public record EternalFrostAnimationEffect() implements EnchantmentEntityEffect {
     }
 
     private static void schedule(ServerLevel level, int delayTicks, Runnable action) {
-        level.getServer().tell(new TickTask(level.getServer().getTickCount() + delayTicks, action));
+        DelayedTasks.schedule(level, delayTicks, action);
     }
 
     /** 表驱动的构造入口，让 {@link #KEYFRAMES} 保持一行一片、与 mcfunction 行序对应 */

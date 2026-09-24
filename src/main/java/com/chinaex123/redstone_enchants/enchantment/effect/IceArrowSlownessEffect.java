@@ -1,8 +1,8 @@
 package com.chinaex123.redstone_enchants.enchantment.effect;
 
+import com.chinaex123.redstone_enchants.util.DelayedTasks;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -21,7 +21,7 @@ import java.util.List;
  * <p>原实现是 mcfunction 里 {@code attribute ... modifier add} + 一个从未被
  * 调度的 scheduled 函数（modifier 永不移除，属上游 bug）；本实现用
  * transient modifier（不随实体 NBT 保存，死亡/卸载自动清理）+ 服务器
- * TickTask 定时移除，恢复原意图"冻结 5 秒"。
+ * {@link DelayedTasks} 定时移除，恢复原意图"冻结 5 秒"。
  * <p>修正 id 与原命令一致（redstone_enchants:ice_arrows）。
  */
 public record IceArrowSlownessEffect() implements EnchantmentEntityEffect {
@@ -48,7 +48,7 @@ public record IceArrowSlownessEffect() implements EnchantmentEntityEffect {
             }
         }
 
-        level.getServer().tell(new TickTask(level.getServer().getTickCount() + FREEZE_TICKS, () -> {
+        DelayedTasks.schedule(level, FREEZE_TICKS, () -> {
             if (victim.isRemoved() || victim.level() != level) {
                 return;
             }
@@ -58,7 +58,7 @@ public record IceArrowSlownessEffect() implements EnchantmentEntityEffect {
                     instance.removeModifier(MODIFIER_ID);
                 }
             }
-        }));
+        });
     }
 
     @Override

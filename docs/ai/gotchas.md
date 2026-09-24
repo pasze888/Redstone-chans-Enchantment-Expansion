@@ -36,6 +36,14 @@
   setter）时逐条核对过；嵌套类在 AT 里写 `$`（`Display$BlockDisplay`）。那 4 个成员在 `api-sources`
   与真实 jar 中都是 `private`——但**一致是核出来的，不是默认的**。
 
+- **"能编译"不等于"语义成立"：vanilla 的调度/计时 API 要先看消费端**。`server.tell(new TickTask(
+  server.getTickCount() + N, …))` 读起来就是 `schedule function … Nt`、也能编译，但闸门是
+  `MinecraftServer#shouldRun` 里的 `|| this.haveTime()`，且每 tick 末 `runAllTasks()` 会把队列抽干——
+  "延后 N tick"实际是"当 tick 执行"。2026-09-24 前本仓库三处延时（精准射击清理、冰霜箭解除、
+  永恒冰霜三段动画）都踩了这个坑；第一次修正把 5 格轮询换成 1200 tick 的 `TickTask`，等于又踩一次，
+  表象是"附魔效果自己坏了"。现在统一走 `util/DelayedTasks`（精准射击因需跨存档守恒改用持久化附件）；
+  结论与出处见 `../reference/enchantment-runtime-effects.md` 的 schedule 条目。
+
 ## 迁移对比法（手写 JSON vs 生成 JSON）
 
 - 手写 JSON 从删除提交的父提交取（`git log --diff-filter=D` 定位），

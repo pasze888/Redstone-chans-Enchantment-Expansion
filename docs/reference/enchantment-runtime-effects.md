@@ -59,9 +59,13 @@
   **本仓库已无 `.mcfunction`**。当时判"Java 化为纯数据搬运、收益低"的理由（13 组手调
   block_display 变换矩阵）依然成立——D 批的收益是去掉 `run_function` 这条数据包依赖，
   动画数据本身仍按行照搬在 Java 里（见文末「D 批」条目）。
-- **schedule 的 Java 等价**：`level.getServer().tell(new TickTask(
-  server.getTickCount()+delay, callback))`（TickTask 的 tick 是绝对服务器刻）；
-  回调里先检查 `entity.isRemoved()`。
+- **`schedule function` 的 Java 等价要自己实现，`TickTask` 不是定时器**：`tell(new TickTask(
+  server.getTickCount()+delay, callback))` 的 tick 只在服务器落后于计划时才是闸门
+  （`MinecraftServer#shouldRun` = `tick + 3 < tickCount || haveTime()`，`MinecraftServer.java:852-854`），
+  健康服务器每 tick 末走 `waitUntilNextTick()` → `runAllTasks()`（同文件 `:718`、`:833-836`）会把队列一次
+  抽干，**排到未来刻的任务当 tick 即执行**，`delay` 形同虚设。本仓库现有实现统一走 `util/DelayedTasks`
+  （`ServerTickEvent.Post` + 按 `Level#getGameTime()` 到期）；精准射击因为要跨存档守恒，另走持久化附件（见下）。
+  回调照旧先判实体是否还在（`isRemoved()`、是否仍在同一 level）。
 - **瞬态属性修正**（1.21.1）：`AttributeInstance.addTransientModifier(
   new AttributeModifier(ResourceLocation id, amount, Operation))`，
   `removeModifier(id)`；transient 不入 NBT，死亡/卸载自动清理。
@@ -79,6 +83,22 @@
 - 顺带修复的上游 bug：冰霜箭减速永不解除（scheduled 函数从未被调度）、
   雪球弹回自己（选择器未排除自身）、精准射击时间窗恒真、
   第一印象 reset_mark 死代码。
+- **精准射击的清理判据修正（2026-09-24，同日二次修正）**：Java 迁移时写的"每 100 tick 检查，5 格内无玩家则 kill"
+  判据是错的——箭初速约 3 格/tick，5 秒后早已远离所有玩家，于是**射向远处或仍在飞行的箭会被直接清掉**。
+  ~~改为：NoGravity 保留，删掉玩家距离轮询，只在发射后 1200 tick 做一次兜底 `discard()`。~~
+  **这个"改成 1200 tick 延时"同样没生效**：`tell(new TickTask(now + 1200, …))` 在健康服务器上当 tick 就执行
+  （见上面的 schedule 条目），玩家看到的是"箭一射出来就没了"——两次修正错在同一处：把 `TickTask` 当定时器。
+  落地实现改为**持久化附件 + 每 tick 比对**：`ModAttachments#HOVERING_ARROW_DEADLINE`（`Codec.LONG`，
+  值 = `level.getGameTime() + 1200`）+ `event/projectile/HoveringArrowTickEvents`（`EntityTickEvent.Post` 里
+  `level.getGameTime() >= deadline` 就 `discard()`）。**附件必须持久化**：箭是会存档的实体
+  （`Entity#shouldBeSaved()` 默认 true，`Entity.java:3670-3676`），区块卸载/重载后 `Entity#tickCount`
+  从 0 重来（它不写 NBT，全仓库只有 `AreaEffectCloud` 把 Age 存进存档），用 `tickCount` 计数等于
+  "每卸载/重载一次就多给 60 秒"；只有绝对的存档时钟 `gameTime` 能让 60 秒守恒。
+  窗口取 1200 的依据是原版自己就管落地箭：`AbstractArrow#tickDespawn()` 在 `life >= 1200`（落地 60 秒）时 `discard()`，
+  且 `life` 随 NBT 存档——所以自定义清理只需覆盖"NoGravity 导致永不落地"的箭，窗口取同一个 1200。
+  另两条同批核实的 API 事实（均来自 api-sources 镜像）：`inGround`/`life` 是 protected/private，外部读不到
+"落地了没"，要逐实例判"不持久"得 mixin `Entity#shouldBeSaved()`（`PersistentEntitySectionManager.java:196`）；
+  `Entity#kill()` 会额外发 `GameEvent.ENTITY_DIE`（`Entity.java:333-336`），纯清理应当用 `discard()`。
 
 ## D 批（2026-09-24）：`Display` 的 transformation 写入
 
@@ -105,7 +125,8 @@
   不能用来增量改活实体。
 - **插值要先让客户端建立起初态**：客户端 `interpolationDuration` 非 0 且 `renderState != null`
   时才做插值（`Display.java:151-166`），所以原实现 `schedule … 0.1s`（2 tick）后才改
-  `interpolation_duration`，Java 侧照搬这个间隔，不要同 tick 内完成 spawn + 改插值。
+  `interpolation_duration`，Java 侧照搬这个间隔，不要同 tick 内完成 spawn + 改插值
+  （这个 2 tick 间隔一度被 `TickTask` 吞掉，2026-09-24 换 `DelayedTasks` 后才真正生效）。
 - **`execute at` 不换执行实体**：`ExecuteCommand.java:163-178` 的 `at` 只做
   `withLevel/withPosition/withRotation`。**`schedule function` 的命令源无实体**：
   `FunctionCallback.java:20` → `ServerFunctionManager.getGameLoopSender()`
@@ -118,10 +139,10 @@
   `origin` 是受击者位置；HIT_BLOCK 路径 entity 是弹射物、`origin` 是
   `hitResult.getBlockPos().clampLocationWithin(hitResult.getLocation())`
   （`AbstractArrow.java:484-496`）。两条路径的 `@s` 都**不是**攻击者。
-- **`schedule function` 会持久化，`TickTask` 不会**：`ScheduleCommand` 把待执行函数写进
+- **`schedule function` 会持久化，本仓库的 `DelayedTasks` 不会**：`ScheduleCommand` 把待执行函数写进
   `overworldData().getScheduledEvents()`（`ScheduleCommand.java:101-113`），随存档保存、重启续跑；
-  `TickTask` 只是内存队列。这是用 `TickTask` 复刻 `schedule` 时的唯一语义差异，断链留下的霜冰由
-  下一条的清扫兜住（见 `enchantment-migrations.md`）。
+  `DelayedTasks` 只是内存队列（`TickTask` 同样是内存队列，但它连"延后"都不成立，见上面的 schedule 条目）。
+  断链留下的霜冰由下一条的清扫兜住（见 `enchantment-migrations.md`）。
 - **`EntityJoinLevelEvent#loadedFromDisk()` 是"从存档恢复"的可靠判据**：该标志为 true 只有两条
   路径——区块实体反序列化（`PersistentEntitySectionManager.processPendingLoads`，
   `PersistentEntitySectionManager.java:247`）与旧格式区块实体（同文件 `:114`）；自己

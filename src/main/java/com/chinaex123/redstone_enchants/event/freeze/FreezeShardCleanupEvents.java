@@ -8,8 +8,8 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 
 /**
  * 永恒冰霜动画的残留清扫。
- * <p>动画由 {@code TickTask} 三段延时推进（见 {@link EternalFrostAnimationEffect}），而
- * {@code TickTask} 是纯内存队列：服务器在动画的约 50 tick 内重启，或区块在此期间卸载，
+ * <p>动画由 {@code DelayedTasks} 三段延时推进（见 {@link EternalFrostAnimationEffect}），而
+ * {@code DelayedTasks} 是纯内存队列：服务器在动画的约 50 tick 内重启，或区块在此期间卸载，
  * 推进链就断了，13 片霜冰会以存档里的目标变换永久留在原地。
  * <p>判据用 {@link EntityJoinLevelEvent#loadedFromDisk()}——它为 true 只有两条路径：区块实体
  * 从存档反序列化（{@code PersistentEntitySectionManager.processPendingLoads}，
