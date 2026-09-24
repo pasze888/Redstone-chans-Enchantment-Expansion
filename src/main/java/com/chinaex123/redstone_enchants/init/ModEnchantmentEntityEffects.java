@@ -108,7 +108,7 @@ public final class ModEnchantmentEntityEffects {
     public static final DeferredHolder<MapCodec<? extends EnchantmentEntityEffect>, MapCodec<? extends EnchantmentEntityEffect>> ADD_TAG =
             TYPES.register("add_tag", () -> AddTagEffect.CODEC);
 
-    /** 精准射击：箭矢悬浮，5 秒无玩家靠近则清除 */
+    /** 精准射击：箭矢悬浮（NoGravity），发射 60 秒后单次兜底清除 */
     public static final DeferredHolder<MapCodec<? extends EnchantmentEntityEffect>, MapCodec<? extends EnchantmentEntityEffect>> HOVERING_ARROW =
             TYPES.register("hovering_arrow", () -> HoveringArrowEffect.CODEC);
 

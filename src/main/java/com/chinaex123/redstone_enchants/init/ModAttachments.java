@@ -1,6 +1,7 @@
 package com.chinaex123.redstone_enchants.init;
 
 import com.chinaex123.redstone_enchants.RedstoneEnchants;
+import com.mojang.serialization.Codec;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -11,8 +12,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 实体数据附件（不持久化、不同步的临时运行期标记）。
+ * 实体数据附件（默认不持久化、不同步的临时运行期标记）。
  * <p>仅用于服务端事件链内的状态传递；世界重载后自动清空，无需存档。
+ * <p>例外是需要跨区块卸载/重载守恒的绝对时刻（如 {@link #HOVERING_ARROW_DEADLINE}）：它显式加了
+ * {@code serialize(...)}，会随实体 NBT 一起存档。
  */
 public final class ModAttachments {
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES =
@@ -50,6 +53,16 @@ public final class ModAttachments {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Map<Integer, Integer>>> PRESERVATION_LAST_DAMAGE =
             ATTACHMENT_TYPES.register("preservation_last_damage",
                     () -> AttachmentType.<Map<Integer, Integer>>builder(() -> new HashMap<Integer, Integer>()).build());
+
+    /**
+     * 精准射击（accuracy_shot）：该悬浮箭的到期时刻（{@code Level#getGameTime()}，0 = 未登记）。
+     * <p>这是全套方案里唯一需要持久化的附件：区块卸载会把箭写进存档、重载后 {@code Entity#tickCount}
+     * 从 0 重来，只有绝对的存档时钟时刻能让"发射后 60 秒"跨卸载/重载守恒（同原版把
+     * {@code AbstractArrow#life} 写进 NBT 的思路）。
+     */
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Long>> HOVERING_ARROW_DEADLINE =
+            ATTACHMENT_TYPES.register("hovering_arrow_deadline",
+                    () -> AttachmentType.<Long>builder(() -> 0L).serialize(Codec.LONG).build());
 
     private ModAttachments() {
     }

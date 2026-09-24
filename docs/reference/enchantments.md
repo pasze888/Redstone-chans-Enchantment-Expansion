@@ -28,7 +28,7 @@
 | 盘丝蔓延（`splash_weaving`）〔蔓延〕 | 3 | 命中方块: [splash_cloud] 效果: weaving（条件触发）；攻击后: [all_of] （条件触发） | 命中目标施加盘丝效果并生成区域效果云 |
 | 蓄风蔓延（`splash_wind_charged`）〔蔓延〕 | 3 | 命中方块: [splash_cloud] 效果: wind_charged（条件触发）；攻击后: [all_of] （条件触发） | 命中目标施加蓄风效果并生成区域效果云 |
 | 凋零蔓延（`splash_wither`）〔蔓延〕 | 3 | 命中方块: [splash_cloud] 效果: wither（条件触发）；攻击后: [all_of] （条件触发） | 命中目标施加凋零效果并生成区域效果云 |
-| 精准射击（`accuracy_shot`） | 1 | 射出弹射物: [hovering_arrow]  | 箭矢无视重力直飞目标，未命中会消失 |
+| 精准射击（`accuracy_shot`） | 1 | 射出弹射物: [hovering_arrow]  | 箭矢无视重力直飞；上限是发射后 60 秒（从发射时刻算经持久化附件记账，落地箭也可能早于原版的落地 60 秒被清） |
 | 空中抛掷（`air_toss`） | 2 | 攻击后: [air_toss] （条件触发）；攻击后: [air_toss] （条件触发） | 攻击时将被击中的生物抛向空中 |
 | 爆裂箭矢（`blast_arrows`） | 3 | 命中方块: [explode] 半径 = 1.5 + 0.75*(Lv-1)格（条件触发）；命中方块: [kill_self] ；攻击后: [explode] 半径 = 1.5 + 0.75*(Lv-1)格（条件触发） | 命中产生爆炸伤害 |
 | 爆炸箭（`bomb_arrows`） | 3 | 伤害: [add] 值 = 2；命中方块: [all_of] （条件触发）；命中方块: [kill_self] ；攻击后: [explode] 半径 = 0.5 + 0.5*(Lv-1)格（条件触发） | 命中产生强力爆炸和击退 |
